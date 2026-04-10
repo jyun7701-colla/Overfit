@@ -664,9 +664,9 @@ footer{
 <nav>
   <a class="nav-logo" href="#">OVERFIT</a>
   <ul class="nav-links">
-    <li><a href="pages/clean.html" target="_blank">클린 검색</a></li>
-    <li><a href="pages/recommend.html" target="_blank">맞춤 추천</a></li>
-    <li><a href="pages/celeb.html" target="_blank">셀럽 매칭</a></li>
+    <li><a href="/overfit/pages/clean.html" target="_blank">클린 검색</a></li>
+    <li><a href="/overfit/pages/recommend.html" target="_blank">맞춤 추천</a></li>
+    <li><a href="/overfit/pages/celeb.html" target="_blank">셀럽 매칭</a></li>
   </ul>
   <div class="nav-right">
     <button class="nav-login" onclick="openModal('login')">로그인</button>
@@ -1569,12 +1569,26 @@ function checkIdDuplicate() {
   //     }
   //   });
 
-  // 임시 처리 (Servlet 연동 전)
-  showMsg(msg, '✅ 사용 가능한 아이디입니다.', 'green');
-  idChecked = true;
-  btn.style.background = 'var(--green)';
-  btn.style.color = '#fff';
-  btn.style.borderColor = 'var(--green)';
+  // ── Servlet 연동 (GET /api/user/check-id) ──
+  fetch('/overfit/api/user/check-id?user_id=' + userId)
+    .then(r => r.json())
+    .then(data => {
+      if(data.available) {
+        showMsg(msg, '✅ 사용 가능한 아이디입니다.', 'green');
+        idChecked = true;
+        btn.style.background   = 'var(--green)';
+        btn.style.color        = '#fff';
+        btn.style.borderColor  = 'var(--green)';
+      } else {
+        showMsg(msg, '❌ 이미 사용 중인 아이디입니다.', 'red');
+        idChecked = false;
+        btn.style.background  = '';
+        btn.style.color       = '';
+        btn.style.borderColor = '';
+      }
+    }).catch(() => {
+      showMsg(msg, '서버 연결에 실패했습니다.', 'red');
+    });
 }
 
 // ── 비밀번호 일치 확인 ──
@@ -1631,20 +1645,21 @@ function handleLogin() {
   if(pw.length < 1) { showErr('loginPwErr','비밀번호를 입력해주세요.'); return; }
 
   // ── Servlet 연동 (t_user 테이블) ──
-  // fetch('/api/login', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ email, user_pw: pw })
-  // }).then(r => r.json()).then(data => {
-  //   if(data.success) {
-  //     closeModal();
-  //     setLoggedIn(data.nick, data.email);
-  //   } else { showErr('loginPwErr', data.message); }
-  // });
-
-  const nick = email.split('@')[0];
-  closeModal();
-  setLoggedIn(nick, email, '');
+  fetch('/overfit/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user_id: email, user_pw: pw })
+  }).then(r => r.json()).then(data => {
+    if(data.success) {
+      closeModal();
+      setLoggedIn(data.nick, data.email, data.skin_type);
+      sessionStorage.setItem('of_user_id', data.user_id);
+    } else {
+      showErr('loginPwErr', data.message);
+    }
+  }).catch(() => {
+    showErr('loginPwErr', '서버 연결에 실패했습니다.');
+  });
 }
 
 function handleSignup() {
@@ -1670,18 +1685,21 @@ function handleSignup() {
   if (!agreed)                        { showErr('agreeTermsErr',     '이용약관에 동의해주세요.'); return; }
 
   // ── Servlet 연동 (t_user INSERT) ──
-  // fetch('/api/signup', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ user_id, user_pw, nick, phone, email, gender, birthdate, skin_type })
-  // }).then(r => r.json()).then(data => {
-  //   if(data.success) { closeModal(); setLoggedIn(nick, email, skin_type); }
-  //   else { showErr('signupEmailErr', data.message); }
-  // });
-
-  idChecked = false; // 다음 가입을 위해 초기화
-  closeModal();
-  setLoggedIn(nick, email, skin_type);
+  fetch('/overfit/api/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user_id, user_pw, nick, phone, email, gender, birthdate, skin_type })
+  }).then(r => r.json()).then(data => {
+    if(data.success) {
+      idChecked = false;
+      closeModal();
+      setLoggedIn(nick, email, skin_type);
+    } else {
+      showErr('signupEmailErr', data.message);
+    }
+  }).catch(() => {
+    showErr('signupEmailErr', '서버 연결에 실패했습니다.');
+  });
 }
 </script>
 </body>

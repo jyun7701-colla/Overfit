@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>셀럽 매칭 — OverFit</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF6F3;--white:#FFFFFF;
+  --pink:#E8637A;--pink-lt:#F2A0B0;--pink-pal:#FCEEF1;
+  --dark:#2B2320;--navy:#1B1F3A;--mid:#7A6560;--light:#C4ADA8;
+  --green:#16A34A;--green-bg:#DCFCE7;
+  --red:#DC2626;--red-bg:#FEF2F2;
+  --serif:'Cormorant Garamond','Noto Serif KR',Georgia,serif;
+  --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);min-height:100vh;}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:60px;background:rgba(253,246,243,0.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(43,35,32,0.07);}
+.nav-logo{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:2px;color:var(--dark);text-decoration:none;}
+.nav-page-title{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--pink);}
+.nav-right-wrap{display:flex;align-items:center;gap:10px;}
+.nav-back{font-size:13px;color:var(--mid);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--pink);}
+.nav-user-chip{display:none;align-items:center;gap:7px;background:var(--pink-pal);border-radius:20px;padding:4px 12px 4px 5px;}
+.nav-avatar{width:25px;height:25px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#FF9A8B);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.nav-uname{font-size:12px;font-weight:600;color:var(--pink);}
+.nav-skin-badge{font-size:10px;background:var(--white);color:var(--mid);padding:2px 7px;border-radius:8px;font-weight:600;}
+
+.login-banner{background:var(--pink-pal);padding:10px 48px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--mid);}
+.login-banner-btn{padding:5px 16px;border-radius:16px;background:var(--pink);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+
+.page-hero{background:var(--navy);padding:52px 48px 48px;position:relative;overflow:hidden;}
+.page-hero::after{content:'';position:absolute;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(232,99,122,0.18) 0%,transparent 70%);right:-60px;top:50%;transform:translateY(-50%);pointer-events:none;}
+.page-kicker{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--pink-lt);margin-bottom:10px;display:block;}
+.page-h1{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:400;line-height:1.2;color:#fff;letter-spacing:-0.5px;margin-bottom:12px;}
+.page-h1 em{font-style:italic;color:var(--pink-lt);}
+.page-desc{font-size:15px;color:rgba(255,255,255,0.55);line-height:1.8;font-weight:300;max-width:540px;}
+
+/* 피부 타입 자동 매칭 배너 */
+.auto-match-banner{display:none;background:rgba(232,99,122,0.15);border-radius:12px;padding:10px 16px;margin-top:20px;font-size:13px;color:var(--pink-lt);max-width:560px;}
+
+/* Quick 피부 타입 선택 바 */
+.quick-bar{background:var(--white);padding:20px 48px;border-bottom:1px solid rgba(43,35,32,0.06);display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.quick-label{font-size:13px;font-weight:600;color:var(--dark);white-space:nowrap;}
+.quick-pills{display:flex;gap:7px;flex-wrap:wrap;flex:1;}
+.qpill{padding:6px 15px;border-radius:18px;border:1px solid rgba(43,35,32,0.12);font-size:12px;color:var(--mid);cursor:pointer;transition:all 0.2s;background:var(--bg);user-select:none;}
+.qpill.on{background:var(--pink);border-color:var(--pink);color:#fff;}
+.quick-btn{padding:8px 20px;border-radius:18px;background:var(--dark);color:#fff;border:none;font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:background 0.2s;white-space:nowrap;}
+.quick-btn:hover{background:var(--pink);}
+
+.content{max-width:1120px;margin:0 auto;padding:40px 48px 80px;}
+
+/* BEST MATCH */
+.s-eyebrow{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--pink);margin-bottom:8px;display:block;}
+.s-title{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--dark);margin-bottom:20px;}
+.best-card{background:linear-gradient(135deg,var(--navy) 0%,#2A3F6E 100%);border-radius:22px;padding:32px;margin-bottom:44px;display:flex;gap:28px;align-items:center;flex-wrap:wrap;}
+.bc-avatar{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;}
+.bc-left{flex:1;min-width:160px;}
+.bc-eyebrow{font-family:var(--serif);font-style:italic;font-size:12px;color:var(--pink-lt);margin-bottom:6px;display:block;}
+.bc-name{font-family:var(--serif);font-size:22px;color:#fff;font-weight:400;margin-bottom:3px;}
+.bc-skintype{font-size:12px;color:rgba(255,255,255,0.5);}
+.bc-pct-wrap{text-align:center;}
+.bc-pct{font-family:var(--serif);font-style:italic;font-size:52px;color:var(--pink-lt);font-weight:600;line-height:1;}
+.bc-pct-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;}
+.bc-products{background:rgba(255,255,255,0.06);border-radius:14px;padding:14px 18px;min-width:200px;}
+.bc-prod-title{font-size:10px;font-weight:700;letter-spacing:0.5px;color:rgba(255,255,255,0.5);text-transform:uppercase;margin-bottom:10px;}
+.bc-prod-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.bc-prod-item:last-child{border:none;}
+.bc-prod-emoji{font-size:16px;width:24px;text-align:center;}
+.bc-prod-name{font-size:12px;color:rgba(255,255,255,0.75);}
+
+/* 자동 매칭 로딩 */
+.match-loading{display:none;text-align:center;padding:40px 0;background:rgba(255,255,255,0.03);border-radius:16px;margin-bottom:28px;}
+.dots{display:inline-flex;gap:6px;}
+.dots span{width:7px;height:7px;border-radius:50%;background:var(--pink-lt);animation:bop 1.2s infinite;}
+.dots span:nth-child(2){animation-delay:0.2s;}
+.dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bop{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
+/* CELEB GRID */
+.celeb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:40px;}
+.celeb-card{background:var(--white);border-radius:18px;border:1px solid rgba(43,35,32,0.07);overflow:hidden;transition:all 0.25s;cursor:pointer;}
+.celeb-card:hover,.celeb-card.active{border-color:rgba(232,99,122,0.3);box-shadow:0 5px 22px rgba(232,99,122,0.10);transform:translateY(-3px);}
+.cc-top{padding:20px;display:flex;gap:12px;align-items:center;}
+.cc-ava{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.cc-name{font-size:14px;font-weight:600;color:var(--dark);}
+.cc-skintype{font-size:11px;color:var(--light);margin-top:2px;}
+.cc-bar-wrap{padding:0 20px 12px;}
+.cc-bar-row{display:flex;align-items:center;gap:8px;}
+.cc-bar-bg{flex:1;height:3px;background:rgba(43,35,32,0.08);border-radius:3px;}
+.cc-bar-fill{height:100%;border-radius:3px;background:var(--pink);}
+.cc-pct{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--pink);font-weight:600;}
+.cc-body{padding:0 20px 18px;}
+.cc-body-label{font-size:9px;font-weight:700;letter-spacing:0.5px;color:var(--light);text-transform:uppercase;margin-bottom:7px;}
+.cc-prods{display:flex;flex-wrap:wrap;gap:4px;}
+.cc-prod{padding:3px 9px;background:var(--pink-pal);border-radius:7px;font-size:10px;color:var(--pink);font-weight:600;}
+
+/* DETAIL PANEL */
+.detail-panel{background:var(--white);border-radius:22px;border:1px solid rgba(43,35,32,0.07);padding:32px;margin-bottom:40px;display:none;}
+.detail-panel.show{display:block;}
+.dp-header{display:flex;gap:18px;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;}
+.dp-ava{width:64px;height:64px;border-radius:50%;font-size:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dp-name{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--dark);margin-bottom:3px;}
+.dp-sub{font-size:12px;color:var(--mid);font-weight:300;}
+.dp-pct{font-family:var(--serif);font-style:italic;font-size:40px;color:var(--pink);font-weight:600;margin-left:auto;}
+.dp-label{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--light);text-transform:uppercase;margin-bottom:14px;}
+.dp-products{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.dp-prod{background:var(--bg);border-radius:13px;padding:14px;border:1px solid rgba(43,35,32,0.07);}
+.dp-emoji{font-size:22px;margin-bottom:8px;}
+.dp-prod-name{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:2px;}
+.dp-prod-brand{font-size:10px;color:var(--light);margin-bottom:6px;}
+.dp-prod-why{font-size:10px;color:var(--green);font-weight:600;margin-bottom:8px;}
+.dp-buy-btn{width:100%;padding:7px;border-radius:9px;background:var(--dark);color:#fff;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:background 0.2s;}
+.dp-buy-btn:hover{background:var(--pink);}
+.dp-fb-btn{width:100%;padding:7px;border-radius:9px;background:transparent;color:var(--mid);border:1px solid rgba(43,35,32,0.12);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all 0.2s;margin-top:4px;}
+.dp-fb-btn:hover{border-color:var(--pink);color:var(--pink);}
+
+/* ALL CELEBS */
+.all-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.all-card{background:var(--white);border-radius:14px;border:1px solid rgba(43,35,32,0.07);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.2s;}
+.all-card:hover{border-color:rgba(232,99,122,0.25);box-shadow:0 3px 12px rgba(232,99,122,0.07);}
+.ac-ava{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ac-name{font-size:13px;font-weight:600;color:var(--dark);}
+.ac-skin{font-size:11px;color:var(--light);}
+.ac-pct{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--pink);font-weight:600;margin-left:auto;}
+
+/* FEEDBACK MODAL */
+.fb-overlay{position:fixed;inset:0;z-index:300;background:rgba(43,35,32,0.45);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.fb-overlay.open{opacity:1;pointer-events:all;}
+.fb-modal{background:var(--white);border-radius:22px;width:100%;max-width:400px;padding:32px;position:relative;transform:translateY(14px);transition:transform 0.3s;}
+.fb-overlay.open .fb-modal{transform:none;}
+.fb-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:16px;color:var(--light);cursor:pointer;}
+.fb-logo{font-family:var(--serif);font-size:13px;font-weight:600;letter-spacing:2px;color:var(--pink);margin-bottom:12px;}
+.fb-title{font-family:var(--serif);font-size:20px;color:var(--dark);margin-bottom:4px;}
+.fb-prod{font-size:12px;color:var(--mid);font-weight:300;margin-bottom:18px;}
+.fb-label{font-size:11px;font-weight:600;letter-spacing:0.5px;color:var(--light);text-transform:uppercase;margin-bottom:7px;display:block;}
+.fb-stars{display:flex;gap:5px;margin-bottom:16px;}
+.fb-star{font-size:24px;cursor:pointer;filter:grayscale(1);}
+.fb-star.on{filter:none;}
+.fb-textarea{width:100%;padding:11px 13px;border:1px solid rgba(43,35,32,0.12);border-radius:11px;font-size:13px;font-family:var(--sans);color:var(--dark);background:var(--bg);outline:none;resize:none;line-height:1.65;transition:border-color 0.2s;margin-bottom:13px;}
+.fb-textarea:focus{border-color:var(--pink);}
+.fb-submit{width:100%;padding:11px;border-radius:24px;background:var(--pink);color:#fff;border:none;font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:background 0.2s;}
+.fb-submit:hover{background:var(--dark);}
+.fb-notice{background:var(--pink-pal);border-radius:11px;padding:14px;text-align:center;font-size:13px;color:var(--mid);}
+.fb-notice button{margin-top:9px;padding:6px 18px;border-radius:14px;background:var(--pink);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+
+@media(max-width:900px){
+  nav,.page-hero,.login-banner,.quick-bar,.content{padding-left:20px;padding-right:20px;}
+  .celeb-grid{grid-template-columns:repeat(2,1fr);}
+  .dp-products{grid-template-columns:1fr 1fr;}
+  .all-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){.celeb-grid{grid-template-columns:1fr;}.dp-products{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/overfit/index.html">OVERFIT</a>
+  <span class="nav-page-title">셀럽 매칭</span>
+  <div class="nav-right-wrap">
+    <div class="nav-user-chip" id="navChip">
+      <div class="nav-avatar" id="navAv">김</div>
+      <span class="nav-uname" id="navUn">닉네임</span>
+      <span class="nav-skin-badge" id="navSk">건성</span>
+    </div>
+    <a class="nav-back" href="/overfit/index.html">← 홈</a>
+  </div>
+</nav>
+
+<div class="login-banner" id="loginBanner">
+  🔒 로그인하면 내 피부 타입(t_user.skin_type)과 셀럽이 자동 매칭됩니다!
+  <button class="login-banner-btn" onclick="location.href='/overfit/index.html'">로그인하러 가기</button>
+</div>
+
+<div class="page-hero">
+  <span class="page-kicker">AI Celeb Matching · t_user.skin_type × t_celebrity.celeb_skintype</span>
+  <h1 class="page-h1">내 피부와 닮은<br><em>셀럽의 인생템</em></h1>
+  <p class="page-desc">내 피부 타입(t_user.skin_type)과 셀럽의 피부 타입(t_celebrity.celeb_skintype)을 코사인 유사도로 매칭합니다. 매칭된 셀럽의 추천 제품(t_product)을 바로 확인하세요.</p>
+  <div class="auto-match-banner" id="autoMatchBanner">
+    ✅ <strong id="autoMatchTxt">건성</strong> 피부 타입으로 자동 매칭 완료! (t_user.skin_type 기반)
+  </div>
+</div>
+
+<!-- QUICK 피부 타입 선택 -->
+<div class="quick-bar">
+  <span class="quick-label">내 피부 타입</span>
+  <div class="quick-pills" id="quickPills">
+    <span class="qpill" onclick="toggleQ(this)">건성</span>
+    <span class="qpill" onclick="toggleQ(this)">지성</span>
+    <span class="qpill" onclick="toggleQ(this)">복합성</span>
+    <span class="qpill" onclick="toggleQ(this)">민감성</span>
+    <span class="qpill" onclick="toggleQ(this)">아토피</span>
+  </div>
+  <button class="quick-btn" onclick="runCeleb()">✦ 매칭 업데이트</button>
+</div>
+
+<div class="content">
+  <!-- BEST MATCH -->
+  <span class="s-eyebrow">Best Match · t_celebrity 최고 유사도</span>
+  <div class="best-card" id="bestCard">
+    <div class="bc-avatar" id="bcAva" style="background:linear-gradient(135deg,var(--pink),#FF9A8B);">🧖</div>
+    <div class="bc-left">
+      <span class="bc-eyebrow">내 피부와 가장 유사한 셀럽 (celeb_skintype 매칭)</span>
+      <div class="bc-name" id="bcName">김고은 스타일</div>
+      <div class="bc-skintype" id="bcSkintype">건성 · 민감성 · 광채 피부</div>
+    </div>
+    <div class="bc-pct-wrap">
+      <div class="bc-pct" id="bcPct">92%</div>
+      <div class="bc-pct-label">피부 유사도</div>
+    </div>
+    <div class="bc-products">
+      <div class="bc-prod-title">🌟 인생템 TOP 3 (t_product)</div>
+      <div id="bcProdList">
+        <div class="bc-prod-item"><span class="bc-prod-emoji">🧴</span><span class="bc-prod-name">라네즈 워터뱅크 세럼</span></div>
+        <div class="bc-prod-item"><span class="bc-prod-emoji">☀️</span><span class="bc-prod-name">헤라 UV 미스트 쿠션</span></div>
+        <div class="bc-prod-item"><span class="bc-prod-emoji">✨</span><span class="bc-prod-name">설화수 자음생 에센스</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 매칭 로딩 -->
+  <div class="match-loading" id="matchLoading">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <p style="margin-top:14px;font-size:14px;color:var(--mid);font-weight:300;">t_celebrity.celeb_skintype × t_user.skin_type 코사인 유사도 계산 중...</p>
+  </div>
+
+  <!-- CELEB GRID -->
+  <span class="s-eyebrow">Top Matches · t_celebrity 유사도 순</span>
+  <div class="s-title">내 피부와 닮은 셀럽들</div>
+  <div class="celeb-grid" id="celebGrid"></div>
+
+  <!-- DETAIL PANEL -->
+  <div class="detail-panel" id="detailPanel">
+    <div class="dp-header">
+      <div class="dp-ava" id="dpAva"></div>
+      <div>
+        <div class="dp-name" id="dpName"></div>
+        <div class="dp-sub" id="dpSub"></div>
+      </div>
+      <div class="dp-pct" id="dpPct"></div>
+    </div>
+    <div class="dp-label">✦ 추천 인생템 (t_product × t_celebrity.prod_idx)</div>
+    <div class="dp-products" id="dpProducts"></div>
+  </div>
+
+  <!-- ALL CELEBS -->
+  <div class="s-title" style="margin-bottom:16px;">더 많은 셀럽 보기</div>
+  <div class="all-grid">
+    <div class="all-card"><div class="ac-ava" style="background:linear-gradient(135deg,#F59E0B,#FCD34D);">👸</div><div><div class="ac-name">손예진 스타일</div><div class="ac-skin">건성 · 안티에이징</div></div><div class="ac-pct">68%</div></div>
+    <div class="all-card"><div class="ac-ava" style="background:linear-gradient(135deg,#EC4899,#F9A8D4);">🌺</div><div><div class="ac-name">박보영 스타일</div><div class="ac-skin">민감성 · 맑은</div></div><div class="ac-pct">65%</div></div>
+    <div class="all-card"><div class="ac-ava" style="background:linear-gradient(135deg,#6366F1,#A5B4FC);">💎</div><div><div class="ac-name">전지현 스타일</div><div class="ac-skin">복합성 · 탄력</div></div><div class="ac-pct">61%</div></div>
+    <div class="all-card"><div class="ac-ava" style="background:linear-gradient(135deg,#10B981,#6EE7B7);">🍃</div><div><div class="ac-name">이나영 스타일</div><div class="ac-skin">건성 · 자연주의</div></div><div class="ac-pct">58%</div></div>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL (t_feedback) -->
+<div class="fb-overlay" id="fbOv" onclick="closeFb()">
+  <div class="fb-modal" onclick="event.stopPropagation()">
+    <button class="fb-close" onclick="closeFb()">✕</button>
+    <div class="fb-logo">OVERFIT</div>
+    <div class="fb-title">리뷰 작성</div>
+    <div class="fb-prod" id="fbProd"></div>
+    <div id="fbNeedLogin" style="display:none;">
+      <div class="fb-notice">🔒 리뷰는 로그인 후 작성 가능합니다.<button onclick="location.href='/overfit/index.html'">로그인하러 가기</button></div>
+    </div>
+    <div id="fbFormWrap">
+      <span class="fb-label">별점 (t_feedback.rating)</span>
+      <div class="fb-stars" id="fbStars">
+        <span class="fb-star" onclick="setR(1)">⭐</span>
+        <span class="fb-star" onclick="setR(2)">⭐</span>
+        <span class="fb-star" onclick="setR(3)">⭐</span>
+        <span class="fb-star" onclick="setR(4)">⭐</span>
+        <span class="fb-star" onclick="setR(5)">⭐</span>
+      </div>
+      <span class="fb-label">리뷰 내용 (t_feedback.fb_content)</span>
+      <textarea class="fb-textarea" id="fbTxt" rows="4" placeholder="실제 사용 후기를 작성해주세요. (최소 10자)"></textarea>
+      <button class="fb-submit" onclick="submitFb()">✦ 리뷰 등록</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── sessionStorage에서 로그인 정보 ──
+const S={
+  loggedIn:sessionStorage.getItem('of_logged')==='true',
+  userId:  sessionStorage.getItem('of_user_id')||'',
+  nick:    sessionStorage.getItem('of_nick')||'',
+  skin:    sessionStorage.getItem('of_skin_type')||'',
+  email:   sessionStorage.getItem('of_email')||''
+};
+let curRating=0;
+let fbProdIdx=null;
+
+// t_celebrity 데이터 (실제 구현: GET /api/celebrity)
+// t_celebrity: celeb_idx, celeb_name, celeb_skintype, prod_idx
+// t_product: prod_idx, prod_name, brand_name
+const CELEB_DATA=[
+  {celeb_idx:1,emoji:'🧖',bg:'linear-gradient(135deg,#E8637A,#F2A0B0)',
+   celeb_name:'김고은 스타일',celeb_skintype:'건성 · 민감성 · 광채 피부',
+   sub:'히알루론산 선호 · 무파라벤 · 저자극',pct:92,
+   products:[
+     {prod_idx:1,emoji:'🧴',prod_name:'라네즈 워터뱅크 세럼',brand_name:'라네즈',why:'히알루론산 고함량 · 무파라벤'},
+     {prod_idx:2,emoji:'☀️',prod_name:'헤라 UV 미스트 쿠션',brand_name:'헤라',why:'광채 연출 · 저자극'},
+     {prod_idx:3,emoji:'✨',prod_name:'설화수 자음생 에센스',brand_name:'설화수',why:'피부 장벽 강화 · 건성 특화'},
+   ]},
+  {celeb_idx:2,emoji:'💄',bg:'linear-gradient(135deg,#7C6FD4,#A89CEC)',
+   celeb_name:'아이유 스타일',celeb_skintype:'복합성 · 트러블성 · 투명 피부',
+   sub:'나이아신아마이드 선호 · 각질 케어',pct:78,
+   products:[
+     {prod_idx:4,emoji:'💧',prod_name:'COSRX AHA/BHA 토너',brand_name:'COSRX',why:'각질 케어 · 모공'},
+     {prod_idx:5,emoji:'🌸',prod_name:'닥터자르트 시카페어',brand_name:'닥터자르트',why:'진정 · 트러블 케어'},
+     {prod_idx:6,emoji:'🌿',prod_name:'이니스프리 그린티 세럼',brand_name:'이니스프리',why:'항산화 · 보습'},
+   ]},
+  {celeb_idx:3,emoji:'🌿',bg:'linear-gradient(135deg,#4DADA0,#7FD4CC)',
+   celeb_name:'수지 스타일',celeb_skintype:'지성 · 모공 · 맑은 피부',
+   sub:'가벼운 텍스처 선호 · 논코메도제닉',pct:71,
+   products:[
+     {prod_idx:7,emoji:'🧴',prod_name:'이니스프리 포어 세럼',brand_name:'이니스프리',why:'모공 케어 · 가벼운 텍스처'},
+     {prod_idx:8,emoji:'☁️',prod_name:'아벤느 클린스 크림',brand_name:'아벤느',why:'저자극 · 수분 밸런스'},
+     {prod_idx:9,emoji:'💚',prod_name:'닥터G 선크림',brand_name:'닥터G',why:'논코메도제닉 · 지성 적합'},
+   ]},
+];
+
+window.onload=()=>{
+  if(S.loggedIn){
+    document.getElementById('loginBanner').style.display='none';
+    document.getElementById('navChip').style.display='flex';
+    document.getElementById('navAv').textContent=S.nick.charAt(0).toUpperCase();
+    document.getElementById('navUn').textContent=S.nick;
+    if(S.skin){
+      document.getElementById('navSk').textContent=S.skin;
+      // 자동 피부 타입 매칭 배너
+      document.getElementById('autoMatchBanner').style.display='block';
+      document.getElementById('autoMatchTxt').textContent=S.skin;
+      // Quick 피부 타입 자동 선택
+      document.querySelectorAll('#quickPills .qpill').forEach(p=>{
+        if(p.textContent===S.skin)p.classList.add('on');
+      });
+    }
+  }
+  renderCelebs(CELEB_DATA);
+  updateBestCard(CELEB_DATA[0]);
+};
+
+function toggleQ(el){
+  document.querySelectorAll('#quickPills .qpill').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function runCeleb(){
+  // 실제 구현: /api/celebrity?skin_type=건성 GET
+  // let skin = document.querySelector('#quickPills .qpill.on')?.textContent||'';
+  // fetch('/api/celebrity?skin_type='+skin).then(r=>r.json()).then(data=>{renderCelebs(data.celebs);});
+  document.getElementById('matchLoading').style.display='block';
+  setTimeout(()=>{
+    document.getElementById('matchLoading').style.display='none';
+    renderCelebs(CELEB_DATA);
+    updateBestCard(CELEB_DATA[0]);
+  },1200);
+}
+
+function renderCelebs(list){
+  document.getElementById('celebGrid').innerHTML=list.map((c,i)=>`
+    <div class="celeb-card ${i===0?'active':''}" onclick="showDetail(${i})">
+      <div class="cc-top">
+        <div class="cc-ava" style="background:${c.bg};">${c.emoji}</div>
+        <div><div class="cc-name">${c.celeb_name}</div><div class="cc-skintype">${c.celeb_skintype}</div></div>
+      </div>
+      <div class="cc-bar-wrap">
+        <div class="cc-bar-row">
+          <div class="cc-bar-bg"><div class="cc-bar-fill" style="width:${c.pct}%"></div></div>
+          <div class="cc-pct">${c.pct}%</div>
+        </div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-body-label">추천 제품 (t_product)</div>
+        <div class="cc-prods">${c.products.map(p=>`<span class="cc-prod">${p.prod_name.split(' ')[0]}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+  showDetail(0);
+}
+
+function updateBestCard(c){
+  document.getElementById('bcAva').style.background=c.bg;
+  document.getElementById('bcAva').textContent=c.emoji;
+  document.getElementById('bcName').textContent=c.celeb_name;
+  document.getElementById('bcSkintype').textContent=c.celeb_skintype;
+  document.getElementById('bcPct').textContent=c.pct+'%';
+  document.getElementById('bcProdList').innerHTML=c.products.map(p=>
+    `<div class="bc-prod-item"><span class="bc-prod-emoji">${p.emoji}</span><span class="bc-prod-name">${p.prod_name}</span></div>`
+  ).join('');
+}
+
+function showDetail(idx){
+  let d=CELEB_DATA[idx];
+  document.querySelectorAll('.celeb-card').forEach((c,i)=>c.classList.toggle('active',i===idx));
+  document.getElementById('dpAva').style.background=d.bg;
+  document.getElementById('dpAva').textContent=d.emoji;
+  document.getElementById('dpName').textContent=d.celeb_name;
+  document.getElementById('dpSub').textContent=d.celeb_skintype+' · '+d.sub;
+  document.getElementById('dpPct').textContent=d.pct+'%';
+  document.getElementById('dpProducts').innerHTML=d.products.map(p=>`
+    <div class="dp-prod">
+      <div class="dp-emoji">${p.emoji}</div>
+      <div class="dp-prod-name">${p.prod_name}</div>
+      <div class="dp-prod-brand">${p.brand_name}</div>
+      <div class="dp-prod-why">✓ ${p.why}</div>
+      <button class="dp-buy-btn">구매하기 →</button>
+      <button class="dp-fb-btn" onclick="openFb(${p.prod_idx},'${p.prod_name}')">📝 리뷰 작성</button>
+    </div>
+  `).join('');
+  document.getElementById('detailPanel').classList.add('show');
+  document.getElementById('detailPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// FEEDBACK (t_feedback)
+function openFb(idx,name){
+  fbProdIdx=idx;
+  document.getElementById('fbProd').textContent=name;
+  document.getElementById('fbOv').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('fbNeedLogin').style.display=S.loggedIn?'none':'block';
+  document.getElementById('fbFormWrap').style.display=S.loggedIn?'block':'none';
+}
+function closeFb(){
+  document.getElementById('fbOv').classList.remove('open');
+  document.body.style.overflow='';
+  curRating=0;
+  document.querySelectorAll('.fb-star').forEach(s=>s.classList.remove('on'));
+  document.getElementById('fbTxt').value='';
+}
+function setR(n){curRating=n;document.querySelectorAll('.fb-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
+function submitFb(){
+  let txt=document.getElementById('fbTxt').value.trim();
+  if(!curRating){alert('별점을 선택해주세요.');return;}
+  if(txt.length<10){alert('10자 이상 입력해주세요.');return;}
+  // fetch('/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},
+  //   body:JSON.stringify({user_id:S.userId,prod_idx:fbProdIdx,rating:curRating,fb_content:txt})
+  // }).then(r=>r.json()).then(d=>{if(d.success){alert('등록 완료!');closeFb();}});
+  alert('✅ t_feedback에 리뷰가 등록되었습니다!');
+  closeFb();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFb();});
+</script>
+</body>
+</html>

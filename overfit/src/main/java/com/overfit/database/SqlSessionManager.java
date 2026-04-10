@@ -16,9 +16,9 @@ public class SqlSessionManager {
 
     // ── DB 연결 정보 (본인 환경에 맞게 수정) ──
     private static final String DRIVER   = "org.mariadb.jdbc.Driver";
-    private static final String URL      = "jdbc:mariadb://localhost:3306/overfit";
-    private static final String DB_USER  = "root";        // MariaDB 계정
-    private static final String DB_PASS  = "1234";        // MariaDB 비밀번호
+    private static final String URL      = "jdbc:mysql://mp.smhrd.or.kr:3306/lang9_core_overfit";
+    private static final String DB_USER  = "lang9_core_overfit";        // MariaDB 계정
+    private static final String DB_PASS  = "overfit9";        // MariaDB 비밀번호
 
     // 드라이버 한 번만 로딩
     static {
