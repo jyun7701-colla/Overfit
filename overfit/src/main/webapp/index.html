@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OverFit — 순수한 나만의 뷰티</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #FDF6F3;
+  --bg2:      #F9EEE9;
+  --pink:     #E8637A;
+  --pink-lt:  #F2A0B0;
+  --pink-pal: #FCEEF1;
+  --dark:     #2B2320;
+  --mid:      #7A6560;
+  --light:    #C4ADA8;
+  --white:    #FFFFFF;
+  --serif:    'Cormorant Garamond', 'Noto Serif KR', Georgia, serif;
+  --sans:     'Noto Sans KR', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--dark);
+  overflow-x:hidden;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 52px;height:64px;
+  background:rgba(253,246,243,0.88);
+  backdrop-filter:blur(14px);
+}
+.nav-logo{
+  font-family:var(--serif);
+  font-size:18px;font-weight:600;letter-spacing:2px;
+  color:var(--dark);text-decoration:none;
+}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{
+  font-size:13px;font-weight:400;letter-spacing:0.5px;
+  color:var(--mid);text-decoration:none;transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--dark);}
+.nav-start{
+  padding:8px 22px;border-radius:30px;
+  border:1px solid var(--dark);
+  background:transparent;color:var(--dark);
+  font-size:13px;font-family:var(--sans);font-weight:500;
+  cursor:pointer;transition:all 0.25s;letter-spacing:0.3px;
+}
+.nav-start:hover{background:var(--dark);color:var(--white);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:100px 52px 60px;
+  position:relative;overflow:hidden;
+}
+/* soft orb decorations */
+.orb{
+  position:absolute;border-radius:50%;
+  filter:blur(60px);pointer-events:none;
+}
+.orb-1{
+  width:480px;height:480px;
+  background:radial-gradient(circle,rgba(232,99,122,0.18) 0%,transparent 70%);
+  right:-60px;top:50%;transform:translateY(-60%);
+}
+.orb-2{
+  width:260px;height:260px;
+  background:radial-gradient(circle,rgba(232,99,122,0.22) 0%,transparent 70%);
+  right:160px;top:30%;
+}
+.orb-3{
+  width:180px;height:180px;
+  background:radial-gradient(circle,rgba(242,160,176,0.28) 0%,transparent 70%);
+  right:60px;bottom:15%;
+}
+
+.hero-content{max-width:580px;position:relative;z-index:1;}
+.hero-h1{
+  font-family:var(--serif);
+  font-size:clamp(52px,6.5vw,88px);
+  font-weight:400;line-height:1.12;
+  color:var(--dark);letter-spacing:-1px;
+  margin-bottom:20px;
+}
+.hero-h1 .italic{
+  font-style:italic;
+  color:var(--pink);
+  font-weight:600;
+}
+.hero-sub{
+  font-size:15px;line-height:1.85;
+  color:var(--mid);font-weight:300;
+  margin-bottom:48px;letter-spacing:0.2px;
+}
+.hero-search{
+  display:flex;align-items:center;
+  background:var(--white);
+  border-radius:40px;padding:6px 6px 6px 24px;
+  border:1px solid rgba(43,35,32,0.1);
+  max-width:440px;
+  box-shadow:0 2px 20px rgba(232,99,122,0.10);
+}
+.hero-search input{
+  flex:1;border:none;outline:none;
+  font-size:14px;font-family:var(--sans);
+  color:var(--dark);background:transparent;
+  font-weight:300;letter-spacing:0.2px;
+}
+.hero-search input::placeholder{color:var(--light);}
+.hero-search-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--dark);border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background 0.2s;flex-shrink:0;
+}
+.hero-search-btn:hover{background:var(--pink);}
+.hero-search-btn svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ── SECTION COMMONS ── */
+.section{padding:100px 52px;}
+.section-inner{max-width:1160px;margin:0 auto;}
+.eyebrow{
+  font-family:var(--serif);font-style:italic;
+  font-size:15px;color:var(--pink);font-weight:400;
+  letter-spacing:0.3px;margin-bottom:14px;
+  display:block;
+}
+.s-h2{
+  font-family:var(--serif);
+  font-size:clamp(32px,4vw,52px);
+  font-weight:400;line-height:1.2;
+  color:var(--dark);letter-spacing:-0.5px;
+  margin-bottom:16px;
+}
+.s-h2 em{font-style:italic;color:var(--pink);}
+.s-p{
+  font-size:15px;line-height:1.85;color:var(--mid);
+  font-weight:300;max-width:460px;
+}
+
+/* ── CLEAN SEARCH ── */
+#clean{background:var(--white);}
+.clean-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:center;
+}
+.clean-visual{
+  background:var(--bg);border-radius:28px;
+  padding:32px;position:relative;overflow:hidden;
+}
+.clean-visual::before{
+  content:'';position:absolute;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,99,122,0.10) 0%,transparent 70%);
+  right:-80px;bottom:-80px;pointer-events:none;
+}
+.cv-label{
+  font-size:11px;font-weight:500;letter-spacing:1px;
+  color:var(--light);margin-bottom:20px;text-transform:uppercase;
+}
+.cv-search{
+  display:flex;align-items:center;gap:10px;
+  background:var(--white);border-radius:20px;
+  padding:10px 16px;margin-bottom:16px;
+  border:1px solid rgba(43,35,32,0.07);
+}
+.cv-search span{font-size:13px;color:var(--mid);}
+.cv-clean{
+  margin-left:auto;font-size:10px;font-weight:600;
+  color:var(--pink);background:var(--pink-pal);
+  padding:3px 9px;border-radius:8px;
+}
+.cv-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--white);border:1px solid rgba(43,35,32,0.08);
+  border-radius:20px;padding:5px 13px;
+  font-size:11px;color:var(--mid);margin:4px 3px;cursor:pointer;
+  transition:all 0.2s;
+}
+.cv-chip:hover,.cv-chip.on{border-color:var(--pink);color:var(--pink);}
+.cv-result{margin-top:20px;}
+.cv-r-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;
+}
+.cv-r-head span{font-size:12px;color:var(--mid);font-weight:300;}
+.cv-filtered{font-size:11px;color:var(--pink);font-weight:500;}
+.cv-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;border-bottom:1px solid rgba(43,35,32,0.05);
+}
+.cv-item:last-child{border:none;}
+.cv-rank{
+  font-family:var(--serif);font-style:italic;
+  font-size:20px;color:var(--pink-lt);width:22px;flex-shrink:0;text-align:center;
+}
+.cv-dot{
+  width:42px;height:42px;border-radius:12px;
+  background:linear-gradient(135deg,var(--pink-pal),rgba(232,99,122,0.15));
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.cv-info{flex:1;}
+.cv-name{font-size:13px;font-weight:500;color:var(--dark);}
+.cv-brand{font-size:11px;color:var(--light);margin-top:1px;}
+.cv-score{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--pink);font-weight:600;}
+
+.clean-text{padding-left:20px;}
+.clean-points{display:flex;flex-direction:column;gap:32px;margin-top:44px;}
+.cp{display:flex;gap:20px;}
+.cp-num{
+  font-family:var(--serif);font-style:italic;
+  font-size:28px;color:var(--pink-lt);
+  font-weight:400;line-height:1;flex-shrink:0;
+  width:32px;
+}
+.cp-body h4{font-size:15px;font-weight:600;color:var(--dark);margin-bottom:5px;}
+.cp-body p{font-size:13px;color:var(--mid);line-height:1.7;font-weight:300;}
+
+/* ── RECOMMEND ── */
+#recommend{background:var(--bg);}
+.rec-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:center;
+}
+.rec-form{
+  background:var(--white);border-radius:28px;
+  padding:36px;box-shadow:0 4px 32px rgba(43,35,32,0.06);
+}
+.rf-title{
+  font-family:var(--serif);font-size:18px;
+  font-weight:400;color:var(--dark);margin-bottom:28px;
+}
+.rf-section{margin-bottom:24px;}
+.rf-label{
+  font-size:11px;font-weight:500;letter-spacing:0.8px;
+  color:var(--light);text-transform:uppercase;margin-bottom:10px;display:block;
+}
+.rf-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.rf-pill{
+  padding:7px 16px;border-radius:20px;
+  border:1px solid rgba(43,35,32,0.12);
+  font-size:12px;color:var(--mid);cursor:pointer;
+  transition:all 0.2s;background:var(--bg);
+}
+.rf-pill.on{background:var(--pink);border-color:var(--pink);color:#fff;}
+.rf-pill:hover:not(.on){border-color:var(--pink);color:var(--pink);}
+.rf-divider{height:1px;background:rgba(43,35,32,0.06);margin:20px 0;}
+.rf-result{
+  background:var(--bg);border-radius:16px;padding:20px;margin-top:4px;
+}
+.rf-result-label{
+  font-family:var(--serif);font-style:italic;
+  font-size:13px;color:var(--pink);margin-bottom:14px;display:block;
+}
+.rf-prod{
+  display:flex;align-items:center;gap:14px;
+  padding:10px 0;border-bottom:1px solid rgba(43,35,32,0.05);
+}
+.rf-prod:last-child{border:none;}
+.rf-prod-img{
+  width:44px;height:44px;border-radius:10px;
+  background:linear-gradient(135deg,var(--pink-pal),rgba(232,99,122,0.15));
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;
+}
+.rf-prod-name{font-size:13px;font-weight:500;color:var(--dark);}
+.rf-prod-match{font-size:11px;color:var(--pink);margin-top:2px;}
+
+.rec-text{padding-right:20px;}
+
+/* ── CELEB MATCHING ── */
+#celeb{background:var(--dark);color:var(--white);}
+#celeb .eyebrow{color:var(--pink-lt);}
+#celeb .s-h2{color:var(--white);}
+#celeb .s-h2 em{color:var(--pink-lt);}
+#celeb .s-p{color:rgba(255,255,255,0.55);}
+
+.celeb-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:center;margin-top:64px;
+}
+.celeb-cards-wrap{display:flex;flex-direction:column;gap:16px;}
+.c-card{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;padding:22px 24px;
+  display:flex;align-items:center;gap:18px;
+  transition:background 0.25s,border-color 0.25s;cursor:pointer;
+}
+.c-card:hover,.c-card.active{
+  background:rgba(232,99,122,0.12);
+  border-color:rgba(232,99,122,0.3);
+}
+.c-avatar{
+  width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.c-av-1{background:linear-gradient(135deg,#E8637A,#F2A0B0);}
+.c-av-2{background:linear-gradient(135deg,#7C6FD4,#A89CEC);}
+.c-av-3{background:linear-gradient(135deg,#4DADA0,#7FD4CC);}
+.c-info{flex:1;}
+.c-name{font-size:15px;font-weight:500;color:var(--white);}
+.c-skin{font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px;}
+.c-match-row{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.c-match-bar{flex:1;height:3px;background:rgba(255,255,255,0.1);border-radius:3px;}
+.c-match-fill{height:100%;border-radius:3px;background:var(--pink);}
+.c-match-pct{
+  font-family:var(--serif);font-style:italic;
+  font-size:18px;color:var(--pink);font-weight:600;
+}
+.c-products{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.c-prod-tag{
+  padding:3px 10px;background:rgba(255,255,255,0.07);
+  border-radius:10px;font-size:10px;color:rgba(255,255,255,0.6);
+}
+
+.celeb-flow-text{}
+.flow-step{
+  display:flex;gap:22px;align-items:flex-start;
+  padding:24px 0;border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.flow-step:last-child{border:none;}
+.fs-n{
+  font-family:var(--serif);font-style:italic;
+  font-size:36px;color:rgba(232,99,122,0.35);
+  font-weight:600;line-height:1;flex-shrink:0;width:36px;
+}
+.fs-body h4{font-size:15px;font-weight:500;color:var(--white);margin-bottom:5px;}
+.fs-body p{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;font-weight:300;}
+
+/* ── CLOSING ── */
+#closing{
+  background:var(--bg);
+  padding:120px 52px;text-align:center;position:relative;overflow:hidden;
+}
+#closing::before,#closing::after{
+  content:'';position:absolute;border-radius:50%;pointer-events:none;
+  filter:blur(70px);
+}
+#closing::before{
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(232,99,122,0.14) 0%,transparent 70%);
+  left:-100px;top:50%;transform:translateY(-50%);
+}
+#closing::after{
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(232,99,122,0.14) 0%,transparent 70%);
+  right:-60px;top:50%;transform:translateY(-50%);
+}
+.closing-inner{max-width:640px;margin:0 auto;position:relative;z-index:1;}
+.closing-h{
+  font-family:var(--serif);
+  font-size:clamp(36px,5vw,64px);
+  font-weight:400;line-height:1.18;color:var(--dark);
+  margin-bottom:20px;letter-spacing:-0.5px;
+}
+.closing-h em{font-style:italic;color:var(--pink);}
+.closing-p{
+  font-size:15px;color:var(--mid);line-height:1.85;
+  font-weight:300;margin-bottom:44px;
+}
+.closing-search{
+  display:flex;align-items:center;
+  background:var(--white);border-radius:40px;
+  padding:6px 6px 6px 24px;
+  border:1px solid rgba(43,35,32,0.1);
+  max-width:440px;margin:0 auto;
+  box-shadow:0 4px 24px rgba(232,99,122,0.12);
+}
+.closing-search input{
+  flex:1;border:none;outline:none;
+  font-size:14px;font-family:var(--sans);
+  color:var(--dark);background:transparent;
+  font-weight:300;
+}
+.closing-search input::placeholder{color:var(--light);}
+.closing-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--pink);border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background 0.2s;flex-shrink:0;
+}
+.closing-btn:hover{background:var(--dark);}
+.closing-btn svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--dark);color:rgba(255,255,255,0.4);
+  padding:40px 52px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-logo{
+  font-family:var(--serif);font-size:16px;font-weight:600;
+  color:var(--white);letter-spacing:2px;
+}
+.footer-links{display:flex;gap:28px;list-style:none;}
+.footer-links a{font-size:12px;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--white);}
+.footer-copy{font-size:12px;}
+
+/* ── NAV BUTTONS ── */
+.nav-right{display:flex;gap:10px;align-items:center;}
+.nav-login{
+  padding:7px 20px;border-radius:30px;
+  border:none;background:transparent;
+  color:var(--mid);font-size:13px;font-family:var(--sans);font-weight:500;
+  cursor:pointer;transition:color 0.2s;letter-spacing:0.3px;
+}
+.nav-login:hover{color:var(--dark);}
+.nav-signup{
+  padding:7px 20px;border-radius:30px;
+  border:1px solid var(--dark);background:transparent;
+  color:var(--dark);font-size:13px;font-family:var(--sans);font-weight:500;
+  cursor:pointer;transition:all 0.25s;letter-spacing:0.3px;
+}
+.nav-signup:hover{background:var(--dark);color:var(--white);}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(43,35,32,0.45);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.3s;
+  padding:20px;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--white);border-radius:28px;
+  width:100%;max-width:420px;
+  padding:48px 44px;position:relative;
+  transform:translateY(20px);
+  transition:transform 0.3s;
+  max-height:90vh;overflow-y:auto;
+}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-close{
+  position:absolute;top:20px;right:22px;
+  background:none;border:none;cursor:pointer;
+  font-size:16px;color:var(--light);
+  transition:color 0.2s;line-height:1;
+}
+.modal-close:hover{color:var(--dark);}
+.modal-logo{
+  font-family:var(--serif);font-size:14px;font-weight:600;
+  letter-spacing:2px;color:var(--pink);margin-bottom:20px;
+}
+.modal-title{
+  font-family:var(--serif);font-size:28px;font-weight:400;
+  color:var(--dark);line-height:1.2;margin-bottom:6px;
+}
+.modal-sub{
+  font-size:13px;color:var(--mid);font-weight:300;
+  margin-bottom:28px;line-height:1.6;
+}
+.form-group{margin-bottom:18px;}
+.form-group label{
+  display:block;font-size:11px;font-weight:500;
+  letter-spacing:0.6px;color:var(--mid);
+  text-transform:uppercase;margin-bottom:7px;
+}
+.form-group input{
+  width:100%;padding:12px 16px;
+  border:1px solid rgba(43,35,32,0.12);border-radius:12px;
+  font-size:14px;font-family:var(--sans);color:var(--dark);
+  background:var(--bg);outline:none;
+  transition:border-color 0.2s;
+}
+.form-group input:focus{border-color:var(--pink);}
+.form-group input::placeholder{color:var(--light);}
+.form-hint{display:block;text-align:right;margin-top:6px;}
+.form-hint a{font-size:11px;color:var(--light);text-decoration:none;transition:color 0.2s;}
+.form-hint a:hover{color:var(--pink);}
+.skin-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.skin-pill{
+  padding:7px 16px;border-radius:20px;
+  border:1px solid rgba(43,35,32,0.12);
+  font-size:12px;color:var(--mid);cursor:pointer;
+  transition:all 0.2s;background:var(--bg);
+  user-select:none;
+}
+.skin-pill.on{background:var(--pink);border-color:var(--pink);color:#fff;}
+.modal-btn{
+  width:100%;padding:13px;border-radius:30px;
+  font-size:14px;font-family:var(--sans);font-weight:600;
+  cursor:pointer;transition:all 0.25s;border:none;
+  letter-spacing:0.2px;margin-top:6px;
+}
+.modal-btn.primary{background:var(--dark);color:#fff;}
+.modal-btn.primary:hover{background:var(--pink);}
+.modal-btn.social{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#FEE500;color:#3C1E1E;
+  margin-top:0;
+}
+.modal-btn.social:hover{filter:brightness(0.95);}
+.modal-divider{
+  display:flex;align-items:center;gap:12px;
+  margin:18px 0;
+}
+.modal-divider::before,.modal-divider::after{
+  content:'';flex:1;height:1px;background:rgba(43,35,32,0.08);
+}
+.modal-divider span{font-size:11px;color:var(--light);}
+.modal-switch{
+  text-align:center;font-size:12px;
+  color:var(--mid);margin-top:18px;font-weight:300;
+}
+.modal-switch a{color:var(--pink);text-decoration:none;font-weight:500;}
+.modal-switch a:hover{text-decoration:underline;}
+.modal-pane.hidden{display:none;}
+.success-wrap{text-align:center;padding:20px 0;}
+.success-icon{
+  font-size:48px;color:var(--pink);
+  margin-bottom:20px;display:block;
+  font-family:var(--serif);font-style:italic;
+}
+.error-msg{
+  font-size:12px;color:#DC2626;
+  background:#FEF2F2;border-radius:8px;
+  padding:8px 12px;margin-top:-10px;margin-bottom:12px;
+  display:none;
+}
+.error-msg.show{display:block;}
+
+.social-btns{display:flex;flex-direction:column;gap:10px;}
+.modal-btn.google{background:#fff;color:#3C3C3C;border:1px solid rgba(43,35,32,0.15);}
+.modal-btn.google:hover{background:#f8f8f8;}
+.modal-btn.naver{background:#03C75A;color:#fff;}
+.modal-btn.naver:hover{background:#02b350;}
+.modal-btn.kakao{background:#FEE500;color:#3C1E1E;}
+.modal-btn.kakao:hover{filter:brightness(0.95);}
+
+/* ── USER DROPDOWN ── */
+.nav-user{position:relative;display:none;}
+.nav-user.show{display:flex;align-items:center;}
+.nav-user-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 14px 6px 6px;
+  border-radius:30px;border:1px solid rgba(43,35,32,0.12);
+  background:var(--white);cursor:pointer;transition:all 0.2s;
+}
+.nav-user-btn:hover{border-color:var(--pink);}
+.nav-user-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),#FF9A8B);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;
+}
+.nav-user-name{font-size:13px;font-weight:600;color:var(--dark);}
+.nav-dropdown{
+  position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--white);border-radius:16px;
+  border:1px solid rgba(43,35,32,0.08);
+  box-shadow:0 8px 32px rgba(43,35,32,0.12);
+  min-width:160px;overflow:hidden;
+  display:none;z-index:200;
+}
+.nav-user-btn.open + .nav-dropdown{display:block;}
+.nav-dropdown-item{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;font-size:13px;color:var(--mid);
+  cursor:pointer;transition:background 0.15s;border:none;
+  background:transparent;width:100%;font-family:var(--sans);
+  text-align:left;
+}
+.nav-dropdown-item:hover{background:var(--bg);color:var(--dark);}
+.nav-dropdown-item.danger{color:#DC2626;}
+.nav-dropdown-item.danger:hover{background:#FEF2F2;}
+.nav-dropdown-divider{height:1px;background:rgba(43,35,32,0.06);margin:4px 0;}
+
+/* ── MYPAGE MODAL ── */
+.mypage-tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid rgba(43,35,32,0.08);}
+.mypage-tab{
+  padding:10px 18px;font-size:13px;font-weight:600;
+  color:var(--light);border-bottom:2px solid transparent;
+  cursor:pointer;transition:all 0.2s;background:none;
+  border-top:none;border-left:none;border-right:none;
+  font-family:var(--sans);margin-bottom:-1px;
+}
+.mypage-tab.on{color:var(--pink);border-bottom-color:var(--pink);}
+.mypage-section{display:none;}
+.mypage-section.on{display:block;}
+.profile-avatar-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  margin-bottom:24px;gap:8px;
+}
+.profile-big-avatar{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),#FF9A8B);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:700;color:#fff;
+}
+.profile-nick{font-size:16px;font-weight:700;color:var(--dark);}
+.profile-email-txt{font-size:12px;color:var(--light);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.save-btn{
+  width:100%;padding:13px;border-radius:30px;
+  background:var(--pink);color:#fff;border:none;
+  font-size:14px;font-weight:600;font-family:var(--sans);
+  cursor:pointer;transition:all 0.25s;margin-top:8px;
+}
+.save-btn:hover{background:var(--dark);}
+.pw-change-btn{
+  width:100%;padding:13px;border-radius:30px;
+  background:transparent;color:var(--dark);
+  border:1px solid rgba(43,35,32,0.15);
+  font-size:14px;font-weight:600;font-family:var(--sans);
+  cursor:pointer;transition:all 0.25s;margin-top:8px;
+}
+.pw-change-btn:hover{background:var(--dark);color:#fff;}
+.withdraw-btn{
+  width:100%;padding:11px;border-radius:30px;
+  background:transparent;color:#DC2626;
+  border:1px solid rgba(220,38,38,0.2);
+  font-size:13px;font-weight:600;font-family:var(--sans);
+  cursor:pointer;transition:all 0.25s;margin-top:8px;
+}
+.withdraw-btn:hover{background:#FEF2F2;}
+.info-box{
+  background:var(--bg);border-radius:12px;
+  padding:14px 16px;margin-bottom:16px;
+  font-size:13px;color:var(--mid);line-height:1.7;font-weight:300;
+}
+.info-box strong{color:var(--dark);font-weight:600;}
+
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(32px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.fi.delay-1{transition-delay:0.1s;}
+.fi.delay-2{transition-delay:0.2s;}
+.fi.delay-3{transition-delay:0.3s;}
+.fi.show{opacity:1;transform:none;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  nav{padding:0 24px;}
+  .hero,.section,#closing{padding-left:24px;padding-right:24px;}
+  footer{padding:32px 24px;}
+  .clean-grid,.rec-grid,.celeb-layout{grid-template-columns:1fr;}
+  .clean-text,.rec-text{padding:0;}
+  .celeb-flow-text{order:-1;}
+}
+@media(max-width:640px){
+  .nav-links{display:none;}
+  .hero-h1{font-size:48px;}
+  .s-h2{font-size:32px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">OVERFIT</a>
+  <ul class="nav-links">
+    <li><a href="pages/clean.html" target="_blank">클린 검색</a></li>
+    <li><a href="pages/recommend.html" target="_blank">맞춤 추천</a></li>
+    <li><a href="pages/celeb.html" target="_blank">셀럽 매칭</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-login" onclick="openModal('login')">로그인</button>
+    <button class="nav-signup" onclick="openModal('signup')">회원가입</button>
+    <!-- 로그인 후 표시 -->
+    <div class="nav-user" id="navUser">
+      <button class="nav-user-btn" id="navUserBtn" onclick="toggleDropdown()">
+        <div class="nav-user-avatar" id="navAvatar">김</div>
+        <span class="nav-user-name" id="navUserName">닉네임</span>
+        <span style="font-size:10px;color:var(--light);">▾</span>
+      </button>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-item" onclick="openMypage('info')">👤 내 정보 수정</button>
+        <button class="nav-dropdown-item" onclick="openMypage('pw')">🔒 비밀번호 변경</button>
+        <button class="nav-dropdown-item" onclick="openMypage('skin')">🌿 피부 타입 수정</button>
+        <div class="nav-dropdown-divider"></div>
+        <button class="nav-dropdown-item danger" onclick="handleLogout()">로그아웃</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MYPAGE MODAL -->
+<div class="modal-overlay" id="mypageOverlay" onclick="closeMypage()">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeMypage()">✕</button>
+    <div class="modal-logo">OVERFIT</div>
+
+    <!-- 프로필 헤더 -->
+    <div class="profile-avatar-wrap">
+      <div class="profile-big-avatar" id="mpAvatar">김</div>
+      <div class="profile-nick" id="mpNick">닉네임</div>
+      <div class="profile-email-txt" id="mpEmail">example@email.com</div>
+    </div>
+
+    <!-- 탭 -->
+    <div class="mypage-tabs">
+      <button class="mypage-tab on" onclick="switchMypageTab('info')">기본 정보</button>
+      <button class="mypage-tab"    onclick="switchMypageTab('pw')">비밀번호</button>
+      <button class="mypage-tab"    onclick="switchMypageTab('skin')">피부 타입</button>
+      <button class="mypage-tab"    onclick="switchMypageTab('withdraw')">회원 탈퇴</button>
+    </div>
+
+    <!-- 기본 정보 수정 (t_user: nick, phone, email, gender, birthdate) -->
+    <div class="mypage-section on" id="mpInfo">
+      <div class="form-group">
+        <label>닉네임 (nick)</label>
+        <input type="text" id="mpNickInput" placeholder="닉네임">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>핸드폰번호 (phone)</label>
+          <input type="tel" id="mpPhone" placeholder="010-0000-0000"
+            oninput="autoHyphen(this)" maxlength="13">
+        </div>
+        <div class="form-group">
+          <label>이메일 (email)</label>
+          <input type="email" id="mpEmailInput" placeholder="example@email.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>성별 (gender)</label>
+          <div class="skin-pills" style="margin-top:4px;">
+            <span class="skin-pill" onclick="toggleGender(this)" data-value="M">남성</span>
+            <span class="skin-pill" onclick="toggleGender(this)" data-value="F">여성</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>생년월일 (birthdate)</label>
+          <input type="date" id="mpBirth" style="color:var(--dark);">
+        </div>
+      </div>
+      <button class="save-btn" onclick="handleUpdateInfo()">✦ 정보 저장</button>
+    </div>
+
+    <!-- 비밀번호 변경 (t_user: user_pw) -->
+    <div class="mypage-section" id="mpPw">
+      <div class="info-box">비밀번호 변경 후 <strong>다시 로그인</strong>이 필요합니다.</div>
+      <div class="form-group">
+        <label>현재 비밀번호</label>
+        <input type="password" id="mpCurPw" placeholder="현재 비밀번호를 입력하세요">
+      </div>
+      <div class="form-group">
+        <label>새 비밀번호</label>
+        <input type="password" id="mpNewPw" placeholder="새 비밀번호 (8자 이상)">
+      </div>
+      <div class="form-group">
+        <label>새 비밀번호 확인</label>
+        <input type="password" id="mpNewPwConfirm" placeholder="새 비밀번호를 다시 입력하세요">
+      </div>
+      <button class="save-btn" onclick="handleUpdatePw()">✦ 비밀번호 변경</button>
+    </div>
+
+    <!-- 피부 타입 수정 (t_user: skin_type) -->
+    <div class="mypage-section" id="mpSkin">
+      <div class="info-box">피부 타입을 변경하면 <strong>맞춤 추천 결과</strong>가 업데이트됩니다.</div>
+      <div class="form-group">
+        <label>피부 타입 (skin_type)</label>
+        <div class="skin-pills" id="mpSkinPills" style="margin-top:6px;">
+          <span class="skin-pill" onclick="toggleMpSkin(this)">건성</span>
+          <span class="skin-pill" onclick="toggleMpSkin(this)">지성</span>
+          <span class="skin-pill" onclick="toggleMpSkin(this)">복합성</span>
+          <span class="skin-pill" onclick="toggleMpSkin(this)">민감성</span>
+          <span class="skin-pill" onclick="toggleMpSkin(this)">아토피</span>
+          <span class="skin-pill" onclick="toggleMpSkin(this)">정상</span>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:8px;">
+        <label>피부 고민</label>
+        <div class="skin-pills" style="margin-top:6px;">
+          <span class="skin-pill" onclick="this.classList.toggle('on')">보습 부족</span>
+          <span class="skin-pill" onclick="this.classList.toggle('on')">트러블</span>
+          <span class="skin-pill" onclick="this.classList.toggle('on')">모공</span>
+          <span class="skin-pill" onclick="this.classList.toggle('on')">주름·탄력</span>
+          <span class="skin-pill" onclick="this.classList.toggle('on')">미백</span>
+          <span class="skin-pill" onclick="this.classList.toggle('on')">홍조</span>
+        </div>
+      </div>
+      <button class="save-btn" onclick="handleUpdateSkin()">✦ 피부 타입 저장</button>
+    </div>
+
+    <!-- 회원 탈퇴 -->
+    <div class="mypage-section" id="mpWithdraw">
+      <div class="info-box" style="background:#FEF2F2;color:#991B1B;">
+        ⚠️ 탈퇴 시 <strong>모든 데이터가 삭제</strong>되며 복구할 수 없습니다.<br>
+        추천 내역, 피드백, 피부 프로필이 모두 삭제됩니다.
+      </div>
+      <div class="form-group">
+        <label>비밀번호 확인</label>
+        <input type="password" id="mpWithdrawPw" placeholder="비밀번호를 입력하세요">
+      </div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" id="withdrawAgree" style="width:auto;padding:0;background:none;border:none;">
+          <span style="font-size:12px;color:#DC2626;font-weight:400;text-transform:none;letter-spacing:0;">
+            위 내용을 확인했으며 탈퇴에 동의합니다
+          </span>
+        </label>
+      </div>
+      <button class="withdraw-btn" onclick="handleWithdraw()">회원 탈퇴</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL OVERLAY -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+  <div class="modal" id="modal" onclick="event.stopPropagation()">
+
+    <!-- LOGIN -->
+    <div class="modal-pane" id="paneLogin">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-logo">OVERFIT</div>
+      <h2 class="modal-title">다시 만나서 반가워요</h2>
+      <p class="modal-sub">클린 뷰티, 계속 이어가세요.</p>
+      <div class="form-group">
+        <label>이메일</label>
+        <input type="email" placeholder="example@email.com" id="loginEmail">
+      </div>
+      <div class="form-group">
+        <label>비밀번호</label>
+        <input type="password" placeholder="비밀번호를 입력하세요" id="loginPw">
+        <span class="form-hint"><a href="#" onclick="return false;">비밀번호를 잊으셨나요?</a></span>
+      </div>
+      <button class="modal-btn primary" onclick="handleLogin()">로그인</button>
+      <div class="modal-divider"><span>또는 소셜 로그인</span></div>
+      <div class="social-btns">
+        <button class="modal-btn social google" onclick="handleSocial('google')">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Google로 계속하기
+        </button>
+        <button class="modal-btn social naver" onclick="handleSocial('naver')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
+          네이버로 계속하기
+        </button>
+        <button class="modal-btn social kakao" onclick="handleSocial('kakao')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.614 5.072 4.05 6.48l-1.03 3.84c-.09.34.29.62.59.43L9.9 19.2c.69.1 1.393.15 2.1.15 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
+          카카오로 계속하기
+        </button>
+      </div>
+      <p class="modal-switch">계정이 없으신가요? <a href="#" onclick="switchModal('signup');return false;">회원가입</a></p>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="modal-pane hidden" id="paneSignup">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-logo">OVERFIT</div>
+      <h2 class="modal-title">처음 만나요!</h2>
+      <p class="modal-sub">내 피부 맞춤 뷰티를 시작해보세요.</p>
+
+      <!-- user_id + 중복확인 -->
+      <div class="form-group">
+        <label>아이디</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" placeholder="영문/숫자 4~20자" id="signupId" style="flex:1;">
+          <button type="button" id="idCheckBtn" onclick="checkIdDuplicate()"
+            style="flex-shrink:0;padding:0 14px;height:44px;border-radius:12px;
+                   border:1px solid var(--dark);background:transparent;
+                   color:var(--dark);font-size:12px;font-weight:600;
+                   cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all 0.2s;">
+            중복확인
+          </button>
+        </div>
+        <div id="idCheckMsg" style="font-size:11px;margin-top:5px;display:none;"></div>
+      </div>
+
+      <!-- user_pw -->
+      <div class="form-group">
+        <label>비밀번호</label>
+        <input type="password" placeholder="8자 이상 입력하세요" id="signupPw" oninput="checkPwMatch()">
+      </div>
+
+      <!-- 비밀번호 재확인 -->
+      <div class="form-group">
+        <label>비밀번호 재확인</label>
+        <input type="password" placeholder="비밀번호를 다시 입력하세요" id="signupPwConfirm" oninput="checkPwMatch()">
+        <div id="pwMatchMsg" style="font-size:11px;margin-top:5px;display:none;"></div>
+      </div>
+
+      <!-- nick -->
+      <div class="form-group">
+        <label>닉네임</label>
+        <input type="text" placeholder="닉네임을 입력하세요" id="signupNick">
+      </div>
+
+      <!-- phone (자동 하이픈) -->
+      <div class="form-group">
+        <label>핸드폰번호</label>
+        <input type="tel" placeholder="010-0000-0000" id="signupPhone"
+          oninput="autoHyphen(this)" maxlength="13">
+      </div>
+
+      <!-- email (아이디 찾기용) -->
+      <div class="form-group">
+        <label>이메일 <span style="font-size:10px;color:var(--light);font-weight:300;text-transform:none;letter-spacing:0;">(아이디 찾기에 사용됩니다)</span></label>
+        <input type="email" placeholder="example@email.com" id="signupEmail">
+      </div>
+
+      <!-- gender -->
+      <div class="form-group">
+        <label>성별</label>
+        <div class="skin-pills">
+          <span class="skin-pill" onclick="toggleGender(this)" data-value="M">남성</span>
+          <span class="skin-pill" onclick="toggleGender(this)" data-value="F">여성</span>
+        </div>
+      </div>
+
+      <!-- birthdate -->
+      <div class="form-group">
+        <label>생년월일</label>
+        <input type="date" id="signupBirth" style="color:var(--dark);">
+      </div>
+
+      <!-- skin_type -->
+      <div class="form-group">
+        <label>피부 타입 <span style="color:var(--pink);font-style:italic;">(선택)</span></label>
+        <div class="skin-pills">
+          <span class="skin-pill" onclick="toggleSkin(this)">건성</span>
+          <span class="skin-pill" onclick="toggleSkin(this)">지성</span>
+          <span class="skin-pill" onclick="toggleSkin(this)">복합성</span>
+          <span class="skin-pill" onclick="toggleSkin(this)">민감성</span>
+        </div>
+      </div>
+
+      <!-- 약관 동의 -->
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" id="agreeTerms" style="width:auto;padding:0;background:none;border:none;">
+          <span style="font-size:12px;color:var(--mid);font-weight:400;text-transform:none;letter-spacing:0;">
+            <a href="#" style="color:var(--pink);">이용약관</a> 및 <a href="#" style="color:var(--pink);">개인정보처리방침</a>에 동의합니다
+          </span>
+        </label>
+      </div>
+      <button class="modal-btn primary" onclick="handleSignup()">회원가입</button>
+      <div class="modal-divider"><span>또는 소셜 회원가입</span></div>
+      <div class="social-btns">
+        <button class="modal-btn social google" onclick="handleSocial('google')">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Google로 계속하기
+        </button>
+        <button class="modal-btn social naver" onclick="handleSocial('naver')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
+          네이버로 계속하기
+        </button>
+        <button class="modal-btn social kakao" onclick="handleSocial('kakao')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.614 5.072 4.05 6.48l-1.03 3.84c-.09.34.29.62.59.43L9.9 19.2c.69.1 1.393.15 2.1.15 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
+          카카오로 계속하기
+        </button>
+      </div>
+      <p class="modal-switch">이미 계정이 있으신가요? <a href="#" onclick="switchModal('login');return false;">로그인</a></p>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="modal-pane hidden" id="paneSuccess">
+      <div class="success-wrap">
+        <div class="success-icon">✦</div>
+        <h2 class="modal-title" id="successTitle">로그인 완료!</h2>
+        <p class="modal-sub" id="successSub">클린 뷰티 탐색을 시작하세요.</p>
+        <button class="modal-btn primary" onclick="closeModal()">시작하기</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="hero-content">
+    <h1 class="hero-h1 fi">
+      순수한<br>나만의 뷰티,<br>
+      <span class="italic">OverFit.</span>
+    </h1>
+    <p class="hero-sub fi delay-1">
+      거짓된 리뷰와 유해 성분을 철저하게 걸러낸,<br>
+      오직 당신의 피부만을 위한 청정 맞춤 제안.
+    </p>
+    <div class="hero-search fi delay-2">
+      <input type="text" placeholder="피부 고민을 우아하게 해결하세요">
+      <button class="hero-search-btn" aria-label="검색">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- CLEAN SEARCH -->
+<section class="section" id="clean">
+  <div class="section-inner">
+    <div class="clean-grid">
+      <div class="clean-visual fi">
+        <div class="cv-label">Clean Search · AD-FREE</div>
+        <div class="cv-search">
+          <span>🔍</span>
+          <span style="font-size:13px;color:var(--mid);font-weight:300;">건성 피부 세럼</span>
+          <div class="cv-clean">광고 없음</div>
+        </div>
+        <div>
+          <span class="cv-chip on">건성</span>
+          <span class="cv-chip">히알루론산</span>
+          <span class="cv-chip">무파라벤</span>
+          <span class="cv-chip">민감성</span>
+        </div>
+        <div class="cv-result">
+          <div class="cv-r-head">
+            <span>결과 32건</span>
+            <span class="cv-filtered">✦ 광고 리뷰 128건 제거</span>
+          </div>
+          <div class="cv-item">
+            <span class="cv-rank">1</span>
+            <div class="cv-dot">🧴</div>
+            <div class="cv-info">
+              <div class="cv-name">COSRX 스내일 96 에센스</div>
+              <div class="cv-brand">COSRX · 세럼</div>
+            </div>
+            <span class="cv-score">94</span>
+          </div>
+          <div class="cv-item">
+            <span class="cv-rank">2</span>
+            <div class="cv-dot">💧</div>
+            <div class="cv-info">
+              <div class="cv-name">이니스프리 그린티 세럼</div>
+              <div class="cv-brand">이니스프리 · 세럼</div>
+            </div>
+            <span class="cv-score">88</span>
+          </div>
+          <div class="cv-item">
+            <span class="cv-rank">3</span>
+            <div class="cv-dot">🌿</div>
+            <div class="cv-info">
+              <div class="cv-name">라네즈 워터뱅크 세럼</div>
+              <div class="cv-brand">라네즈 · 세럼</div>
+            </div>
+            <span class="cv-score">85</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="clean-text">
+        <span class="eyebrow fi">Clean Search</span>
+        <h2 class="s-h2 fi">광고를 지운<br><em>순수한 결과</em>만</h2>
+        <p class="s-p fi">GPT-4o가 협찬·뒷광고·PPL 리뷰를 문맥으로 식별하고 제거합니다. 성분과 실제 효과 데이터만으로 이루어진 검색 결과를 처음으로 경험하세요.</p>
+        <div class="clean-points">
+          <div class="cp fi delay-1">
+            <span class="cp-num">01</span>
+            <div class="cp-body">
+              <h4>GPT-4o 문맥 분석</h4>
+              <p>단순 금지어가 아닌 LLM의 언어 이해로 교묘한 광고성 리뷰까지 정밀 감지합니다.</p>
+            </div>
+          </div>
+          <div class="cp fi delay-2">
+            <span class="cp-num">02</span>
+            <div class="cp-body">
+              <h4>50,000건+ 클린 데이터</h4>
+              <p>올리브영·화해·네이버 뷰티에서 수집·정제한 실사용자 리뷰만 남깁니다.</p>
+            </div>
+          </div>
+          <div class="cp fi delay-3">
+            <span class="cp-num">03</span>
+            <div class="cp-body">
+              <h4>성분 중심 순위</h4>
+              <p>협찬 없는 만족도와 성분 데이터로만 산정된 순수 랭킹을 제공합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONALIZED RECOMMEND -->
+<section class="section" id="recommend">
+  <div class="section-inner">
+    <div class="rec-grid">
+      <div class="rec-text">
+        <span class="eyebrow fi">Personalized</span>
+        <h2 class="s-h2 fi">내 피부 데이터로<br><em>정밀하게</em></h2>
+        <p class="s-p fi">피부 타입과 선호·기피 성분을 입력하면 Scikit-learn 기반 알고리즘이 1:1 뷰티 페르소나를 도출해 최적의 제품을 매칭합니다.</p>
+        <div class="clean-points" style="margin-top:44px;">
+          <div class="cp fi delay-1">
+            <span class="cp-num">01</span>
+            <div class="cp-body">
+              <h4>뷰티 페르소나 도출</h4>
+              <p>피부 타입·선호 성분 데이터를 Pandas로 수치화해 나만의 뷰티 프로필을 만듭니다.</p>
+            </div>
+          </div>
+          <div class="cp fi delay-2">
+            <span class="cp-num">02</span>
+            <div class="cp-body">
+              <h4>코사인 유사도 매칭</h4>
+              <p>머신러닝 알고리즘이 내 벡터와 제품 메타데이터의 유사도를 계산해 최적품을 추천합니다.</p>
+            </div>
+          </div>
+          <div class="cp fi delay-3">
+            <span class="cp-num">03</span>
+            <div class="cp-body">
+              <h4>기피 성분 자동 제외</h4>
+              <p>파라벤·알레르기 유발 성분 등 내가 설정한 기피 성분을 포함한 제품은 결과에서 자동 제외합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rec-form fi">
+        <div class="rf-title">내 피부 프로필</div>
+        <div class="rf-section">
+          <span class="rf-label">피부 타입</span>
+          <div class="rf-pills">
+            <span class="rf-pill on">건성</span>
+            <span class="rf-pill">지성</span>
+            <span class="rf-pill">복합성</span>
+            <span class="rf-pill">민감성</span>
+          </div>
+        </div>
+        <div class="rf-section">
+          <span class="rf-label">선호 성분</span>
+          <div class="rf-pills">
+            <span class="rf-pill on">히알루론산</span>
+            <span class="rf-pill on">나이아신아마이드</span>
+            <span class="rf-pill">레티놀</span>
+            <span class="rf-pill">세라마이드</span>
+          </div>
+        </div>
+        <div class="rf-section">
+          <span class="rf-label">기피 성분</span>
+          <div class="rf-pills">
+            <span class="rf-pill on" style="border-color:rgba(220,38,38,0.3);color:#DC2626;background:#FEF2F2;">파라벤</span>
+            <span class="rf-pill on" style="border-color:rgba(220,38,38,0.3);color:#DC2626;background:#FEF2F2;">향료</span>
+            <span class="rf-pill">알코올</span>
+          </div>
+        </div>
+        <div class="rf-divider"></div>
+        <div class="rf-result">
+          <span class="rf-result-label">AI 맞춤 추천 결과</span>
+          <div class="rf-prod">
+            <div class="rf-prod-img">🧴</div>
+            <div>
+              <div class="rf-prod-name">COSRX 스내일 96 에센스</div>
+              <div class="rf-prod-match">적합도 94% · 파라벤 0 · 향료 0</div>
+            </div>
+          </div>
+          <div class="rf-prod">
+            <div class="rf-prod-img">💧</div>
+            <div>
+              <div class="rf-prod-name">라네즈 워터뱅크 세럼</div>
+              <div class="rf-prod-match">적합도 89% · 파라벤 0 · 향료 0</div>
+            </div>
+          </div>
+          <div class="rf-prod">
+            <div class="rf-prod-img">🌿</div>
+            <div>
+              <div class="rf-prod-name">아벤느 하이드란스 에센스</div>
+              <div class="rf-prod-match">적합도 85% · 파라벤 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CELEB MATCHING -->
+<section class="section" id="celeb">
+  <div class="section-inner">
+    <span class="eyebrow fi">Celeb Matching</span>
+    <h2 class="s-h2 fi">내 피부와 닮은<br><em>셀럽의 인생템</em></h2>
+    <p class="s-p fi">피부 타입과 성분 취향이 유사한 셀럽을 AI가 매칭합니다.<br>셀럽의 검증된 루틴을 내 것으로 만드세요.</p>
+    <div class="celeb-layout">
+      <div class="celeb-cards-wrap">
+        <div class="c-card active fi delay-1">
+          <div class="c-avatar c-av-1">🧖</div>
+          <div class="c-info">
+            <div class="c-name">김고은 스타일</div>
+            <div class="c-skin">건성 · 민감성 · 광채 피부</div>
+            <div class="c-match-row">
+              <div class="c-match-bar"><div class="c-match-fill" style="width:92%"></div></div>
+              <span class="c-match-pct">92%</span>
+            </div>
+            <div class="c-products">
+              <span class="c-prod-tag">라네즈 세럼</span>
+              <span class="c-prod-tag">헤라 선크림</span>
+              <span class="c-prod-tag">설화수 에센스</span>
+            </div>
+          </div>
+        </div>
+        <div class="c-card fi delay-2">
+          <div class="c-avatar c-av-2">💄</div>
+          <div class="c-info">
+            <div class="c-name">아이유 스타일</div>
+            <div class="c-skin">복합성 · 트러블 · 투명 피부</div>
+            <div class="c-match-row">
+              <div class="c-match-bar"><div class="c-match-fill" style="width:78%"></div></div>
+              <span class="c-match-pct">78%</span>
+            </div>
+            <div class="c-products">
+              <span class="c-prod-tag">COSRX 토너</span>
+              <span class="c-prod-tag">닥터자르트</span>
+            </div>
+          </div>
+        </div>
+        <div class="c-card fi delay-3">
+          <div class="c-avatar c-av-3">🌿</div>
+          <div class="c-info">
+            <div class="c-name">수지 스타일</div>
+            <div class="c-skin">지성 · 모공 · 맑은 피부</div>
+            <div class="c-match-row">
+              <div class="c-match-bar"><div class="c-match-fill" style="width:71%"></div></div>
+              <span class="c-match-pct">71%</span>
+            </div>
+            <div class="c-products">
+              <span class="c-prod-tag">이니스프리</span>
+              <span class="c-prod-tag">아벤느 크림</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="celeb-flow-text">
+        <div class="flow-step fi delay-1">
+          <span class="fs-n">1</span>
+          <div class="fs-body">
+            <h4>피부 데이터 수치화</h4>
+            <p>입력된 피부 타입과 성분 선호도를 Pandas로 벡터화합니다.</p>
+          </div>
+        </div>
+        <div class="flow-step fi delay-2">
+          <span class="fs-n">2</span>
+          <div class="fs-body">
+            <h4>셀럽 페르소나 매칭</h4>
+            <p>Scikit-learn 코사인 유사도 알고리즘으로 내 벡터와 가장 유사한 셀럽을 찾습니다.</p>
+          </div>
+        </div>
+        <div class="flow-step fi delay-3">
+          <span class="fs-n">3</span>
+          <div class="fs-body">
+            <h4>인생템 + 구매 연결</h4>
+            <p>매칭된 셀럽의 뷰티 루틴과 구매 링크를 원스톱으로 제공해 즉각적인 구매 전환을 실현합니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<section id="closing">
+  <div class="closing-inner">
+    <h2 class="closing-h fi">
+      탐색은 끝났어요.<br>
+      이제 <em>OverFit</em>이<br>
+      골라드립니다.
+    </h2>
+    <p class="closing-p fi">가짜 리뷰도, 광고도 없이. 오직 내 피부 데이터만으로.</p>
+    <div class="closing-search fi delay-1">
+      <input type="text" placeholder="피부 고민을 입력하세요">
+      <button class="closing-btn" aria-label="시작">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">OVERFIT</span>
+  <ul class="footer-links">
+    <li><a href="#">클린 검색</a></li>
+    <li><a href="#">맞춤 추천</a></li>
+    <li><a href="#">셀럽 매칭</a></li>
+    <li><a href="#">이용약관</a></li>
+    <li><a href="#">개인정보처리방침</a></li>
+  </ul>
+  <span class="footer-copy">© 2025 OverFit. All rights reserved.</span>
+</footer>
+
+<script>
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.borderBottom =
+    window.scrollY > 20 ? '1px solid rgba(43,35,32,0.08)' : '1px solid transparent';
+});
+
+// Fade-in observer
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('show'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+
+// Pill toggle
+document.querySelectorAll('.rf-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    if(!p.style.borderColor) p.classList.toggle('on');
+  });
+});
+
+// Celeb card toggle
+document.querySelectorAll('.c-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.c-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  });
+});
+
+// ── 로그인 성공 후 네비 업데이트 ──
+function setLoggedIn(nick, email, skinType) {
+  // sessionStorage에 저장 → 서브 페이지에서 공유
+  sessionStorage.setItem('of_logged',    'true');
+  sessionStorage.setItem('of_nick',      nick);
+  sessionStorage.setItem('of_email',     email);
+  sessionStorage.setItem('of_skin_type', skinType || '');
+
+  // 로그인/회원가입 버튼 숨기기
+  document.querySelector('.nav-login').style.display  = 'none';
+  document.querySelector('.nav-signup').style.display = 'none';
+  // 유저 드롭다운 표시
+  const navUser = document.getElementById('navUser');
+  navUser.classList.add('show');
+  const initial = nick.charAt(0).toUpperCase();
+  document.getElementById('navAvatar').textContent   = initial;
+  document.getElementById('navUserName').textContent = nick;
+  // 마이페이지 프로필 세팅
+  document.getElementById('mpAvatar').textContent   = initial;
+  document.getElementById('mpNick').textContent     = nick;
+  document.getElementById('mpEmail').textContent    = email;
+  document.getElementById('mpNickInput').value      = nick;
+  document.getElementById('mpEmailInput').value     = email;
+}
+
+// ── 드롭다운 토글 ──
+function toggleDropdown() {
+  document.getElementById('navUserBtn').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('.nav-user')) {
+    document.getElementById('navUserBtn')?.classList.remove('open');
+  }
+});
+
+// ── 마이페이지 열기/닫기 ──
+function openMypage(tab) {
+  document.getElementById('navUserBtn').classList.remove('open');
+  document.getElementById('mypageOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  switchMypageTab(tab || 'info');
+}
+function closeMypage() {
+  document.getElementById('mypageOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') { closeModal(); closeMypage(); }
+});
+
+// ── 마이페이지 탭 전환 ──
+function switchMypageTab(tab) {
+  const tabs = ['info','pw','skin','withdraw'];
+  tabs.forEach(t => {
+    document.getElementById('mp' + t.charAt(0).toUpperCase() + t.slice(1)).classList.remove('on');
+  });
+  document.querySelectorAll('.mypage-tab').forEach((el, i) => {
+    el.classList.toggle('on', ['info','pw','skin','withdraw'][i] === tab);
+  });
+  const secMap = { info:'mpInfo', pw:'mpPw', skin:'mpSkin', withdraw:'mpWithdraw' };
+  document.getElementById(secMap[tab]).classList.add('on');
+}
+
+// ── 피부 타입 토글 (마이페이지) ──
+function toggleMpSkin(el) {
+  document.querySelectorAll('#mpSkinPills .skin-pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ── 기본 정보 수정 ──
+function handleUpdateInfo() {
+  const nick     = document.getElementById('mpNickInput').value.trim();
+  const phone    = document.getElementById('mpPhone').value.trim();
+  const email    = document.getElementById('mpEmailInput').value.trim();
+  const gender   = document.querySelector('.mypage-section.on .skin-pill[data-value].on')?.dataset.value || '';
+  const birthdate= document.getElementById('mpBirth').value;
+
+  if(!nick)  { alert('닉네임을 입력해주세요.'); return; }
+  if(!phone) { alert('연락처를 입력해주세요.'); return; }
+  if(!email || !email.includes('@')) { alert('올바른 이메일을 입력해주세요.'); return; }
+
+  // ── Servlet 연동 (t_user UPDATE) ──
+  // fetch('/api/user/update', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ nick, phone, email, gender, birthdate })
+  // }).then(r => r.json()).then(data => {
+  //   if(data.success) {
+  //     setLoggedIn(nick, email);
+  //     alert('정보가 수정되었습니다!');
+  //     closeMypage();
+  //   }
+  // });
+
+  // 네비 이름 업데이트
+  document.getElementById('navUserName').textContent = nick;
+  document.getElementById('navAvatar').textContent   = nick.charAt(0).toUpperCase();
+  document.getElementById('mpNick').textContent      = nick;
+  document.getElementById('mpEmail').textContent     = email;
+  document.getElementById('mpAvatar').textContent    = nick.charAt(0).toUpperCase();
+  alert('✅ 정보가 수정되었습니다!');
+  closeMypage();
+}
+
+// ── 비밀번호 변경 ──
+function handleUpdatePw() {
+  const curPw    = document.getElementById('mpCurPw').value;
+  const newPw    = document.getElementById('mpNewPw').value;
+  const confirmPw= document.getElementById('mpNewPwConfirm').value;
+
+  if(!curPw)              { alert('현재 비밀번호를 입력해주세요.'); return; }
+  if(newPw.length < 8)    { alert('새 비밀번호는 8자 이상이어야 합니다.'); return; }
+  if(newPw !== confirmPw) { alert('새 비밀번호가 일치하지 않습니다.'); return; }
+
+  // ── Servlet 연동 (t_user user_pw UPDATE) ──
+  // fetch('/api/user/password', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ cur_pw: curPw, new_pw: newPw })
+  // }).then(r => r.json()).then(data => {
+  //   if(data.success) { alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.'); handleLogout(); }
+  //   else { alert(data.message); }
+  // });
+
+  alert('✅ 비밀번호가 변경되었습니다. 다시 로그인해주세요.');
+  handleLogout();
+  closeMypage();
+}
+
+// ── 피부 타입 수정 ──
+function handleUpdateSkin() {
+  const skin_type = document.querySelector('#mpSkinPills .skin-pill.on')?.textContent || '';
+  if(!skin_type) { alert('피부 타입을 선택해주세요.'); return; }
+
+  // ── Servlet 연동 (t_user skin_type UPDATE) ──
+  // fetch('/api/user/skin', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ skin_type })
+  // }).then(r => r.json()).then(data => {
+  //   if(data.success) { alert('피부 타입이 수정되었습니다!'); closeMypage(); }
+  // });
+
+  alert('✅ 피부 타입이 [' + skin_type + ']으로 수정되었습니다!');
+  closeMypage();
+}
+
+// ── 회원 탈퇴 ──
+function handleWithdraw() {
+  const pw     = document.getElementById('mpWithdrawPw').value;
+  const agreed = document.getElementById('withdrawAgree').checked;
+
+  if(!pw)     { alert('비밀번호를 입력해주세요.'); return; }
+  if(!agreed) { alert('탈퇴 동의에 체크해주세요.'); return; }
+
+  if(!confirm('정말 탈퇴하시겠습니까?\n모든 데이터가 삭제됩니다.')) return;
+
+  // ── Servlet 연동 (t_user DELETE) ──
+  // fetch('/api/user/withdraw', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ user_pw: pw })
+  // }).then(r => r.json()).then(data => {
+  //   if(data.success) { alert('탈퇴가 완료되었습니다.'); handleLogout(); }
+  //   else { alert(data.message); }
+  // });
+
+  alert('탈퇴가 완료되었습니다.');
+  handleLogout();
+  closeMypage();
+}
+
+// ── 로그아웃 ──
+function handleLogout() {
+  sessionStorage.removeItem('of_logged');
+  sessionStorage.removeItem('of_nick');
+  sessionStorage.removeItem('of_email');
+  sessionStorage.removeItem('of_skin_type');
+  sessionStorage.removeItem('of_user_id');
+  document.querySelector('.nav-login').style.display  = '';
+  document.querySelector('.nav-signup').style.display = '';
+  document.getElementById('navUser').classList.remove('show');
+  // fetch('/api/logout', { method: 'POST' });
+}
+
+// ── 로그인 성공 시 setLoggedIn 호출 ──
+function openModal(type) {
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  switchModal(type);
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function switchModal(type) {
+  ['paneLogin','paneSignup','paneSuccess'].forEach(id => {
+    document.getElementById(id).classList.add('hidden');
+  });
+  document.getElementById(type === 'login' ? 'paneLogin' : type === 'signup' ? 'paneSignup' : 'paneSuccess').classList.remove('hidden');
+}
+
+// keyboard close
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+// skin pill toggle
+function toggleSkin(el) {
+  document.querySelectorAll('.skin-pill:not([data-value])').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// gender toggle
+function toggleGender(el) {
+  document.querySelectorAll('.skin-pill[data-value]').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ── 핸드폰 자동 하이픈 ──
+function autoHyphen(input) {
+  let v = input.value.replace(/[^0-9]/g, '');
+  if (v.length <= 3) {
+    input.value = v;
+  } else if (v.length <= 7) {
+    input.value = v.slice(0,3) + '-' + v.slice(3);
+  } else {
+    input.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11);
+  }
+}
+
+// ── 아이디 중복확인 ──
+let idChecked = false;
+function checkIdDuplicate() {
+  const userId = document.getElementById('signupId').value.trim();
+  const msg    = document.getElementById('idCheckMsg');
+  const btn    = document.getElementById('idCheckBtn');
+
+  if (!userId) { showMsg(msg, '아이디를 먼저 입력해주세요.', 'red'); return; }
+  if (userId.length < 4 || userId.length > 20) { showMsg(msg, '아이디는 4~20자로 입력해주세요.', 'red'); return; }
+  if (!/^[a-zA-Z0-9]+$/.test(userId)) { showMsg(msg, '영문/숫자만 사용 가능합니다.', 'red'); return; }
+
+  // ── Servlet 연동 (GET /api/check-id?user_id=xxx) ──
+  // fetch('/api/check-id?user_id=' + userId)
+  //   .then(r => r.json())
+  //   .then(data => {
+  //     if (data.available) {
+  //       showMsg(msg, '✅ 사용 가능한 아이디입니다.', 'green');
+  //       idChecked = true;
+  //       btn.style.background = 'var(--green)';
+  //       btn.style.color = '#fff';
+  //       btn.style.borderColor = 'var(--green)';
+  //     } else {
+  //       showMsg(msg, '❌ 이미 사용 중인 아이디입니다.', 'red');
+  //       idChecked = false;
+  //     }
+  //   });
+
+  // 임시 처리 (Servlet 연동 전)
+  showMsg(msg, '✅ 사용 가능한 아이디입니다.', 'green');
+  idChecked = true;
+  btn.style.background = 'var(--green)';
+  btn.style.color = '#fff';
+  btn.style.borderColor = 'var(--green)';
+}
+
+// ── 비밀번호 일치 확인 ──
+function checkPwMatch() {
+  const pw      = document.getElementById('signupPw').value;
+  const confirm = document.getElementById('signupPwConfirm').value;
+  const msg     = document.getElementById('pwMatchMsg');
+  if (!confirm) { msg.style.display = 'none'; return; }
+  if (pw === confirm) {
+    showMsg(msg, '✅ 비밀번호가 일치합니다.', 'green');
+  } else {
+    showMsg(msg, '❌ 비밀번호가 일치하지 않습니다.', 'red');
+  }
+}
+
+// 메시지 표시 헬퍼
+function showMsg(el, text, color) {
+  el.style.display = 'block';
+  el.style.color   = color === 'green' ? 'var(--green)' : '#DC2626';
+  el.textContent   = text;
+}
+
+// validation helper
+function showErr(id, msg) {
+  let err = document.getElementById(id);
+  if(!err) {
+    err = document.createElement('div');
+    err.id = id; err.className = 'error-msg';
+    const input = document.querySelector('#' + id.replace('Err',''));
+    if(input) input.parentNode.insertBefore(err, input.nextSibling);
+  }
+  err.textContent = msg; err.classList.add('show');
+  setTimeout(() => err.classList.remove('show'), 3000);
+}
+
+function handleSocial(provider) {
+  const names = { google:'Google', naver:'네이버', kakao:'카카오' };
+  const urls  = {
+    google: '/oauth2/authorization/google',
+    naver:  '/oauth2/authorization/naver',
+    kakao:  '/oauth2/authorization/kakao'
+  };
+  // 실제 구현 시 아래 주석 해제 후 사용
+  // window.location.href = urls[provider];
+  document.getElementById('successTitle').textContent = names[provider] + ' 로그인 완료!';
+  document.getElementById('successSub').textContent   = names[provider] + ' 계정으로 연결되었습니다. (실제 연동 시 OAuth 리다이렉트)';
+  switchModal('paneSuccess');
+}
+
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw    = document.getElementById('loginPw').value;
+  if(!email || !email.includes('@')) { showErr('loginEmailErr','올바른 이메일을 입력해주세요.'); return; }
+  if(pw.length < 1) { showErr('loginPwErr','비밀번호를 입력해주세요.'); return; }
+
+  // ── Servlet 연동 (t_user 테이블) ──
+  // fetch('/api/login', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ email, user_pw: pw })
+  // }).then(r => r.json()).then(data => {
+  //   if(data.success) {
+  //     closeModal();
+  //     setLoggedIn(data.nick, data.email);
+  //   } else { showErr('loginPwErr', data.message); }
+  // });
+
+  const nick = email.split('@')[0];
+  closeModal();
+  setLoggedIn(nick, email, '');
+}
+
+function handleSignup() {
+  const user_id    = document.getElementById('signupId').value.trim();
+  const user_pw    = document.getElementById('signupPw').value;
+  const pw_confirm = document.getElementById('signupPwConfirm').value;
+  const nick       = document.getElementById('signupNick').value.trim();
+  const phone      = document.getElementById('signupPhone').value.trim();
+  const email      = document.getElementById('signupEmail').value.trim();
+  const gender     = document.querySelector('.skin-pill[data-value].on')?.dataset.value || '';
+  const birthdate  = document.getElementById('signupBirth').value;
+  const skin_type  = document.querySelector('.skin-pill:not([data-value]).on')?.textContent || '';
+  const agreed     = document.getElementById('agreeTerms').checked;
+
+  // 유효성 검사
+  if (!user_id)                       { showErr('signupIdErr',       '아이디를 입력해주세요.'); return; }
+  if (!idChecked)                     { showErr('signupIdErr',       '아이디 중복확인을 해주세요.'); return; }
+  if (user_pw.length < 8)             { showErr('signupPwErr',       '비밀번호는 8자 이상이어야 합니다.'); return; }
+  if (user_pw !== pw_confirm)         { showErr('signupPwConfirmErr','비밀번호가 일치하지 않습니다.'); return; }
+  if (!nick)                          { showErr('signupNickErr',     '닉네임을 입력해주세요.'); return; }
+  if (!phone)                         { showErr('signupPhoneErr',    '핸드폰번호를 입력해주세요.'); return; }
+  if (!email || !email.includes('@')) { showErr('signupEmailErr',    '올바른 이메일을 입력해주세요.'); return; }
+  if (!agreed)                        { showErr('agreeTermsErr',     '이용약관에 동의해주세요.'); return; }
+
+  // ── Servlet 연동 (t_user INSERT) ──
+  // fetch('/api/signup', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ user_id, user_pw, nick, phone, email, gender, birthdate, skin_type })
+  // }).then(r => r.json()).then(data => {
+  //   if(data.success) { closeModal(); setLoggedIn(nick, email, skin_type); }
+  //   else { showErr('signupEmailErr', data.message); }
+  // });
+
+  idChecked = false; // 다음 가입을 위해 초기화
+  closeModal();
+  setLoggedIn(nick, email, skin_type);
+}
+</script>
+</body>
+</html>

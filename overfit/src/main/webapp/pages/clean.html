@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>클린 검색 — OverFit</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF6F3;--white:#FFFFFF;
+  --pink:#E8637A;--pink-lt:#F2A0B0;--pink-pal:#FCEEF1;
+  --dark:#2B2320;--mid:#7A6560;--light:#C4ADA8;
+  --green:#16A34A;--green-bg:#DCFCE7;
+  --serif:'Cormorant Garamond','Noto Serif KR',Georgia,serif;
+  --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);min-height:100vh;}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:60px;
+  background:rgba(253,246,243,0.95);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(43,35,32,0.07);
+}
+.nav-logo{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:2px;color:var(--dark);text-decoration:none;}
+.nav-back{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--mid);text-decoration:none;
+  transition:color 0.2s;
+}
+.nav-back:hover{color:var(--pink);}
+.nav-page-title{
+  font-family:var(--serif);font-style:italic;
+  font-size:14px;color:var(--pink);
+}
+
+/* HERO STRIP */
+.page-hero{
+  background:var(--white);padding:60px 48px 48px;
+  border-bottom:1px solid rgba(43,35,32,0.06);
+  position:relative;overflow:hidden;
+}
+.page-hero::after{
+  content:'';position:absolute;
+  width:360px;height:360px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,99,122,0.10) 0%,transparent 70%);
+  right:-60px;top:50%;transform:translateY(-50%);pointer-events:none;
+}
+.page-hero-inner{max-width:680px;}
+.page-kicker{
+  font-family:var(--serif);font-style:italic;
+  font-size:13px;color:var(--pink);margin-bottom:10px;display:block;
+}
+.page-h1{
+  font-family:var(--serif);font-size:clamp(32px,4vw,52px);
+  font-weight:400;line-height:1.2;color:var(--dark);
+  letter-spacing:-0.5px;margin-bottom:14px;
+}
+.page-h1 em{font-style:italic;color:var(--pink);}
+.page-desc{font-size:15px;color:var(--mid);line-height:1.8;font-weight:300;margin-bottom:32px;}
+
+/* SEARCH BAR */
+.search-wrap{
+  display:flex;align-items:center;
+  background:var(--bg);border-radius:40px;
+  padding:6px 6px 6px 22px;
+  border:1px solid rgba(43,35,32,0.1);max-width:580px;
+  box-shadow:0 2px 16px rgba(232,99,122,0.09);
+}
+.search-wrap input{
+  flex:1;border:none;outline:none;background:transparent;
+  font-size:15px;font-family:var(--sans);color:var(--dark);font-weight:300;
+}
+.search-wrap input::placeholder{color:var(--light);}
+.search-btn{
+  padding:10px 24px;border-radius:30px;
+  background:var(--dark);color:#fff;border:none;
+  font-size:13px;font-weight:600;font-family:var(--sans);
+  cursor:pointer;transition:background 0.2s;
+}
+.search-btn:hover{background:var(--pink);}
+
+/* FILTER CHIPS */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;}
+.chip{
+  padding:6px 16px;border-radius:20px;
+  border:1px solid rgba(43,35,32,0.12);
+  font-size:12px;color:var(--mid);cursor:pointer;background:var(--white);
+  transition:all 0.2s;
+}
+.chip:hover,.chip.on{border-color:var(--pink);color:var(--pink);background:var(--pink-pal);}
+
+/* MAIN CONTENT */
+.content{max-width:1120px;margin:0 auto;padding:48px 48px 80px;display:grid;grid-template-columns:260px 1fr;gap:36px;align-items:start;}
+
+/* SIDEBAR */
+.sidebar{background:var(--white);border-radius:20px;padding:24px;border:1px solid rgba(43,35,32,0.07);}
+.sidebar-title{font-size:11px;font-weight:600;letter-spacing:0.8px;color:var(--light);text-transform:uppercase;margin-bottom:14px;}
+.filter-section{margin-bottom:24px;}
+.filter-section:last-child{margin-bottom:0;}
+.filter-label{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:10px;display:block;}
+.filter-options{display:flex;flex-direction:column;gap:8px;}
+.filter-opt{display:flex;align-items:center;gap:9px;cursor:pointer;}
+.filter-opt input[type=checkbox]{
+  width:16px;height:16px;accent-color:var(--pink);cursor:pointer;
+}
+.filter-opt span{font-size:13px;color:var(--mid);font-weight:300;}
+.apply-btn{
+  width:100%;padding:11px;border-radius:20px;
+  background:var(--dark);color:#fff;border:none;
+  font-size:13px;font-weight:600;font-family:var(--sans);
+  cursor:pointer;transition:background 0.2s;margin-top:4px;
+}
+.apply-btn:hover{background:var(--pink);}
+
+/* RESULTS */
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px;}
+.results-count{font-size:14px;color:var(--mid);font-weight:300;}
+.results-count strong{color:var(--dark);font-weight:600;}
+.ad-removed{
+  font-size:12px;font-weight:600;color:var(--green);
+  background:var(--green-bg);padding:5px 14px;border-radius:12px;
+  display:flex;align-items:center;gap:5px;
+}
+.sort-row{display:flex;gap:6px;}
+.sort-btn{
+  padding:5px 14px;border-radius:16px;border:1px solid rgba(43,35,32,0.10);
+  font-size:12px;color:var(--mid);cursor:pointer;background:var(--white);
+  transition:all 0.2s;
+}
+.sort-btn.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+
+/* PRODUCT CARDS */
+.product-grid{display:flex;flex-direction:column;gap:16px;}
+.product-card{
+  background:var(--white);border-radius:18px;
+  padding:22px 24px;border:1px solid rgba(43,35,32,0.07);
+  display:flex;gap:20px;align-items:center;
+  transition:border-color 0.2s,box-shadow 0.2s;cursor:pointer;
+}
+.product-card:hover{border-color:rgba(232,99,122,0.3);box-shadow:0 4px 20px rgba(232,99,122,0.08);}
+.prod-rank{
+  font-family:var(--serif);font-style:italic;
+  font-size:28px;color:var(--pink-lt);font-weight:600;
+  width:32px;text-align:center;flex-shrink:0;
+}
+.prod-img{
+  width:64px;height:64px;border-radius:14px;
+  background:linear-gradient(135deg,var(--pink-pal),rgba(232,99,122,0.15));
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;flex-shrink:0;
+}
+.prod-info{flex:1;}
+.prod-name{font-size:15px;font-weight:600;color:var(--dark);margin-bottom:3px;}
+.prod-brand{font-size:12px;color:var(--light);margin-bottom:8px;}
+.prod-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.prod-tag{padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;}
+.prod-tag.clean{background:var(--green-bg);color:var(--green);}
+.prod-tag.skin{background:var(--pink-pal);color:var(--pink);}
+.prod-tag.ingr{background:#EFF6FF;color:#1D4ED8;}
+.prod-right{text-align:right;flex-shrink:0;}
+.prod-score{font-family:var(--serif);font-style:italic;font-size:32px;color:var(--pink);font-weight:600;line-height:1;}
+.prod-score-label{font-size:10px;color:var(--light);margin-top:2px;}
+
+
+/* PAGINATION */
+.pagination{display:flex;justify-content:center;gap:8px;margin-top:36px;}
+.page-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid rgba(43,35,32,0.10);background:var(--white);
+  font-size:13px;color:var(--mid);cursor:pointer;transition:all 0.2s;
+}
+.page-btn.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+.page-btn:hover:not(.on){border-color:var(--pink);color:var(--pink);}
+
+@media(max-width:800px){
+  nav, .page-hero{padding-left:20px;padding-right:20px;}
+  .content{grid-template-columns:1fr;padding:24px 20px 60px;}
+  .sidebar{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="../index_v3.html">OVERFIT</a>
+  <span class="nav-page-title">클린 검색</span>
+  <a class="nav-back" href="../index_v3.html">← 홈으로</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="page-kicker">Ad-Free Clean Search</span>
+    <h1 class="page-h1">광고를 지운<br><em>순수한 결과</em>만</h1>
+    <p class="page-desc">GPT-4o가 협찬·뒷광고·PPL 리뷰를 문맥으로 식별하고 제거합니다.<br>성분과 실제 효과 데이터만으로 이루어진 검색 결과를 경험하세요.</p>
+    <div class="search-wrap">
+      <input type="text" id="mainSearch" placeholder="제품명, 성분, 피부 고민 검색..." value="건성 피부 세럼">
+      <button class="search-btn" onclick="doSearch()">검색하기</button>
+    </div>
+    <div class="filter-row">
+      <span class="chip on" onclick="toggleChip(this)">🛡️ 클린만 보기</span>
+      <span class="chip" onclick="toggleChip(this)">건성</span>
+      <span class="chip" onclick="toggleChip(this)">지성</span>
+      <span class="chip" onclick="toggleChip(this)">민감성</span>
+      <span class="chip" onclick="toggleChip(this)">히알루론산</span>
+      <span class="chip" onclick="toggleChip(this)">나이아신아마이드</span>
+      <span class="chip" onclick="toggleChip(this)">무파라벤</span>
+      <span class="chip" onclick="toggleChip(this)">무향</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">상세 필터</div>
+
+    <div class="filter-section">
+      <span class="filter-label">피부 타입</span>
+      <div class="filter-options">
+        <label class="filter-opt"><input type="checkbox" checked><span>건성</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>지성</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>복합성</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>민감성</span></label>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-label">제품 카테고리</span>
+      <div class="filter-options">
+        <label class="filter-opt"><input type="checkbox" checked><span>세럼 / 앰플</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>토너</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>크림</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>선크림</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>마스크팩</span></label>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-label">기피 성분 제외</span>
+      <div class="filter-options">
+        <label class="filter-opt"><input type="checkbox" checked><span>파라벤</span></label>
+        <label class="filter-opt"><input type="checkbox" checked><span>향료</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>알코올</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>실리콘</span></label>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-label">가격대</span>
+      <div class="filter-options">
+        <label class="filter-opt"><input type="checkbox"><span>1만원 이하</span></label>
+        <label class="filter-opt"><input type="checkbox" checked><span>1~3만원</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>3~5만원</span></label>
+        <label class="filter-opt"><input type="checkbox"><span>5만원 이상</span></label>
+      </div>
+    </div>
+
+    <button class="apply-btn">필터 적용</button>
+  </aside>
+
+  <!-- RESULTS -->
+  <main>
+    <div class="results-header">
+      <div>
+        <div class="results-count">총 <strong>32건</strong>의 클린 결과</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div class="ad-removed">✓ 광고 리뷰 128건 제거됨</div>
+        <div class="sort-row">
+          <button class="sort-btn on">적합도순</button>
+          <button class="sort-btn">별점순</button>
+          <button class="sort-btn">리뷰많은순</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <!-- JS로 렌더링 -->
+    </div>
+
+    <div class="pagination">
+      <button class="page-btn on">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">4</button>
+      <button class="page-btn">5</button>
+    </div>
+  </main>
+</div>
+
+<script>
+const PRODUCTS = [
+  { rank:1, emoji:'🧴', name:'COSRX 스내일 96 뮤신 파워 에센스', brand:'COSRX · 세럼 96ml', score:94, tags:['clean','skin','ingr'], tagLabels:['✓ 클린','건성 적합','히알루론산'] },
+  { rank:2, emoji:'💧', name:'이니스프리 그린티 히알루론산 세럼', brand:'이니스프리 · 세럼 80ml', score:88, tags:['clean','skin','ingr'], tagLabels:['✓ 클린','건성 적합','나이아신아마이드'] },
+  { rank:3, emoji:'🌿', name:'라네즈 워터뱅크 블루 히알루로닉 세럼', brand:'라네즈 · 세럼 60ml', score:85, tags:['clean','skin'], tagLabels:['✓ 클린','건성 적합'] },
+  { rank:4, emoji:'✨', name:'아벤느 하이드란스 인텐스 세럼', brand:'아벤느 · 세럼 30ml', score:83, tags:['clean','skin','ingr'], tagLabels:['✓ 클린','민감성 추천','세라마이드'] },
+  { rank:5, emoji:'🌸', name:'닥터자르트 시카페어 세럼', brand:'닥터자르트 · 세럼 40ml', score:80, tags:['clean','ingr'], tagLabels:['✓ 클린','진정 성분'] },
+  { rank:6, emoji:'🍃', name:'에스트라 아토베리어 365 세럼', brand:'에스트라 · 세럼 50ml', score:78, tags:['clean','skin'], tagLabels:['✓ 클린','극건성 추천'] },
+];
+
+function renderProducts(list){
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = list.map(p => `
+    <div class="product-card">
+      <div class="prod-rank">${p.rank}</div>
+      <div class="prod-img">${p.emoji}</div>
+      <div class="prod-info">
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-brand">${p.brand}</div>
+        <div class="prod-tags">
+          ${p.tags.map((t,i)=>`<span class="prod-tag ${t}">${p.tagLabels[i]}</span>`).join('')}
+        </div>
+      </div>
+      <div class="prod-right">
+        <div class="prod-score">${p.score}</div>
+        <div class="prod-score-label">적합도</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function doSearch(){
+  renderProducts(PRODUCTS);
+}
+
+function toggleChip(el){ el.classList.toggle('on'); }
+
+document.querySelectorAll('.sort-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+  });
+});
+
+document.querySelectorAll('.page-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.page-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+  });
+});
+
+renderProducts(PRODUCTS);
+</script>
+</body>
+</html>

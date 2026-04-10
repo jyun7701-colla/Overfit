@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>맞춤 추천 — OverFit</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF6F3;--white:#FFFFFF;
+  --pink:#E8637A;--pink-lt:#F2A0B0;--pink-pal:#FCEEF1;
+  --dark:#2B2320;--mid:#7A6560;--light:#C4ADA8;
+  --green:#16A34A;--green-bg:#DCFCE7;
+  --serif:'Cormorant Garamond','Noto Serif KR',Georgia,serif;
+  --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);min-height:100vh;}
+
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:60px;
+  background:rgba(253,246,243,0.95);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(43,35,32,0.07);
+}
+.nav-logo{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:2px;color:var(--dark);text-decoration:none;}
+.nav-back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mid);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--pink);}
+.nav-page-title{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--pink);}
+
+.page-hero{
+  background:var(--white);padding:60px 48px 48px;
+  border-bottom:1px solid rgba(43,35,32,0.06);
+  position:relative;overflow:hidden;
+}
+.page-hero::after{
+  content:'';position:absolute;width:360px;height:360px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,99,122,0.10) 0%,transparent 70%);
+  right:-60px;top:50%;transform:translateY(-50%);pointer-events:none;
+}
+.page-kicker{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--pink);margin-bottom:10px;display:block;}
+.page-h1{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:400;line-height:1.2;color:var(--dark);letter-spacing:-0.5px;margin-bottom:14px;}
+.page-h1 em{font-style:italic;color:var(--pink);}
+.page-desc{font-size:15px;color:var(--mid);line-height:1.8;font-weight:300;}
+
+/* STEPS */
+.steps-bar{
+  display:flex;align-items:center;gap:0;
+  background:var(--white);padding:0 48px;
+  border-bottom:1px solid rgba(43,35,32,0.06);
+}
+.step-tab{
+  padding:16px 28px;font-size:13px;font-weight:500;
+  color:var(--light);border-bottom:2px solid transparent;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.step-tab.on{color:var(--pink);border-bottom-color:var(--pink);}
+
+/* MAIN */
+.content{max-width:900px;margin:0 auto;padding:48px 48px 80px;}
+
+/* PROFILE CARD */
+.profile-card{
+  background:var(--white);border-radius:24px;
+  padding:36px;border:1px solid rgba(43,35,32,0.07);
+  margin-bottom:28px;
+}
+.card-title{
+  font-family:var(--serif);font-size:22px;font-weight:400;
+  color:var(--dark);margin-bottom:6px;
+}
+.card-desc{font-size:13px;color:var(--mid);font-weight:300;margin-bottom:28px;line-height:1.7;}
+.field-label{font-size:11px;font-weight:600;letter-spacing:0.7px;color:var(--light);text-transform:uppercase;margin-bottom:10px;display:block;}
+.pill-group{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.pill{
+  padding:8px 18px;border-radius:20px;
+  border:1px solid rgba(43,35,32,0.12);
+  font-size:13px;color:var(--mid);cursor:pointer;
+  transition:all 0.2s;background:var(--bg);user-select:none;
+}
+.pill.on{background:var(--pink);border-color:var(--pink);color:#fff;}
+.pill.avoid.on{background:#DC2626;border-color:#DC2626;color:#fff;}
+.pill:hover:not(.on){border-color:var(--pink);color:var(--pink);}
+.divider{height:1px;background:rgba(43,35,32,0.06);margin:24px 0;}
+
+/* CONCERN TEXTAREA */
+.concern-input{
+  width:100%;padding:14px 16px;
+  border:1px solid rgba(43,35,32,0.12);border-radius:14px;
+  font-size:14px;font-family:var(--sans);color:var(--dark);
+  background:var(--bg);outline:none;resize:none;
+  transition:border-color 0.2s;line-height:1.6;font-weight:300;
+}
+.concern-input:focus{border-color:var(--pink);}
+.concern-input::placeholder{color:var(--light);}
+
+/* SUBMIT BTN */
+.submit-btn{
+  width:100%;padding:15px;border-radius:30px;
+  background:var(--dark);color:#fff;border:none;
+  font-size:15px;font-weight:600;font-family:var(--sans);
+  cursor:pointer;transition:all 0.25s;margin-top:4px;
+}
+.submit-btn:hover{background:var(--pink);}
+
+/* RESULTS */
+.result-header{
+  display:flex;align-items:center;gap:12px;margin-bottom:24px;
+}
+.result-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--dark);}
+.result-count{
+  font-size:12px;color:var(--pink);font-weight:600;
+  background:var(--pink-pal);padding:4px 12px;border-radius:10px;
+}
+.result-cards{display:flex;flex-direction:column;gap:16px;}
+.result-card{
+  background:var(--white);border-radius:18px;
+  padding:22px 24px;border:1px solid rgba(43,35,32,0.07);
+  display:flex;gap:20px;align-items:center;
+  transition:border-color 0.2s,box-shadow 0.2s;cursor:pointer;
+}
+.result-card:hover{border-color:rgba(232,99,122,0.3);box-shadow:0 4px 20px rgba(232,99,122,0.08);}
+.result-card.top{border-color:rgba(232,99,122,0.25);background:linear-gradient(135deg,var(--white) 0%,var(--pink-pal) 100%);}
+.rc-emoji{
+  width:60px;height:60px;border-radius:14px;
+  background:linear-gradient(135deg,var(--pink-pal),rgba(232,99,122,0.15));
+  display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;
+}
+.rc-info{flex:1;}
+.rc-name{font-size:15px;font-weight:600;color:var(--dark);margin-bottom:3px;}
+.rc-brand{font-size:12px;color:var(--light);margin-bottom:8px;}
+.rc-reasons{display:flex;gap:6px;flex-wrap:wrap;}
+.rc-reason{padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;}
+.rc-reason.match{background:var(--green-bg);color:var(--green);}
+.rc-reason.avoid{background:#FEF2F2;color:#DC2626;}
+.rc-reason.ingr{background:#EFF6FF;color:#1D4ED8;}
+.rc-right{text-align:right;flex-shrink:0;}
+.rc-pct{font-family:var(--serif);font-style:italic;font-size:32px;color:var(--pink);font-weight:600;line-height:1;}
+.rc-pct-label{font-size:10px;color:var(--light);margin-top:2px;}
+
+.best-badge{
+  display:inline-block;margin-bottom:8px;
+  background:var(--pink);color:#fff;
+  font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;letter-spacing:0.3px;
+}
+.loading{
+  text-align:center;padding:60px 0;display:none;
+}
+.loading-dot{
+  display:inline-flex;gap:6px;align-items:center;
+}
+.loading-dot span{
+  width:8px;height:8px;border-radius:50%;background:var(--pink);
+  animation:bounce 1.2s infinite;
+}
+.loading-dot span:nth-child(2){animation-delay:0.2s;}
+.loading-dot span:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
+@media(max-width:700px){
+  nav,.page-hero,.content{padding-left:20px;padding-right:20px;}
+  .steps-bar{padding:0 20px;overflow-x:auto;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="../index_v3.html">OVERFIT</a>
+  <span class="nav-page-title">맞춤 추천</span>
+  <a class="nav-back" href="../index_v3.html">← 홈으로</a>
+</nav>
+
+<div class="page-hero">
+  <div style="max-width:680px;">
+    <span class="page-kicker">Personalized AI Matching</span>
+    <h1 class="page-h1">내 피부 데이터로<br><em>정밀하게</em> 찾아드려요</h1>
+    <p class="page-desc">피부 타입과 선호·기피 성분을 입력하면 Scikit-learn 기반 알고리즘이<br>코사인 유사도로 1:1 맞춤 제품을 매칭합니다.</p>
+  </div>
+</div>
+
+<div class="steps-bar">
+  <div class="step-tab on" id="tab1" onclick="showTab(1)">① 피부 프로필 입력</div>
+  <div class="step-tab" id="tab2" onclick="showTab(2)">② AI 추천 결과</div>
+</div>
+
+<div class="content">
+  <!-- STEP 1: 프로필 입력 -->
+  <div id="step1">
+    <div class="profile-card">
+      <div class="card-title">내 피부 프로필</div>
+      <div class="card-desc">정확한 정보를 입력할수록 추천 정확도가 높아집니다.<br>나중에 마이페이지에서 언제든지 수정할 수 있어요.</div>
+
+      <span class="field-label">피부 타입 (복수 선택 가능)</span>
+      <div class="pill-group" id="skinGroup">
+        <span class="pill" onclick="toggle(this,'skin')">건성</span>
+        <span class="pill" onclick="toggle(this,'skin')">지성</span>
+        <span class="pill" onclick="toggle(this,'skin')">복합성</span>
+        <span class="pill" onclick="toggle(this,'skin')">민감성</span>
+        <span class="pill" onclick="toggle(this,'skin')">아토피</span>
+        <span class="pill" onclick="toggle(this,'skin')">정상</span>
+      </div>
+
+      <span class="field-label">피부 고민</span>
+      <div class="pill-group">
+        <span class="pill" onclick="toggle(this,'concern')">보습 부족</span>
+        <span class="pill" onclick="toggle(this,'concern')">트러블·여드름</span>
+        <span class="pill" onclick="toggle(this,'concern')">모공</span>
+        <span class="pill" onclick="toggle(this,'concern')">주름·탄력</span>
+        <span class="pill" onclick="toggle(this,'concern')">미백·칙칙함</span>
+        <span class="pill" onclick="toggle(this,'concern')">피부 장벽</span>
+        <span class="pill" onclick="toggle(this,'concern')">홍조·자극</span>
+      </div>
+
+      <span class="field-label">선호 성분</span>
+      <div class="pill-group">
+        <span class="pill" onclick="toggle(this,'prefer')">히알루론산</span>
+        <span class="pill" onclick="toggle(this,'prefer')">나이아신아마이드</span>
+        <span class="pill" onclick="toggle(this,'prefer')">세라마이드</span>
+        <span class="pill" onclick="toggle(this,'prefer')">레티놀</span>
+        <span class="pill" onclick="toggle(this,'prefer')">비타민C</span>
+        <span class="pill" onclick="toggle(this,'prefer')">펩타이드</span>
+        <span class="pill" onclick="toggle(this,'prefer')">달팽이분비물</span>
+        <span class="pill" onclick="toggle(this,'prefer')">녹차추출물</span>
+      </div>
+
+      <span class="field-label" style="color:#DC2626;">기피 성분 (포함 시 자동 제외)</span>
+      <div class="pill-group">
+        <span class="pill avoid" onclick="toggle(this,'avoid')">파라벤</span>
+        <span class="pill avoid" onclick="toggle(this,'avoid')">향료</span>
+        <span class="pill avoid" onclick="toggle(this,'avoid')">알코올</span>
+        <span class="pill avoid" onclick="toggle(this,'avoid')">실리콘</span>
+        <span class="pill avoid" onclick="toggle(this,'avoid')">미네랄오일</span>
+        <span class="pill avoid" onclick="toggle(this,'avoid')">설페이트</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <span class="field-label">추가 피부 고민 (자유 입력)</span>
+      <textarea class="concern-input" rows="3" placeholder="예) 환절기마다 볼이 당기고 각질이 생겨요. 자극이 적고 보습력 좋은 세럼을 찾고 있어요."></textarea>
+
+      <div class="divider"></div>
+
+      <span class="field-label">찾는 제품 카테고리</span>
+      <div class="pill-group">
+        <span class="pill on" onclick="toggle(this,'cat')">세럼 / 앰플</span>
+        <span class="pill" onclick="toggle(this,'cat')">토너</span>
+        <span class="pill" onclick="toggle(this,'cat')">크림</span>
+        <span class="pill" onclick="toggle(this,'cat')">선크림</span>
+        <span class="pill" onclick="toggle(this,'cat')">클렌징</span>
+        <span class="pill" onclick="toggle(this,'cat')">마스크팩</span>
+      </div>
+
+      <button class="submit-btn" onclick="runMatch()">✦ AI 맞춤 추천 받기</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: 결과 -->
+  <div id="step2" style="display:none;">
+    <div class="loading" id="loading">
+      <div class="loading-dot"><span></span><span></span><span></span></div>
+      <p style="margin-top:16px;font-size:14px;color:var(--mid);font-weight:300;">AI가 내 피부 데이터를 분석하고 있어요...</p>
+    </div>
+    <div id="resultWrap" style="display:none;">
+      <div class="result-header">
+        <div class="result-title">맞춤 추천 결과</div>
+        <div class="result-count" id="resultCount">6개 제품</div>
+      </div>
+      <div class="result-cards" id="resultCards"></div>
+      <div style="text-align:center;margin-top:28px;">
+        <button onclick="showTab(1)" style="padding:11px 28px;border-radius:20px;border:1px solid rgba(43,35,32,0.12);background:transparent;font-size:13px;color:var(--mid);cursor:pointer;font-family:var(--sans);">← 프로필 다시 설정</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const RESULTS = [
+  { emoji:'🧴', name:'COSRX 스내일 96 뮤신 파워 에센스', brand:'COSRX · 세럼 96ml', pct:94, best:true,
+    reasons:[{type:'match',label:'건성 최적합'},{type:'ingr',label:'히알루론산'},{type:'match',label:'파라벤 0'}] },
+  { emoji:'💧', name:'이니스프리 그린티 히알루론산 세럼', brand:'이니스프리 · 세럼 80ml', pct:89, best:false,
+    reasons:[{type:'match',label:'건성 적합'},{type:'ingr',label:'나이아신아마이드'},{type:'match',label:'향료 0'}] },
+  { emoji:'🌿', name:'라네즈 워터뱅크 블루 히알루로닉 세럼', brand:'라네즈 · 세럼 60ml', pct:85, best:false,
+    reasons:[{type:'match',label:'보습 특화'},{type:'ingr',label:'히알루론산 고함량'},{type:'match',label:'무파라벤'}] },
+  { emoji:'✨', name:'아벤느 하이드란스 인텐스 세럼', brand:'아벤느 · 세럼 30ml', pct:82, best:false,
+    reasons:[{type:'match',label:'민감성 추천'},{type:'ingr',label:'세라마이드'},{type:'match',label:'저자극'}] },
+  { emoji:'🌸', name:'닥터자르트 시카페어 세럼', brand:'닥터자르트 · 세럼 40ml', pct:78, best:false,
+    reasons:[{type:'match',label:'피부 장벽'},{type:'ingr',label:'판테놀'},{type:'match',label:'진정 특화'}] },
+  { emoji:'🍃', name:'에스트라 아토베리어 365 세럼', brand:'에스트라 · 세럼 50ml', pct:75, best:false,
+    reasons:[{type:'match',label:'아토피 케어'},{type:'ingr',label:'세라마이드'},{type:'match',label:'무향료'}] },
+];
+
+function toggle(el, type){
+  if(type==='avoid') el.classList.toggle('on');
+  else el.classList.toggle('on');
+}
+
+function showTab(n){
+  document.getElementById('step1').style.display = n===1 ? 'block' : 'none';
+  document.getElementById('step2').style.display = n===2 ? 'block' : 'none';
+  document.getElementById('tab1').classList.toggle('on', n===1);
+  document.getElementById('tab2').classList.toggle('on', n===2);
+}
+
+function runMatch(){
+  showTab(2);
+  document.getElementById('loading').style.display='block';
+  document.getElementById('resultWrap').style.display='none';
+  setTimeout(()=>{
+    document.getElementById('loading').style.display='none';
+    document.getElementById('resultWrap').style.display='block';
+    document.getElementById('resultCount').textContent = RESULTS.length + '개 제품';
+    document.getElementById('resultCards').innerHTML = RESULTS.map(p=>`
+      <div class="result-card ${p.best?'top':''}">
+        ${p.best ? '<div class="best-badge">🏆 최고 적합</div><br>' : ''}
+        <div class="rc-emoji">${p.emoji}</div>
+        <div class="rc-info">
+          <div class="rc-name">${p.name}</div>
+          <div class="rc-brand">${p.brand}</div>
+          <div class="rc-reasons">
+            ${p.reasons.map(r=>`<span class="rc-reason ${r.type}">${r.label}</span>`).join('')}
+          </div>
+        </div>
+        <div class="rc-right">
+          <div class="rc-pct">${p.pct}<span style="font-size:14px;opacity:0.5;">%</span></div>
+          <div class="rc-pct-label">적합도</div>
+        </div>
+      </div>
+    `).join('');
+  }, 2000);
+}
+</script>
+</body>
+</html>
