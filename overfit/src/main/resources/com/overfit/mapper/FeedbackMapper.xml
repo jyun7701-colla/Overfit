@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.overfit.mapper.FeedbackMapper">
+
+  <!-- 피드백 등록 (INSERT) -->
+  <insert id="insertFeedback" parameterType="FeedbackVO">
+    INSERT INTO t_feedback (reco_idx, user_id, fb_content, fb_img)
+    VALUES (#{reco_idx}, #{user_id}, #{fb_content}, #{fb_img})
+  </insert>
+
+  <!-- 제품별 피드백 조회 -->
+  <select id="getFeedbackByProduct" parameterType="int" resultType="FeedbackVO">
+    SELECT f.*
+    FROM t_feedback f
+    JOIN t_recommendation r ON f.reco_idx = r.reco_idx
+    WHERE r.prod_idx = #{prod_idx}
+    ORDER BY f.created_at DESC
+  </select>
+
+  <!-- 사용자별 피드백 조회 -->
+  <select id="getFeedbackByUser" parameterType="String" resultType="FeedbackVO">
+    SELECT * FROM t_feedback
+    WHERE user_id = #{user_id}
+    ORDER BY created_at DESC
+  </select>
+
+</mapper>

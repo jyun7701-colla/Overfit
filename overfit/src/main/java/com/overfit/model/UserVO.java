@@ -28,6 +28,12 @@ public class UserVO {
     private String birthdate;
     private String skin_type;
     private String joined_at;
+    
+
+    private String cur_pw;
+
+    public String getCur_pw()              { return cur_pw; }
+    public void   setCur_pw(String cur_pw) { this.cur_pw = cur_pw; }
 
     // ── Getter & Setter ──
 

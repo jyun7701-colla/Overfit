@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+  <!-- VO 클래스 별칭 설정 -->
+  <typeAliases>
+    <typeAlias type="com.overfit.model.UserVO"     alias="UserVO"/>
+    <typeAlias type="com.overfit.model.ProductVO"  alias="ProductVO"/>
+    <typeAlias type="com.overfit.model.ReviewVO"   alias="ReviewVO"/>
+    <typeAlias type="com.overfit.model.FeedbackVO" alias="FeedbackVO"/>
+  </typeAliases>
+
+  <!-- DB 연결 환경 설정 -->
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver"   value="org.mariadb.jdbc.Driver"/>
+        <property name="url"      value="jdbc:mariadb://mp.smhrd.or.kr:3306/lang9_core_overfit"/>
+        <property name="username" value="lang9_core_overfit"/>       <!-- 본인 DB 계정 -->
+        <property name="password" value="overfit9"/>       <!-- 본인 DB 비밀번호 -->
+      </dataSource>
+    </environment>
+  </environments>
+
+  <!-- Mapper XML 등록 -->
+  <mappers>
+    <mapper resource="com/overfit/mapper/UserMapper.xml"/>
+    <mapper resource="com/overfit/mapper/ProductMapper.xml"/>
+    <mapper resource="com/overfit/mapper/FeedbackMapper.xml"/>
+  </mappers>
+
+</configuration>

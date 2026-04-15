@@ -824,8 +824,8 @@ footer{
       <h2 class="modal-title">다시 만나서 반가워요</h2>
       <p class="modal-sub">클린 뷰티, 계속 이어가세요.</p>
       <div class="form-group">
-        <label>이메일</label>
-        <input type="email" placeholder="example@email.com" id="loginEmail">
+        <label>아이디</label>
+        <input type="text" placeholder="아이디를 입력하세요" id="loginId">
       </div>
       <div class="form-group">
         <label>비밀번호</label>
@@ -833,21 +833,7 @@ footer{
         <span class="form-hint"><a href="#" onclick="return false;">비밀번호를 잊으셨나요?</a></span>
       </div>
       <button class="modal-btn primary" onclick="handleLogin()">로그인</button>
-      <div class="modal-divider"><span>또는 소셜 로그인</span></div>
-      <div class="social-btns">
-        <button class="modal-btn social google" onclick="handleSocial('google')">
-          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Google로 계속하기
-        </button>
-        <button class="modal-btn social naver" onclick="handleSocial('naver')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
-          네이버로 계속하기
-        </button>
-        <button class="modal-btn social kakao" onclick="handleSocial('kakao')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.614 5.072 4.05 6.48l-1.03 3.84c-.09.34.29.62.59.43L9.9 19.2c.69.1 1.393.15 2.1.15 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
-          카카오로 계속하기
-        </button>
-      </div>
+
       <p class="modal-switch">계정이 없으신가요? <a href="#" onclick="switchModal('signup');return false;">회원가입</a></p>
     </div>
 
@@ -942,21 +928,7 @@ footer{
         </label>
       </div>
       <button class="modal-btn primary" onclick="handleSignup()">회원가입</button>
-      <div class="modal-divider"><span>또는 소셜 회원가입</span></div>
-      <div class="social-btns">
-        <button class="modal-btn social google" onclick="handleSocial('google')">
-          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Google로 계속하기
-        </button>
-        <button class="modal-btn social naver" onclick="handleSocial('naver')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
-          네이버로 계속하기
-        </button>
-        <button class="modal-btn social kakao" onclick="handleSocial('kakao')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.614 5.072 4.05 6.48l-1.03 3.84c-.09.34.29.62.59.43L9.9 19.2c.69.1 1.393.15 2.1.15 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
-          카카오로 계속하기
-        </button>
-      </div>
+    
       <p class="modal-switch">이미 계정이 있으신가요? <a href="#" onclick="switchModal('login');return false;">로그인</a></p>
     </div>
 
@@ -1395,17 +1367,28 @@ function handleUpdateInfo() {
   if(!email || !email.includes('@')) { alert('올바른 이메일을 입력해주세요.'); return; }
 
   // ── Servlet 연동 (t_user UPDATE) ──
-  // fetch('/api/user/update', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ nick, phone, email, gender, birthdate })
-  // }).then(r => r.json()).then(data => {
-  //   if(data.success) {
-  //     setLoggedIn(nick, email);
-  //     alert('정보가 수정되었습니다!');
-  //     closeMypage();
-  //   }
-  // });
+  fetch('/overfit/api/user/update', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user_id: sessionStorage.getItem('of_user_id'),
+      nick, phone, email, gender, birthdate
+    })
+  }).then(r => r.json()).then(data => {
+    if(data.success) {
+      document.getElementById('navUserName').textContent = nick;
+      document.getElementById('navAvatar').textContent   = nick.charAt(0).toUpperCase();
+      document.getElementById('mpNick').textContent      = nick;
+      document.getElementById('mpEmail').textContent     = email;
+      document.getElementById('mpAvatar').textContent    = nick.charAt(0).toUpperCase();
+      sessionStorage.setItem('of_nick',  nick);
+      sessionStorage.setItem('of_email', email);
+      alert('✅ 정보가 수정되었습니다!');
+      closeMypage();
+    } else {
+      alert(data.message);
+    }
+  }).catch(() => { alert('서버 연결에 실패했습니다.'); });
 
   // 네비 이름 업데이트
   document.getElementById('navUserName').textContent = nick;
@@ -1428,14 +1411,23 @@ function handleUpdatePw() {
   if(newPw !== confirmPw) { alert('새 비밀번호가 일치하지 않습니다.'); return; }
 
   // ── Servlet 연동 (t_user user_pw UPDATE) ──
-  // fetch('/api/user/password', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ cur_pw: curPw, new_pw: newPw })
-  // }).then(r => r.json()).then(data => {
-  //   if(data.success) { alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.'); handleLogout(); }
-  //   else { alert(data.message); }
-  // });
+  fetch('/overfit/api/user/password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user_id: sessionStorage.getItem('of_user_id'),
+      cur_pw: curPw,
+      new_pw: newPw
+    })
+  }).then(r => r.json()).then(data => {
+    if(data.success) {
+      alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.');
+      handleLogout();
+      closeMypage();
+    } else {
+      alert(data.message);
+    }
+  }).catch(() => { alert('서버 연결에 실패했습니다.'); });
 
   alert('✅ 비밀번호가 변경되었습니다. 다시 로그인해주세요.');
   handleLogout();
@@ -1448,13 +1440,22 @@ function handleUpdateSkin() {
   if(!skin_type) { alert('피부 타입을 선택해주세요.'); return; }
 
   // ── Servlet 연동 (t_user skin_type UPDATE) ──
-  // fetch('/api/user/skin', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ skin_type })
-  // }).then(r => r.json()).then(data => {
-  //   if(data.success) { alert('피부 타입이 수정되었습니다!'); closeMypage(); }
-  // });
+  fetch('/overfit/api/user/skin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user_id: sessionStorage.getItem('of_user_id'),
+      skin_type
+    })
+  }).then(r => r.json()).then(data => {
+    if(data.success) {
+      sessionStorage.setItem('of_skin_type', skin_type);
+      alert('✅ 피부 타입이 [' + skin_type + ']으로 수정되었습니다!');
+      closeMypage();
+    } else {
+      alert(data.message);
+    }
+  }).catch(() => { alert('서버 연결에 실패했습니다.'); });
 
   alert('✅ 피부 타입이 [' + skin_type + ']으로 수정되었습니다!');
   closeMypage();
@@ -1468,21 +1469,25 @@ function handleWithdraw() {
   if(!pw)     { alert('비밀번호를 입력해주세요.'); return; }
   if(!agreed) { alert('탈퇴 동의에 체크해주세요.'); return; }
 
-  if(!confirm('정말 탈퇴하시겠습니까?\n모든 데이터가 삭제됩니다.')) return;
-
   // ── Servlet 연동 (t_user DELETE) ──
-  // fetch('/api/user/withdraw', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ user_pw: pw })
-  // }).then(r => r.json()).then(data => {
-  //   if(data.success) { alert('탈퇴가 완료되었습니다.'); handleLogout(); }
-  //   else { alert(data.message); }
-  // });
-
-  alert('탈퇴가 완료되었습니다.');
-  handleLogout();
-  closeMypage();
+  fetch('/overfit/api/user/withdraw', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user_id: sessionStorage.getItem('of_user_id'),
+      user_pw: pw
+    })
+  }).then(r => r.json()).then(data => {
+    if(data.success) {
+      closeMypage();
+      handleLogout();
+      alert('탈퇴가 완료되었습니다.\n이용해주셔서 감사합니다.');
+    } else {
+      alert(data.message);
+    }
+  }).catch(() => {
+    alert('서버 연결에 실패했습니다.');
+  });
 }
 
 // ── 로그아웃 ──
@@ -1495,7 +1500,7 @@ function handleLogout() {
   document.querySelector('.nav-login').style.display  = '';
   document.querySelector('.nav-signup').style.display = '';
   document.getElementById('navUser').classList.remove('show');
-  // fetch('/api/logout', { method: 'POST' });
+  fetch('/overfit/api/logout', { method: 'POST' });
 }
 
 // ── 로그인 성공 시 setLoggedIn 호출 ──
@@ -1639,16 +1644,17 @@ function handleSocial(provider) {
 }
 
 function handleLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pw    = document.getElementById('loginPw').value;
-  if(!email || !email.includes('@')) { showErr('loginEmailErr','올바른 이메일을 입력해주세요.'); return; }
-  if(pw.length < 1) { showErr('loginPwErr','비밀번호를 입력해주세요.'); return; }
+  const userId = document.getElementById('loginId').value.trim();
+  const pw     = document.getElementById('loginPw').value;
+
+  if(!userId) { showErr('loginIdErr', '아이디를 입력해주세요.'); return; }
+  if(!pw)     { showErr('loginPwErr', '비밀번호를 입력해주세요.'); return; }
 
   // ── Servlet 연동 (t_user 테이블) ──
   fetch('/overfit/api/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user_id: email, user_pw: pw })
+    body: JSON.stringify({ user_id: userId, user_pw: pw })
   }).then(r => r.json()).then(data => {
     if(data.success) {
       closeModal();

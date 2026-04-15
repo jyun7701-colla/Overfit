@@ -1,12 +1,17 @@
 package com.overfit.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import com.overfit.database.UserDAO;
 import com.overfit.model.UserVO;
 
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
-
-import java.io.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Controller (Servlet)
@@ -32,16 +37,20 @@ public class LoginCon extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         res.setContentType("application/json;charset=UTF-8");
 
-        // 요청 JSON 읽기
         String body   = readBody(req);
-        String userId = extractJson(body, "user_id");
-        String userPw = extractJson(body, "user_pw");
+        String userId = extract(body, "user_id");
+        String userPw = extract(body, "user_pw");
 
         PrintWriter out = res.getWriter();
-        UserVO user = userDAO.loginUser(userId, userPw);
+
+        // ── UserVO에 담아서 전달 ──
+        UserVO loginInfo = new UserVO();
+        loginInfo.setUser_id(userId);
+        loginInfo.setUser_pw(userPw);
+
+        UserVO user = userDAO.loginUser(loginInfo);
 
         if (user != null) {
-            // 세션에 로그인 정보 저장
             HttpSession session = req.getSession(true);
             session.setAttribute("user_id",   user.getUser_id());
             session.setAttribute("nick",      user.getNick());
@@ -49,9 +58,9 @@ public class LoginCon extends HttpServlet {
             session.setAttribute("skin_type", user.getSkin_type());
 
             out.print("{\"success\":true,"
-                    + "\"user_id\":\""   + user.getUser_id()   + "\","
-                    + "\"nick\":\""      + user.getNick()       + "\","
-                    + "\"email\":\""     + user.getEmail()      + "\","
+                    + "\"user_id\":\""   + user.getUser_id()       + "\","
+                    + "\"nick\":\""      + user.getNick()           + "\","
+                    + "\"email\":\""     + user.getEmail()          + "\","
                     + "\"skin_type\":\"" + nvl(user.getSkin_type()) + "\"}");
         } else {
             res.setStatus(401);
@@ -59,18 +68,6 @@ public class LoginCon extends HttpServlet {
         }
     }
 
-    // ── GET /api/logout ──
-    @WebServlet("/api/logout")
-    public static class LogoutCon extends HttpServlet {
-        @Override
-        protected void doGet(HttpServletRequest req, HttpServletResponse res)
-                throws IOException {
-            res.setContentType("application/json;charset=UTF-8");
-            HttpSession session = req.getSession(false);
-            if (session != null) session.invalidate();
-            res.getWriter().print("{\"success\":true}");
-        }
-    }
 
     // ── 공통 유틸 ──
     String readBody(HttpServletRequest req) throws IOException {
@@ -82,7 +79,7 @@ public class LoginCon extends HttpServlet {
         return sb.toString();
     }
 
-    String extractJson(String json, String key) {
+    private String extract(String json, String key) {
         String search = "\"" + key + "\"";
         int idx = json.indexOf(search);
         if (idx == -1) return "";
@@ -93,5 +90,7 @@ public class LoginCon extends HttpServlet {
         return json.substring(start, end).trim();
     }
 
-    String nvl(String s) { return s == null ? "" : s; }
+    private String nvl(String s) {
+        return s == null ? "" : s;
+    }
 }
