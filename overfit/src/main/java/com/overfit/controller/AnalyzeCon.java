@@ -98,7 +98,7 @@ public class AnalyzeCon extends HttpServlet {
             try (OutputStream os = conn.getOutputStream()) {
                 String ext    = contentType.contains("png") ? "png" : "jpg";
                 String header = "--" + boundary + "\r\n"
-                        + "Content-Disposition: form-data; name=\"file\"; filename=\"photo." + ext + "\"\r\n"
+                		+ "Content-Disposition: form-data; name=\"photo\"; filename=\"photo." + ext + "\"\r\n"
                         + "Content-Type: " + contentType + "\r\n\r\n";
                 os.write(header.getBytes("UTF-8"));
                 os.write(imageBytes);
@@ -112,6 +112,7 @@ public class AnalyzeCon extends HttpServlet {
                 String line;
                 while ((line = br.readLine()) != null) sb.append(line);
             }
+            System.out.println("[DEBUG] Python 응답: " + sb.toString());
             return sb.toString();
 
         } catch (Exception e) {
@@ -119,6 +120,8 @@ public class AnalyzeCon extends HttpServlet {
             return null;
         }
     }
+    
+    
 
     private String extractJson(String json, String key) {
         String search = "\"" + key + "\"";

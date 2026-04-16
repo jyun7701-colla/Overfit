@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>셀럽 매칭 — OverFit</title>
+<title>셀럽 매칭 — OverPick</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -202,7 +202,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <body>
 
 <nav>
-  <a class="nav-logo" href="/overfit/index.html">OVERFIT</a>
+  <a class="nav-logo" href="/overpick/index.html">OVERPICK</a>
   <span class="nav-page-title">셀럽 매칭</span>
   <div class="nav-right-wrap">
     <div class="nav-user-chip" id="navChip">
@@ -210,13 +210,13 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       <span class="nav-uname" id="navUn">닉네임</span>
       <span class="nav-skin-badge" id="navSk">건성</span>
     </div>
-    <a class="nav-back" href="/overfit/index.html">← 홈</a>
+    <a class="nav-back" href="/overpick/index.html">← 홈</a>
   </div>
 </nav>
 
 <div class="login-banner" id="loginBanner">
   🔒 로그인하면 내 퍼스널 컬러와 동일한 셀럽이 자동 매칭됩니다!
-  <button class="login-banner-btn" onclick="location.href='/overfit/index.html'">로그인하러 가기</button>
+  <button class="login-banner-btn" onclick="location.href='/overpick/index.html'">로그인하러 가기</button>
 </div>
 
 <div class="page-hero">
@@ -309,11 +309,11 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <div class="fb-overlay" id="fbOv" onclick="closeFb()">
   <div class="fb-modal" onclick="event.stopPropagation()">
     <button class="fb-close" onclick="closeFb()">✕</button>
-    <div class="fb-logo">OVERFIT</div>
+    <div class="fb-logo">OVERPICK</div>
     <div class="fb-title">리뷰 작성</div>
     <div class="fb-prod" id="fbProd"></div>
     <div id="fbNeedLogin" style="display:none;">
-      <div class="fb-notice">🔒 리뷰는 로그인 후 작성 가능합니다.<button onclick="location.href='/overfit/index.html'">로그인하러 가기</button></div>
+      <div class="fb-notice">🔒 리뷰는 로그인 후 작성 가능합니다.<button onclick="location.href='/overpick/index.html'">로그인하러 가기</button></div>
     </div>
     <div id="fbFormWrap">
       <span class="fb-label">별점 (t_feedback.rating)</span>
@@ -390,38 +390,44 @@ function analyzePersonalColor() {
   formData.append('photo', fileInput.files[0]);
 
   fetch('http://localhost:8000/analyze', { method: 'POST', body: formData })
-  .then(r => r.json())
-  .then(data => {
-    document.getElementById('analyzeLoading').style.display = 'none';
-    document.getElementById('analyzeBtn').disabled = false;
-
-    if (!data.success) { alert(data.message || '분석에 실패했습니다.'); return; }
-
-    const colorMap = {
-      '봄웜':  { bg:'linear-gradient(135deg,#FFB347,#FF8C69)', emoji:'🌸' },
-      '여름쿨': { bg:'linear-gradient(135deg,#87CEEB,#DDA0DD)', emoji:'🌊' },
-      '가을웜': { bg:'linear-gradient(135deg,#D2691E,#DAA520)', emoji:'🍂' },
-      '겨울쿨': { bg:'linear-gradient(135deg,#4169E1,#800080)', emoji:'❄️' }
-    };
-    const cm = colorMap[data.personal_color] || { bg:'var(--pink)', emoji:'✨' };
-
-    document.getElementById('resultBadge').textContent       = cm.emoji + ' ' + data.personal_color;
-    document.getElementById('resultBadge').style.background  = cm.bg;
-    document.getElementById('resultDesc').textContent        = data.description;
-    document.getElementById('resultColors').textContent      = data.colors;
-    document.getElementById('resultMakeup').textContent      = data.makeup;
-    document.getElementById('resultAvoid').textContent       = data.avoid;
-    document.getElementById('resultBox').style.display       = 'block';
-
-    // 셀럽 매칭 업데이트
-    if (data.celebs && data.celebs.length > 0) {
-      updateCelebsByPersonalColor(data.personal_color, data.celebs);
-    }
+  .then(r => {
+      console.log('상태코드:', r.status);
+      return r.text();
   })
-  .catch(() => {
-    document.getElementById('analyzeLoading').style.display = 'none';
-    document.getElementById('analyzeBtn').disabled = false;
-    alert('분석 서버에 연결할 수 없습니다.\nPython 서버가 실행 중인지 확인해주세요.');
+  .then(text => {
+      console.log('응답내용:', text);
+      const data = JSON.parse(text);
+      
+      document.getElementById('analyzeLoading').style.display = 'none';
+      document.getElementById('analyzeBtn').disabled = false;
+
+      if (!data.success) { alert(data.message || '분석에 실패했습니다.'); return; }
+
+      const colorMap = {
+        '봄웜':  { bg:'linear-gradient(135deg,#FFB347,#FF8C69)', emoji:'🌸' },
+        '여름쿨': { bg:'linear-gradient(135deg,#87CEEB,#DDA0DD)', emoji:'🌊' },
+        '가을웜': { bg:'linear-gradient(135deg,#D2691E,#DAA520)', emoji:'🍂' },
+        '겨울쿨': { bg:'linear-gradient(135deg,#4169E1,#800080)', emoji:'❄️' }
+      };
+      const cm = colorMap[data.personal_color] || { bg:'var(--pink)', emoji:'✨' };
+
+      document.getElementById('resultBadge').textContent       = cm.emoji + ' ' + data.personal_color;
+      document.getElementById('resultBadge').style.background  = cm.bg;
+      document.getElementById('resultDesc').textContent        = data.description;
+      document.getElementById('resultColors').textContent      = data.colors;
+      document.getElementById('resultMakeup').textContent      = data.makeup;
+      document.getElementById('resultAvoid').textContent       = data.avoid;
+      document.getElementById('resultBox').style.display       = 'block';
+
+      if (data.celebs && data.celebs.length > 0) {
+        updateCelebsByPersonalColor(data.personal_color, data.celebs);
+      }
+  })
+  .catch((err) => {
+      console.error('fetch 에러:', err);
+      document.getElementById('analyzeLoading').style.display = 'none';
+      document.getElementById('analyzeBtn').disabled = false;
+      alert('에러: ' + err.message);
   });
 }
 
@@ -446,20 +452,23 @@ function updateCelebsByPersonalColor(personalColor, celebs) {
   }
 
   // ── Best Match 카드 ──
-  document.getElementById('bestCard').style.display = 'flex';
-  const best = celebs[0];
-  document.getElementById('bcAva').style.background = cm.bg;
-  document.getElementById('bcAva').textContent      = cm.emoji;
-  document.getElementById('bcName').textContent     = best.celeb_name;
-  document.getElementById('bcSkintype').textContent = personalColor + ' 퍼스널컬러';
-  document.getElementById('bcPct').textContent      = '매칭!';
-  document.getElementById('bcProdList').innerHTML   =
-    celebs.slice(0,3).map(c =>
-      `<div class="bc-prod-item">
-        <span class="bc-prod-emoji">💄</span>
-        <span class="bc-prod-name">${c.celeb_name} — ${c.prod_name || ''}</span>
-      </div>`
+  const bestCard = document.getElementById('bestCard');
+  if (bestCard) {
+  	bestCard.style.display = 'flex';
+  	const best = celebs[0];
+  	document.getElementById('bcAva').style.background = cm.bg;
+  	document.getElementById('bcAva').textContent      = cm.emoji;
+  	document.getElementById('bcName').textContent     = best.celeb_name;
+  	document.getElementById('bcSkintype').textContent = personalColor + ' 퍼스널컬러';
+  	document.getElementById('bcPct').textContent      = '매칭!';
+  	document.getElementById('bcProdList').innerHTML   =
+    	celebs.slice(0,3).map(c =>
+      		`<div class="bc-prod-item">
+        		<span class="bc-prod-emoji">💄</span>
+        		<span class="bc-prod-name">${c.celeb_name} — ${c.prod_name || ''}</span>
+      		</div>`
     ).join('');
+}
 
   // ── 중복 없는 셀럽 목록 ──
   const uniqueCelebs = [];

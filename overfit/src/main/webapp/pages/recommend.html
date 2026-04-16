@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>맞춤 추천 — OverFit</title>
+<title>맞춤 추천 — OverPick</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -136,7 +136,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <body>
 
 <nav>
-  <a class="nav-logo" href="/overfit/index.html">OVERFIT</a>
+  <a class="nav-logo" href="/overpick/index.html">OVERPICK</a>
   <span class="nav-page-title">맞춤 추천</span>
   <div class="nav-right-wrap">
     <div class="nav-user-chip" id="navChip">
@@ -144,13 +144,13 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       <span class="nav-uname" id="navUn">닉네임</span>
       <span class="nav-skin-badge" id="navSk">건성</span>
     </div>
-    <a class="nav-back" href="/overfit/index.html">← 홈</a>
+    <a class="nav-back" href="/overpick/index.html">← 홈</a>
   </div>
 </nav>
 
 <div class="login-banner" id="loginBanner">
   🔒 로그인하면 내 피부 타입(t_user.skin_type)이 자동으로 불러와집니다!
-  <button class="login-banner-btn" onclick="location.href='/overfit/index.html'">로그인하러 가기</button>
+  <button class="login-banner-btn" onclick="location.href='/overpick/index.html'">로그인하러 가기</button>
 </div>
 
 <div class="page-hero">
@@ -266,11 +266,11 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <div class="fb-overlay" id="fbOv" onclick="closeFb()">
   <div class="fb-modal" onclick="event.stopPropagation()">
     <button class="fb-close" onclick="closeFb()">✕</button>
-    <div class="fb-logo">OVERFIT</div>
+    <div class="fb-logo">OVERPICK</div>
     <div class="fb-title">리뷰 작성</div>
     <div class="fb-prod" id="fbProd"></div>
     <div id="fbNeedLogin" style="display:none;">
-      <div class="fb-notice">🔒 리뷰는 로그인 후 작성 가능합니다.<button onclick="location.href='/overfit/index.html'">로그인하러 가기</button></div>
+      <div class="fb-notice">🔒 리뷰는 로그인 후 작성 가능합니다.<button onclick="location.href='/overpick/index.html'">로그인하러 가기</button></div>
     </div>
     <div id="fbFormWrap">
       <span class="fb-label">별점 (rating)</span>
@@ -341,58 +341,131 @@ function showTab(n){
   document.getElementById('tab2').classList.toggle('on',n===2);
 }
 
-// t_recommendation + t_product + t_ingredient 통합 결과 데이터
-const RESULTS=[
-  {prod_idx:1,emoji:'🧴',prod_name:'COSRX 스내일 96 뮤신 파워 에센스',brand_name:'COSRX',category:'세럼',pct:94,best:true,
-   reco_reason:'건성 피부 최적합 · 히알루론산 고함량 · 파라벤 미포함 · allergy_check=N',
-   reasons:[{type:'r-match',label:'건성 최적합'},{type:'r-ingr',label:'히알루론산'},{type:'r-match',label:'파라벤 0'}]},
-  {prod_idx:2,emoji:'💧',prod_name:'이니스프리 그린티 히알루론산 세럼',brand_name:'이니스프리',category:'세럼',pct:89,best:false,
-   reco_reason:'건성 적합 · 나이아신아마이드 함유 · 향료 미포함',
-   reasons:[{type:'r-match',label:'건성 적합'},{type:'r-ingr',label:'나이아신아마이드'},{type:'r-match',label:'향료 0'}]},
-  {prod_idx:3,emoji:'🌿',prod_name:'라네즈 워터뱅크 블루 히알루로닉 세럼',brand_name:'라네즈',category:'세럼',pct:85,best:false,
-   reco_reason:'보습 특화 · 히알루론산 고함량 · 무파라벤',
-   reasons:[{type:'r-match',label:'보습 특화'},{type:'r-ingr',label:'히알루론산 고함량'},{type:'r-match',label:'무파라벤'}]},
-  {prod_idx:4,emoji:'✨',prod_name:'아벤느 하이드란스 인텐스 세럼',brand_name:'아벤느',category:'세럼',pct:82,best:false,
-   reco_reason:'민감성 추천 · 세라마이드 함유 · 저자극 처방',
-   reasons:[{type:'r-match',label:'민감성 추천'},{type:'r-ingr',label:'세라마이드'},{type:'r-match',label:'저자극'}]},
-  {prod_idx:5,emoji:'🌸',prod_name:'닥터자르트 시카페어 세럼',brand_name:'닥터자르트',category:'세럼',pct:78,best:false,
-   reco_reason:'피부 장벽 강화 · 판테놀 함유 · 진정 특화',
-   reasons:[{type:'r-match',label:'피부 장벽'},{type:'r-ingr',label:'판테놀'},{type:'r-match',label:'진정'}]},
-  {prod_idx:6,emoji:'🍃',prod_name:'에스트라 아토베리어 365 세럼',brand_name:'에스트라',category:'세럼',pct:75,best:false,
-   reco_reason:'아토피 케어 · 세라마이드 함유 · 무향료',
-   reasons:[{type:'r-match',label:'아토피 케어'},{type:'r-ingr',label:'세라마이드'},{type:'r-match',label:'무향료'}]},
-];
 
-function runMatch(){
+//기존 runMatch() 함수 전체를 이걸로 교체
+
+async function runMatch() {
   showTab(2);
-  document.getElementById('loadingWrap').style.display='block';
-  document.getElementById('resultWrap').style.display='none';
-  setTimeout(()=>{
-    document.getElementById('loadingWrap').style.display='none';
-    document.getElementById('resultWrap').style.display='block';
-    document.getElementById('rCount').textContent=RESULTS.length+'개';
-    document.getElementById('resultCards').innerHTML=RESULTS.map(p=>`
-      <div class="result-card ${p.best?'top':''}">
-        <div class="rc-emoji">${p.emoji}</div>
-        <div class="rc-info">
-          ${p.best?'<div class="best-badge">🏆 최고 적합</div>':''}
-          <div class="rc-name">${p.prod_name}</div>
-          <div class="rc-brand">${p.brand_name} · ${p.category}</div>
-          <div class="rc-reasons">
-            ${p.reasons.map(r=>`<span class="rc-reason ${r.type}">${r.label}</span>`).join('')}
+  document.getElementById('loadingWrap').style.display = 'block';
+  document.getElementById('resultWrap').style.display = 'none';
+
+  // 선택된 피부 타입 가져오기 (세션 우선, 없으면 직접 선택)
+  let skinType = S.skin;
+  const selectedPill = document.querySelector('#skinPills .pill.on');
+  if (selectedPill) skinType = selectedPill.textContent.trim();
+
+  if (!skinType) {
+    alert('피부 타입을 선택해주세요.');
+    showTab(1);
+    return;
+  }
+
+  try {
+    // ① FastAPI 추천 호출
+    const res = await fetch(`http://127.0.0.1:8000/recommend-by-skin/${skinType}?top_n=10`);
+    const data = await res.json();
+    const products = data.recommendations || [];
+
+    document.getElementById('loadingWrap').style.display = 'none';
+    document.getElementById('resultWrap').style.display = 'block';
+    document.getElementById('rCount').textContent = products.length + '개';
+    document.getElementById('saveBtn').style.display = S.loggedIn ? 'block' : 'none';
+
+    // 최고 점수 기준으로 적합도 % 계산
+    const maxScore = Math.max(...products.map(p => p.score));
+    const minScore = Math.min(...products.map(p => p.score));
+    
+    products.sort((a, b) => b.score - a.score);
+
+    document.getElementById('resultCards').innerHTML = products.map((p, i) => {
+        const pct = minScore === maxScore ? 95 : Math.round(75 + ((p.score - minScore) / (maxScore - minScore)) * 20);
+        const isTop = i === 0;
+        const emoji = ['🧴','💧','🌿','✨','🌸','🍃','🌙','🫧','🌾','💎'][i] || '🧴';
+
+      return `
+        <div class="result-card ${isTop ? 'top' : ''}" onclick="openAnalyze(${p.prod_idx}, '${p.prod_name.replace(/'/g,"\\'")}')">
+          <div class="rc-emoji">${emoji}</div>
+          <div class="rc-info">
+            ${isTop ? '<div class="best-badge">🏆 최고 적합</div>' : ''}
+            <div class="rc-name">${p.prod_name}</div>
+            <div class="rc-brand">${p.brand_name} · ${p.category}</div>
+            <div class="rc-reasons">
+              <span class="rc-reason r-match">${p.target_skin || ''}</span>
+              <span class="rc-reason r-ingr">성분점수 ${p.score}</span>
+            </div>
+            <div class="reco-reason-txt">클릭하면 리뷰 분석 결과를 볼 수 있어요 👆</div>
           </div>
-          <div class="reco-reason-txt">추천사유: ${p.reco_reason}</div>
+          <div class="rc-right">
+            <div>
+              <div class="rc-pct">${pct}<span style="font-size:13px;opacity:0.5;">%</span></div>
+              <div class="rc-pct-label">적합도</div>
+            </div>
+            <button class="fb-btn-sm" onclick="event.stopPropagation();openFb(${p.prod_idx},'${p.prod_name.replace(/'/g,"\\'")}')">📝 리뷰</button>
+          </div>
+        </div>`;
+    }).join('');
+
+  } catch (e) {
+    document.getElementById('loadingWrap').style.display = 'none';
+    alert('추천 서버에 연결할 수 없습니다. FastAPI 서버가 실행 중인지 확인해주세요.');
+    showTab(1);
+  }
+}
+
+// ② 제품 클릭 시 리뷰 분석 모달
+let analyzeModal = null;
+
+async function openAnalyze(prodIdx, prodName) {
+  // 모달 생성
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:400;background:rgba(43,35,32,0.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:22px;width:100%;max-width:480px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;">
+      <button onclick="this.closest('[style]').remove()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:16px;color:#C4ADA8;cursor:pointer;">✕</button>
+      <div style="font-family:var(--serif);font-size:13px;color:var(--pink);margin-bottom:8px;">OVERPICK · 리뷰 분석</div>
+      <div style="font-family:var(--serif);font-size:20px;color:var(--dark);margin-bottom:4px;">${prodName}</div>
+      <div style="font-size:12px;color:var(--mid);margin-bottom:20px;">GPT가 뒷광고를 걸러내고 리뷰를 분석합니다...</div>
+      <div id="analyzeResult" style="text-align:center;padding:20px 0;">
+        <div class="dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+  try {
+    const res = await fetch(`http://127.0.0.1:8000/review/analyze/${prodIdx}`);
+    const d = await res.json();
+
+    const recoColor = d.recommendation === '추천' ? '#16A34A' : '#DC2626';
+    const recoBg = d.recommendation === '추천' ? '#DCFCE7' : '#FEF2F2';
+
+    document.getElementById('analyzeResult').innerHTML = `
+      <div style="background:${recoBg};border-radius:14px;padding:16px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:28px;margin-bottom:6px;">${d.recommendation === '추천' ? '👍' : '👎'}</div>
+        <div style="font-size:20px;font-weight:700;color:${recoColor};">${d.recommendation}</div>
+        <div style="font-size:12px;color:#7A6560;margin-top:4px;">뒷광고 ${d.ad_filtered_count}건 필터링 · 총 ${d.total_reviews}개 리뷰 분석</div>
+      </div>
+      <div style="text-align:left;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:#C4ADA8;letter-spacing:0.5px;margin-bottom:8px;">핵심 이유</div>
+        ${(d.reasons||[]).map(r=>`<div style="font-size:13px;color:#2B2320;padding:5px 0;border-bottom:1px solid rgba(43,35,32,0.06);">· ${r}</div>`).join('')}
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <div style="flex:1;background:#EFF6FF;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;font-weight:700;color:#1D4ED8;margin-bottom:6px;">👍 긍정 키워드</div>
+          ${(d.positive_keywords||[]).map(k=>`<div style="font-size:12px;color:#2B2320;margin-bottom:3px;">${k}</div>`).join('')}
         </div>
-        <div class="rc-right">
-          <div>
-            <div class="rc-pct">${p.pct}<span style="font-size:13px;opacity:0.5;">%</span></div>
-            <div class="rc-pct-label">적합도</div>
-          </div>
-          <button class="fb-btn-sm" onclick="openFb(${p.prod_idx},'${p.prod_name}')">📝 리뷰</button>
+        <div style="flex:1;background:#FEF2F2;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;font-weight:700;color:#DC2626;margin-bottom:6px;">👎 부정 키워드</div>
+          ${(d.negative_keywords||[]).map(k=>`<div style="font-size:12px;color:#2B2320;margin-bottom:3px;">${k}</div>`).join('')}
         </div>
       </div>
-    `).join('');
-  },2000);
+      <div style="background:#FCEEF1;border-radius:12px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#C4ADA8;margin-bottom:4px;">적합 피부타입</div>
+        <div style="font-size:14px;font-weight:600;color:#E8637A;">${d.suitable_skin || '-'}</div>
+      </div>`;
+  } catch (e) {
+    document.getElementById('analyzeResult').innerHTML = '<p style="color:#DC2626;">분석 서버에 연결할 수 없습니다.</p>';
+  }
 }
 
 // t_recommendation 저장

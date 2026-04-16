@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>클린 검색 — OverFit</title>
+<title>클린 검색 — OverPick</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -50,18 +50,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .chip{padding:5px 14px;border-radius:18px;border:1px solid rgba(43,35,32,0.12);font-size:12px;color:var(--mid);cursor:pointer;background:var(--white);transition:all 0.2s;}
 .chip.on,.chip:hover{border-color:var(--pink);color:var(--pink);background:var(--pink-pal);}
 
-.content{max-width:1120px;margin:0 auto;padding:36px 48px 80px;display:grid;grid-template-columns:230px 1fr;gap:28px;align-items:start;}
-.sidebar{background:var(--white);border-radius:18px;padding:20px;border:1px solid rgba(43,35,32,0.07);position:sticky;top:72px;}
-.sidebar-title{font-size:10px;font-weight:700;letter-spacing:0.8px;color:var(--light);text-transform:uppercase;margin-bottom:14px;}
-.filter-section{margin-bottom:18px;}
-.filter-label{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:7px;display:block;}
-.filter-options{display:flex;flex-direction:column;gap:7px;}
-.filter-opt{display:flex;align-items:center;gap:8px;cursor:pointer;}
-.filter-opt input{width:14px;height:14px;accent-color:var(--pink);cursor:pointer;}
-.filter-opt span{font-size:12px;color:var(--mid);font-weight:300;}
-.fdivider{height:1px;background:rgba(43,35,32,0.06);margin:14px 0;}
-.apply-btn{width:100%;padding:10px;border-radius:18px;background:var(--dark);color:#fff;border:none;font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:background 0.2s;}
-.apply-btn:hover{background:var(--pink);}
+.content{max-width:860px;margin:0 auto;padding:36px 48px 80px;}
 
 .results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
 .results-count{font-size:14px;color:var(--mid);font-weight:300;}
@@ -98,6 +87,13 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .fb-btn{padding:5px 12px;border-radius:12px;border:1px solid rgba(43,35,32,0.12);background:transparent;font-size:11px;color:var(--mid);cursor:pointer;font-family:var(--sans);transition:all 0.2s;}
 .fb-btn:hover{border-color:var(--pink);color:var(--pink);}
 
+/* 로딩 dots */
+.dots{display:inline-flex;gap:6px;align-items:center;}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--pink);animation:bop 1.2s infinite;}
+.dots span:nth-child(2){animation-delay:0.2s;}
+.dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bop{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
 /* FEEDBACK MODAL */
 .fb-overlay{position:fixed;inset:0;z-index:300;background:rgba(43,35,32,0.45);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;}
 .fb-overlay.open{opacity:1;pointer-events:all;}
@@ -122,13 +118,17 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .page-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(43,35,32,0.10);background:var(--white);font-size:13px;color:var(--mid);cursor:pointer;transition:all 0.2s;font-family:var(--sans);}
 .page-btn.on{background:var(--dark);color:#fff;border-color:var(--dark);}
 
-@media(max-width:800px){nav,.page-hero,.login-banner{padding-left:20px;padding-right:20px;}.content{grid-template-columns:1fr;padding:20px 20px 60px;}.sidebar{position:static;}}
+@media(max-width:800px){
+  nav,.page-hero,.login-banner{padding-left:20px;padding-right:20px;}
+  .content{grid-template-columns:1fr;padding:20px 20px 60px;}
+  
+}
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="/overfit/index.html">OVERFIT</a>
+  <a class="nav-logo" href="/overpick/index.html">OVERPICK</a>
   <span class="nav-page-title">클린 검색</span>
   <div class="nav-right-wrap">
     <div class="nav-user-chip" id="navChip">
@@ -136,13 +136,13 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       <span class="nav-uname" id="navUn">닉네임</span>
       <span class="nav-skin-badge" id="navSk">건성</span>
     </div>
-    <a class="nav-back" href="/overfit/index.html">← 홈</a>
+    <a class="nav-back" href="/overpick/index.html">← 홈</a>
   </div>
 </nav>
 
 <div class="login-banner" id="loginBanner">
   🔒 로그인하면 내 피부 타입(skin_type)이 자동 적용돼요!
-  <button class="login-banner-btn" onclick="location.href='/overfit/index.html'">로그인하러 가기</button>
+  <button class="login-banner-btn" onclick="location.href='/overpick/index.html'">로그인하러 가기</button>
 </div>
 
 <div class="page-hero">
@@ -151,11 +151,11 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   <p class="page-desc">GPT-4o가 협찬·뒷광고·PPL 리뷰를 문맥으로 식별·제거합니다. t_ingredient의 allergy_check, recommended_skin, sensitive_skin 데이터를 바탕으로 성분까지 분석해드립니다.</p>
   <div class="auto-banner" id="autoBanner">✅ <strong id="autoSkinTxt">건성</strong> 피부 타입이 자동 적용되었습니다 (t_user.skin_type)</div>
   <div class="search-wrap">
-    <input type="text" id="searchInput" placeholder="제품명, 성분, 피부 고민 검색...">
+    <input type="text" id="searchInput" placeholder="제품명, 성분, 피부 고민 검색..." onkeydown="if(event.key==='Enter')doSearch()">
     <button class="search-btn" onclick="doSearch()">검색하기</button>
   </div>
   <div class="filter-row" id="chipArea">
-    <span class="chip on" onclick="this.classList.toggle('on')">🛡️ 광고 제외</span>
+    <span class="chip on">🛡 광고 제외</span>
     <span class="chip" onclick="this.classList.toggle('on')">건성</span>
     <span class="chip" onclick="this.classList.toggle('on')">지성</span>
     <span class="chip" onclick="this.classList.toggle('on')">민감성</span>
@@ -167,53 +167,12 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 </div>
 
 <div class="content">
-  <aside class="sidebar">
-    <div class="sidebar-title">상세 필터</div>
-    <div class="filter-section">
-      <span class="filter-label">피부 타입 (target_skin)</span>
-      <div class="filter-options" id="skinCbs">
-        <label class="filter-opt"><input type="checkbox" value="건성"><span>건성</span></label>
-        <label class="filter-opt"><input type="checkbox" value="지성"><span>지성</span></label>
-        <label class="filter-opt"><input type="checkbox" value="복합성"><span>복합성</span></label>
-        <label class="filter-opt"><input type="checkbox" value="민감성"><span>민감성</span></label>
-        <label class="filter-opt"><input type="checkbox" value="아토피"><span>아토피</span></label>
-      </div>
-    </div>
-    <div class="fdivider"></div>
-    <div class="filter-section">
-      <span class="filter-label">카테고리 (category)</span>
-      <div class="filter-options">
-        <label class="filter-opt"><input type="checkbox" checked><span>세럼/앰플</span></label>
-        <label class="filter-opt"><input type="checkbox"><span>토너</span></label>
-        <label class="filter-opt"><input type="checkbox"><span>크림</span></label>
-        <label class="filter-opt"><input type="checkbox"><span>선크림</span></label>
-      </div>
-    </div>
-    <div class="fdivider"></div>
-    <div class="filter-section">
-      <span class="filter-label">알레르기 성분 제외 (allergy_check)</span>
-      <div class="filter-options">
-        <label class="filter-opt"><input type="checkbox" checked><span>파라벤</span></label>
-        <label class="filter-opt"><input type="checkbox" checked><span>향료</span></label>
-        <label class="filter-opt"><input type="checkbox"><span>알코올</span></label>
-        <label class="filter-opt"><input type="checkbox"><span>실리콘</span></label>
-      </div>
-    </div>
-    <div class="fdivider"></div>
-    <div class="filter-section">
-      <span class="filter-label">광고 판별 (ad_flag)</span>
-      <div class="filter-options">
-        <label class="filter-opt"><input type="checkbox" checked><span>광고 제외 (N만)</span></label>
-      </div>
-    </div>
-    <button class="apply-btn" onclick="doSearch()">필터 적용</button>
-  </aside>
 
   <main>
     <div class="results-header">
-      <div class="results-count">총 <strong id="rcnt">6건</strong> · 클린 결과</div>
+      <div class="results-count">총 <strong id="rcnt">0건</strong> · 클린 결과</div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span class="ad-removed">✓ 광고 리뷰 128건 제거됨</span>
+        <span class="ad-removed" id="adRemovedBadge" style="display:none;">✓ 광고 리뷰 제거됨</span>
         <div class="sort-row">
           <button class="sort-btn on" onclick="setSt(this)">적합도순</button>
           <button class="sort-btn" onclick="setSt(this)">별점순</button>
@@ -221,7 +180,12 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
         </div>
       </div>
     </div>
-    <div class="product-grid" id="grid"></div>
+    <div class="product-grid" id="grid">
+      <div style="text-align:center;padding:60px 0;color:var(--light);">
+        <div style="font-size:32px;margin-bottom:12px;">🔍</div>
+        <div style="font-size:14px;">검색어를 입력하면 클린 결과를 보여드려요</div>
+      </div>
+    </div>
     <div class="pagination">
       <button class="page-btn on">1</button>
       <button class="page-btn">2</button>
@@ -236,11 +200,11 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 <div class="fb-overlay" id="fbOv" onclick="closeFb()">
   <div class="fb-modal" onclick="event.stopPropagation()">
     <button class="fb-close" onclick="closeFb()">✕</button>
-    <div class="fb-logo">OVERFIT</div>
+    <div class="fb-logo">OVERPICK</div>
     <div class="fb-title">리뷰 작성</div>
     <div class="fb-prod" id="fbProd"></div>
     <div id="fbNeedLogin" style="display:none;">
-      <div class="fb-notice">🔒 리뷰는 로그인 후 작성 가능합니다.<button onclick="location.href='/overfit/index.html'">로그인하러 가기</button></div>
+      <div class="fb-notice">🔒 리뷰는 로그인 후 작성 가능합니다.<button onclick="location.href='/overpick/index.html'">로그인하러 가기</button></div>
     </div>
     <div id="fbFormWrap">
       <span class="fb-label">별점 (rating)</span>
@@ -259,7 +223,6 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 </div>
 
 <script>
-// ── sessionStorage에서 로그인 정보 읽기 ──
 const S = {
   loggedIn: sessionStorage.getItem('of_logged')==='true',
   userId:   sessionStorage.getItem('of_user_id')||'',
@@ -268,82 +231,146 @@ const S = {
   email:    sessionStorage.getItem('of_email')||''
 };
 
-let curRating=0;
-let fbProdIdx=null;
+let curRating = 0;
+let fbProdIdx = null;
 
 window.onload = () => {
   if(S.loggedIn){
     document.getElementById('loginBanner').style.display='none';
-    let chip = document.getElementById('navChip');
-    chip.style.display='flex';
+    document.getElementById('navChip').style.display='flex';
     document.getElementById('navAv').textContent = S.nick.charAt(0).toUpperCase();
     document.getElementById('navUn').textContent = S.nick;
     if(S.skin){
       document.getElementById('navSk').textContent = S.skin;
-      // 자동 피부 타입 배너 표시
-      let ab = document.getElementById('autoBanner');
-      ab.style.display='flex';
-      document.getElementById('autoSkinTxt').textContent=S.skin;
-      // 사이드바 자동 체크
+      document.getElementById('autoBanner').style.display='flex';
+      document.getElementById('autoSkinTxt').textContent = S.skin;
       document.querySelectorAll('#skinCbs input').forEach(cb=>{if(cb.value===S.skin)cb.checked=true;});
-      // 칩 자동 활성화
       document.querySelectorAll('#chipArea .chip').forEach(c=>{if(c.textContent.trim()===S.skin)c.classList.add('on');});
     }
   }
-  renderProducts(PRODUCTS);
 };
 
-// t_product + t_review + t_ingredient 통합 데이터
-const PRODUCTS = [
-  {prod_idx:1,emoji:'🧴',prod_name:'COSRX 스내일 96 뮤신 파워 에센스',brand_name:'COSRX',category:'세럼',target_skin:'건성·민감성',score:94,ad_flag:'N',rating:4.8,
-   ingredients:[{name:'달팽이분비물여과물',allergy:'N',rec:'건성·민감성'},{name:'히알루론산',allergy:'N',rec:'건성'},{name:'나이아신아마이드',allergy:'N',rec:'모든피부'}]},
-  {prod_idx:2,emoji:'💧',prod_name:'이니스프리 그린티 히알루론산 세럼',brand_name:'이니스프리',category:'세럼',target_skin:'건성·복합성',score:88,ad_flag:'N',rating:4.6,
-   ingredients:[{name:'녹차추출물',allergy:'N',rec:'건성·복합성'},{name:'히알루론산',allergy:'N',rec:'건성'}]},
-  {prod_idx:3,emoji:'🌿',prod_name:'라네즈 워터뱅크 블루 히알루로닉 세럼',brand_name:'라네즈',category:'세럼',target_skin:'건성',score:85,ad_flag:'N',rating:4.5,
-   ingredients:[{name:'히알루론산',allergy:'N',rec:'건성'},{name:'베타글루칸',allergy:'N',rec:'건성'}]},
-  {prod_idx:4,emoji:'✨',prod_name:'아벤느 하이드란스 인텐스 세럼',brand_name:'아벤느',category:'세럼',target_skin:'민감성',score:83,ad_flag:'N',rating:4.7,
-   ingredients:[{name:'세라마이드',allergy:'N',rec:'민감성'},{name:'아벤느워터',allergy:'N',rec:'민감성'}]},
-  {prod_idx:5,emoji:'🌸',prod_name:'닥터자르트 시카페어 세럼',brand_name:'닥터자르트',category:'세럼',target_skin:'민감성',score:80,ad_flag:'N',rating:4.4,
-   ingredients:[{name:'판테놀',allergy:'N',rec:'민감성'},{name:'마데카소사이드',allergy:'N',rec:'민감성'}]},
-  {prod_idx:6,emoji:'🍃',prod_name:'에스트라 아토베리어 365 세럼',brand_name:'에스트라',category:'세럼',target_skin:'건성·아토피',score:78,ad_flag:'N',rating:4.3,
-   ingredients:[{name:'세라마이드',allergy:'N',rec:'건성·아토피'},{name:'판테놀',allergy:'N',rec:'아토피'}]},
-];
+async function doSearch() {
+  const keyword = document.getElementById('searchInput').value.trim();
+  if (!keyword) { alert('검색어를 입력해주세요.'); return; }
 
-function renderProducts(list){
-  document.getElementById('rcnt').textContent=list.length+'건';
-  document.getElementById('grid').innerHTML=list.map(p=>`
-    <div class="product-card">
-      <div class="prod-rank">${p.prod_idx}</div>
-      <div class="prod-img">${p.emoji}</div>
-      <div class="prod-info">
-        <div class="prod-name">${p.prod_name}</div>
-        <div class="prod-meta">${p.brand_name} · ${p.category} · 타겟: ${p.target_skin}</div>
-        <div class="prod-tags">
-          <span class="prod-tag t-clean">✓ ad_flag: N</span>
-          <span class="prod-tag t-skin">${p.target_skin}</span>
-        </div>
-        <div class="ingr-list">
-          ${p.ingredients.map(i=>`<span class="ingr-chip ${i.allergy==='Y'?'ingr-allergy':'ingr-safe'}" title="권장피부: ${i.rec}">${i.name}${i.allergy==='Y'?' ⚠️':''}</span>`).join('')}
-        </div>
-      </div>
-      <div class="prod-right">
-        <div>
-          <div class="prod-score">${p.score}</div>
-          <div class="prod-score-label">적합도</div>
-        </div>
-        <div class="prod-rating">⭐ ${p.rating}</div>
-        <div class="ad-flag-tag">광고없음</div>
-        <button class="fb-btn" onclick="openFb(${p.prod_idx},'${p.prod_name}')">📝 리뷰 작성</button>
-      </div>
-    </div>
-  `).join('');
+  document.getElementById('adRemovedBadge').style.display = 'none';
+  document.getElementById('grid').innerHTML = `
+    <div style="text-align:center;padding:60px 0;">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <p style="margin-top:14px;font-size:14px;color:var(--mid);font-weight:300;">키워드로 제품을 찾는 중...</p>
+    </div>`;
+
+  try {
+    const res = await fetch(`http://127.0.0.1:8000/search?keyword=${encodeURIComponent(keyword)}&top_n=20`);
+    const data = await res.json();
+    const products = data.products || [];
+
+    document.getElementById('rcnt').textContent = products.length + '건';
+    document.getElementById('adRemovedBadge').style.display = products.length > 0 ? 'inline-block' : 'none';
+
+    if (products.length === 0) {
+      document.getElementById('grid').innerHTML = `
+        <div style="text-align:center;padding:60px 0;color:var(--mid);">
+          <div style="font-size:32px;margin-bottom:12px;">🔍</div>
+          <div>검색 결과가 없습니다.</div>
+        </div>`;
+      return;
+    }
+
+    const maxScore = Math.max(...products.map(p => p.score));
+    const minScore = Math.min(...products.map(p => p.score));
+    const emojis = ['🧴','💧','🌿','✨','🌸','🍃','🌙','🫧','🌾','💎','🌺','🍀','🌊','🌟','💫','🎯','🌈','🍃','💎','✨'];
+
+    document.getElementById('grid').innerHTML = products.map((p, i) => {
+      const pct = minScore === maxScore ? 95 : Math.round(75 + ((p.score - minScore) / (maxScore - minScore)) * 20);
+      const emoji = emojis[i] || '🧴';
+      return `
+        <div class="product-card" onclick="openAnalyze(${p.prod_idx}, '${p.prod_name.replace(/'/g,"\\'")}')">
+          <div class="prod-rank">${i + 1}</div>
+          <div class="prod-img">${emoji}</div>
+          <div class="prod-info">
+            <div class="prod-name">${p.prod_name}</div>
+            <div class="prod-meta">${p.brand_name} · ${p.category} · 타겟: ${p.target_skin || '-'}</div>
+            <div class="prod-tags">
+              <span class="prod-tag t-clean">✓ ad_flag: N</span>
+              <span class="prod-tag t-skin">${p.target_skin || '-'}</span>
+            </div>
+            <div style="font-size:11px;color:var(--mid);margin-top:4px;">클릭하면 AI 리뷰 분석 결과를 볼 수 있어요 👆</div>
+          </div>
+          <div class="prod-right">
+            <div>
+              <div class="prod-score">${pct}</div>
+              <div class="prod-score-label">적합도</div>
+            </div>
+            <div class="ad-flag-tag">광고없음</div>
+            <button class="fb-btn" onclick="event.stopPropagation();openFb(${p.prod_idx},'${p.prod_name.replace(/'/g,"\\'")}')">📝 리뷰 작성</button>
+          </div>
+        </div>`;
+    }).join('');
+
+  } catch (e) {
+    document.getElementById('grid').innerHTML = `
+      <div style="text-align:center;padding:40px 0;color:var(--red);">
+        서버에 연결할 수 없습니다. FastAPI가 실행 중인지 확인해주세요.
+      </div>`;
+  }
 }
 
-function doSearch(){renderProducts(PRODUCTS);}
+async function openAnalyze(prodIdx, prodName) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:400;background:rgba(43,35,32,0.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:22px;width:100%;max-width:480px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;">
+      <button onclick="this.parentElement.parentElement.remove()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:16px;color:#C4ADA8;cursor:pointer;">✕</button>
+      <div style="font-family:var(--serif);font-size:13px;color:var(--pink);margin-bottom:8px;">OVERPICK · AI 리뷰 분석</div>
+      <div style="font-family:var(--serif);font-size:20px;color:var(--dark);margin-bottom:4px;">${prodName}</div>
+      <div style="font-size:12px;color:var(--mid);margin-bottom:20px;">GPT가 뒷광고를 걸러내고 리뷰를 분석합니다...</div>
+      <div id="analyzeResult" style="text-align:center;padding:20px 0;">
+        <div class="dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+  try {
+    const res = await fetch(`http://127.0.0.1:8000/review/analyze/${prodIdx}`);
+    const d = await res.json();
+    const recoColor = d.recommendation === '추천' ? '#16A34A' : '#DC2626';
+    const recoBg = d.recommendation === '추천' ? '#DCFCE7' : '#FEF2F2';
+
+    document.getElementById('analyzeResult').innerHTML = `
+      <div style="background:${recoBg};border-radius:14px;padding:16px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:28px;margin-bottom:6px;">${d.recommendation === '추천' ? '👍' : '👎'}</div>
+        <div style="font-size:20px;font-weight:700;color:${recoColor};">${d.recommendation}</div>
+        <div style="font-size:12px;color:#7A6560;margin-top:4px;">뒷광고 ${d.ad_filtered_count}건 필터링 · 총 ${d.total_reviews}개 리뷰 분석</div>
+      </div>
+      <div style="text-align:left;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:#C4ADA8;letter-spacing:0.5px;margin-bottom:8px;">핵심 이유</div>
+        ${(d.reasons||[]).map(r=>`<div style="font-size:13px;color:#2B2320;padding:5px 0;border-bottom:1px solid rgba(43,35,32,0.06);">· ${r}</div>`).join('')}
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <div style="flex:1;background:#EFF6FF;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;font-weight:700;color:#1D4ED8;margin-bottom:6px;">👍 긍정 키워드</div>
+          ${(d.positive_keywords||[]).map(k=>`<div style="font-size:12px;color:#2B2320;margin-bottom:3px;">${k}</div>`).join('')}
+        </div>
+        <div style="flex:1;background:#FEF2F2;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;font-weight:700;color:#DC2626;margin-bottom:6px;">👎 부정 키워드</div>
+          ${(d.negative_keywords||[]).map(k=>`<div style="font-size:12px;color:#2B2320;margin-bottom:3px;">${k}</div>`).join('')}
+        </div>
+      </div>
+      <div style="background:#FCEEF1;border-radius:12px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#C4ADA8;margin-bottom:4px;">적합 피부타입</div>
+        <div style="font-size:14px;font-weight:600;color:#E8637A;">${d.suitable_skin || '-'}</div>
+      </div>`;
+  } catch (e) {
+    document.getElementById('analyzeResult').innerHTML = '<p style="color:#DC2626;">분석 서버에 연결할 수 없습니다.</p>';
+  }
+}
+
 function setSt(btn){document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
 document.querySelectorAll('.page-btn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.page-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}));
 
-// FEEDBACK (t_feedback: fb_idx, reco_idx, user_id, fb_content, fb_img, created_at)
 function openFb(idx,name){
   fbProdIdx=idx;
   document.getElementById('fbProd').textContent=name;
@@ -369,9 +396,6 @@ function submitFb(){
   const txt=document.getElementById('fbTxt').value.trim();
   if(!curRating){alert('별점을 선택해주세요.');return;}
   if(txt.length<10){alert('10자 이상 입력해주세요.');return;}
-  // fetch('/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},
-  //   body:JSON.stringify({user_id:S.userId,prod_idx:fbProdIdx,rating:curRating,fb_content:txt})
-  // }).then(r=>r.json()).then(d=>{if(d.success){alert('등록 완료!');closeFb();}});
   alert('✅ 리뷰가 등록되었습니다!');
   closeFb();
 }
