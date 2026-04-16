@@ -66,4 +66,13 @@
     ORDER BY c.celeb_idx ASC
   </select>
 
+<!-- 퍼스널컬러로 셀럽 매칭 -->
+<select id="getCelebByPersonalColor" parameterType="String" resultType="map">
+  SELECT celeb_idx, celeb_name, celeb_skintype, personal_color,
+         prod_name, brand_name, category
+  FROM t_celebrity
+  WHERE personal_color = #{personal_color}
+  ORDER BY celeb_idx ASC
+</select>
+
 </mapper>

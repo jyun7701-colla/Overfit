@@ -50,4 +50,14 @@ public class ProductDAO {
             return s.selectList("com.overfit.mapper.ProductMapper.getCelebBySkipType", skin_type);
         }
     }
+    
+ // 퍼스널컬러로 셀럽 매칭
+    public List<Map> getCelebByPersonalColor(String personal_color) {
+        try (SqlSession s = MyBatisUtil.getSession()) {
+            return s.selectList("com.overfit.mapper.ProductMapper.getCelebByPersonalColor", personal_color);
+        }
+    }
+
+    
+    
 }
