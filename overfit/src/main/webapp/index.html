@@ -681,7 +681,6 @@ footer{
       <div class="nav-dropdown">
         <button class="nav-dropdown-item" onclick="openMypage('info')">👤 내 정보 수정</button>
         <button class="nav-dropdown-item" onclick="openMypage('pw')">🔒 비밀번호 변경</button>
-        <button class="nav-dropdown-item" onclick="openMypage('skin')">🌿 피부 타입 수정</button>
         <div class="nav-dropdown-divider"></div>
         <button class="nav-dropdown-item danger" onclick="handleLogout()">로그아웃</button>
       </div>
@@ -706,7 +705,6 @@ footer{
     <div class="mypage-tabs">
       <button class="mypage-tab on" onclick="switchMypageTab('info')">기본 정보</button>
       <button class="mypage-tab"    onclick="switchMypageTab('pw')">비밀번호</button>
-      <button class="mypage-tab"    onclick="switchMypageTab('skin')">피부 타입</button>
       <button class="mypage-tab"    onclick="switchMypageTab('withdraw')">회원 탈퇴</button>
     </div>
 
@@ -759,34 +757,6 @@ footer{
         <input type="password" id="mpNewPwConfirm" placeholder="새 비밀번호를 다시 입력하세요">
       </div>
       <button class="save-btn" onclick="handleUpdatePw()">✦ 비밀번호 변경</button>
-    </div>
-
-    <!-- 피부 타입 수정 (t_user: skin_type) -->
-    <div class="mypage-section" id="mpSkin">
-      <div class="info-box">피부 타입을 변경하면 <strong>맞춤 추천 결과</strong>가 업데이트됩니다.</div>
-      <div class="form-group">
-        <label>피부 타입 (skin_type)</label>
-        <div class="skin-pills" id="mpSkinPills" style="margin-top:6px;">
-          <span class="skin-pill" onclick="toggleMpSkin(this)">건성</span>
-          <span class="skin-pill" onclick="toggleMpSkin(this)">지성</span>
-          <span class="skin-pill" onclick="toggleMpSkin(this)">복합성</span>
-          <span class="skin-pill" onclick="toggleMpSkin(this)">민감성</span>
-          <span class="skin-pill" onclick="toggleMpSkin(this)">아토피</span>
-          <span class="skin-pill" onclick="toggleMpSkin(this)">정상</span>
-        </div>
-      </div>
-      <div class="form-group" style="margin-top:8px;">
-        <label>피부 고민</label>
-        <div class="skin-pills" style="margin-top:6px;">
-          <span class="skin-pill" onclick="this.classList.toggle('on')">보습 부족</span>
-          <span class="skin-pill" onclick="this.classList.toggle('on')">트러블</span>
-          <span class="skin-pill" onclick="this.classList.toggle('on')">모공</span>
-          <span class="skin-pill" onclick="this.classList.toggle('on')">주름·탄력</span>
-          <span class="skin-pill" onclick="this.classList.toggle('on')">미백</span>
-          <span class="skin-pill" onclick="this.classList.toggle('on')">홍조</span>
-        </div>
-      </div>
-      <button class="save-btn" onclick="handleUpdateSkin()">✦ 피부 타입 저장</button>
     </div>
 
     <!-- 회원 탈퇴 -->
@@ -1340,17 +1310,16 @@ document.addEventListener('keydown', e => {
 
 // ── 마이페이지 탭 전환 ──
 function switchMypageTab(tab) {
-  const tabs = ['info','pw','skin','withdraw'];
-  tabs.forEach(t => {
-    document.getElementById('mp' + t.charAt(0).toUpperCase() + t.slice(1)).classList.remove('on');
-  });
-  document.querySelectorAll('.mypage-tab').forEach((el, i) => {
-    el.classList.toggle('on', ['info','pw','skin','withdraw'][i] === tab);
-  });
-  const secMap = { info:'mpInfo', pw:'mpPw', skin:'mpSkin', withdraw:'mpWithdraw' };
-  document.getElementById(secMap[tab]).classList.add('on');
-}
-
+	  const tabs = ['info','pw','withdraw'];
+	  tabs.forEach(t => {
+	    document.getElementById('mp' + t.charAt(0).toUpperCase() + t.slice(1)).classList.remove('on');
+	  });
+	  document.querySelectorAll('.mypage-tab').forEach((el, i) => {
+	    el.classList.toggle('on', ['info','pw','withdraw'][i] === tab);
+	  });
+	  const secMap = { info:'mpInfo', pw:'mpPw', withdraw:'mpWithdraw' };
+	  document.getElementById(secMap[tab]).classList.add('on');
+	}
 // ── 피부 타입 토글 (마이페이지) ──
 function toggleMpSkin(el) {
   document.querySelectorAll('#mpSkinPills .skin-pill').forEach(p => p.classList.remove('on'));

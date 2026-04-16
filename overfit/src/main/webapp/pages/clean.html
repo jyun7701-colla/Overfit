@@ -141,29 +141,20 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 </nav>
 
 <div class="login-banner" id="loginBanner">
-  🔒 로그인하면 내 피부 타입(skin_type)이 자동 적용돼요!
+  🔒 로그인하면 광고없이 클린한 검색이 가능해요!
   <button class="login-banner-btn" onclick="location.href='/overpick/index.html'">로그인하러 가기</button>
 </div>
 
 <div class="page-hero">
-  <span class="page-kicker">Ad-Free Clean Search · t_review.ad_flag = 'N' 필터링</span>
+  <span class="page-kicker">Ad-Free Clean Search</span>
   <h1 class="page-h1">광고를 지운<br><em>순수한 결과</em>만</h1>
-  <p class="page-desc">GPT-4o가 협찬·뒷광고·PPL 리뷰를 문맥으로 식별·제거합니다. t_ingredient의 allergy_check, recommended_skin, sensitive_skin 데이터를 바탕으로 성분까지 분석해드립니다.</p>
+  <p class="page-desc">GPT-4o가 협찬·뒷광고·PPL 리뷰를 문맥으로 식별·제거합니다.</p>
   <div class="auto-banner" id="autoBanner">✅ <strong id="autoSkinTxt">건성</strong> 피부 타입이 자동 적용되었습니다 (t_user.skin_type)</div>
   <div class="search-wrap">
     <input type="text" id="searchInput" placeholder="제품명, 성분, 피부 고민 검색..." onkeydown="if(event.key==='Enter')doSearch()">
     <button class="search-btn" onclick="doSearch()">검색하기</button>
   </div>
-  <div class="filter-row" id="chipArea">
-    <span class="chip on">🛡 광고 제외</span>
-    <span class="chip" onclick="this.classList.toggle('on')">건성</span>
-    <span class="chip" onclick="this.classList.toggle('on')">지성</span>
-    <span class="chip" onclick="this.classList.toggle('on')">민감성</span>
-    <span class="chip" onclick="this.classList.toggle('on')">히알루론산</span>
-    <span class="chip" onclick="this.classList.toggle('on')">나이아신아마이드</span>
-    <span class="chip" onclick="this.classList.toggle('on')">무파라벤</span>
-    <span class="chip" onclick="this.classList.toggle('on')">무향료</span>
-  </div>
+
 </div>
 
 <div class="content">
@@ -174,7 +165,6 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <span class="ad-removed" id="adRemovedBadge" style="display:none;">✓ 광고 리뷰 제거됨</span>
         <div class="sort-row">
-          <button class="sort-btn on" onclick="setSt(this)">적합도순</button>
           <button class="sort-btn" onclick="setSt(this)">별점순</button>
           <button class="sort-btn" onclick="setSt(this)">리뷰많은순</button>
         </div>
@@ -293,17 +283,11 @@ async function doSearch() {
             <div class="prod-name">${p.prod_name}</div>
             <div class="prod-meta">${p.brand_name} · ${p.category} · 타겟: ${p.target_skin || '-'}</div>
             <div class="prod-tags">
-              <span class="prod-tag t-clean">✓ ad_flag: N</span>
               <span class="prod-tag t-skin">${p.target_skin || '-'}</span>
             </div>
             <div style="font-size:11px;color:var(--mid);margin-top:4px;">클릭하면 AI 리뷰 분석 결과를 볼 수 있어요 👆</div>
           </div>
           <div class="prod-right">
-            <div>
-              <div class="prod-score">${pct}</div>
-              <div class="prod-score-label">적합도</div>
-            </div>
-            <div class="ad-flag-tag">광고없음</div>
             <button class="fb-btn" onclick="event.stopPropagation();openFb(${p.prod_idx},'${p.prod_name.replace(/'/g,"\\'")}')">📝 리뷰 작성</button>
           </div>
         </div>`;

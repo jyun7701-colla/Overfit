@@ -230,12 +230,15 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
       <div class="divider"></div>
 
       <span class="field-label">찾는 카테고리 (category)</span>
-      <div class="pill-group">
-        <span class="pill on" onclick="toggleOne(this,'cat')">세럼 / 앰플</span>
-        <span class="pill" onclick="toggleOne(this,'cat')">토너</span>
+      <div class="pill-group" id="catPills">
+        <span class="pill on" onclick="toggleOne(this,'cat')">에센스/세럼</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">스킨/토너</span>
         <span class="pill" onclick="toggleOne(this,'cat')">크림</span>
-        <span class="pill" onclick="toggleOne(this,'cat')">선크림</span>
-        <span class="pill" onclick="toggleOne(this,'cat')">클렌징</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">로션</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">미스트/오일</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">미스트</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">페이스오일</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">멀티</span>
       </div>
 
       <button class="submit-btn" onclick="runMatch()">✦ AI 맞춤 추천 받기</button>
@@ -360,9 +363,13 @@ async function runMatch() {
     return;
   }
 
+  let category = '';
+  const selectedCat = document.querySelector('#catPills .pill.on');
+  if (selectedCat) category = selectedCat.textContent.trim();  
+  
   try {
     // ① FastAPI 추천 호출
-    const res = await fetch(`http://127.0.0.1:8000/recommend-by-skin/${skinType}?top_n=10`);
+    const res = await fetch(`http://127.0.0.1:8000/recommend-by-skin/${skinType}?top_n=10&category=${encodeURIComponent(category)}`);
     const data = await res.json();
     const products = data.recommendations || [];
 
