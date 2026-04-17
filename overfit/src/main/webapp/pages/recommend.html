@@ -148,15 +148,10 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   </div>
 </nav>
 
-<div class="login-banner" id="loginBanner">
-  🔒 로그인하면 내 피부 타입(t_user.skin_type)이 자동으로 불러와집니다!
-  <button class="login-banner-btn" onclick="location.href='/overpick/index.html'">로그인하러 가기</button>
-</div>
 
 <div class="page-hero">
-  <span class="page-kicker">Personalized AI · t_user × t_product × t_ingredient 매칭</span>
+  <span class="page-kicker">Customization recommend</span>
   <h1 class="page-h1">내 피부 데이터로<br><em>정밀하게</em> 찾아드려요</h1>
-  <p class="page-desc">피부 타입(skin_type)과 선호·기피 성분 데이터를 분석해 Scikit-learn 코사인 유사도로 최적 제품을 매칭합니다. 결과는 t_recommendation에 저장됩니다.</p>
   <div class="auto-fill-banner" id="autoFillBanner">
     ✅ <strong id="autoFillTxt">내 프로필</strong>이 자동으로 불러와졌습니다!
   </div>
@@ -172,7 +167,6 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   <div id="step1">
     <div class="profile-card">
       <div class="card-title">내 피부 프로필</div>
-      <div class="card-desc">t_user 테이블의 skin_type 데이터를 기반으로 자동 입력됩니다.<br>직접 수정도 가능합니다.</div>
 
       <!-- 자동 불러온 프로필 표시 -->
       <div class="loaded-profile" id="loadedProfile">
@@ -180,7 +174,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
         <div class="lp-row" id="lpRow"></div>
       </div>
 
-      <span class="field-label">피부 타입 (skin_type)</span>
+      <span class="field-label">피부 타입</span>
       <div class="pill-group" id="skinPills">
         <span class="pill" onclick="toggleOne(this,'skin')">건성</span>
         <span class="pill" onclick="toggleOne(this,'skin')">지성</span>
@@ -201,7 +195,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
         <span class="pill" onclick="this.classList.toggle('on')">홍조</span>
       </div>
 
-      <span class="field-label">선호 성분 (recommended_skin 기준)</span>
+      <span class="field-label">선호 성분</span>
       <div class="pill-group">
         <span class="pill" onclick="this.classList.toggle('on')">히알루론산</span>
         <span class="pill" onclick="this.classList.toggle('on')">나이아신아마이드</span>
@@ -212,7 +206,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
         <span class="pill" onclick="this.classList.toggle('on')">달팽이분비물</span>
       </div>
 
-      <span class="field-label" style="color:var(--red);">기피 성분 (allergy_check = 'Y' 자동 제외)</span>
+      <span class="field-label" style="color:var(--red);">기피 성분</span>
       <div class="pill-group">
         <span class="pill avoid" onclick="this.classList.toggle('on')">파라벤</span>
         <span class="pill avoid" onclick="this.classList.toggle('on')">향료</span>
@@ -229,7 +223,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 
       <div class="divider"></div>
 
-      <span class="field-label">찾는 카테고리 (category)</span>
+      <span class="field-label">찾는 카테고리</span>
       <div class="pill-group" id="catPills">
         <span class="pill on" onclick="toggleOne(this,'cat')">에센스/세럼</span>
         <span class="pill" onclick="toggleOne(this,'cat')">스킨/토너</span>

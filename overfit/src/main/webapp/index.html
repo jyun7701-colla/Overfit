@@ -664,9 +664,9 @@ footer{
 <nav>
   <a class="nav-logo" href="#">OVERPICK</a>
   <ul class="nav-links">
-    <li><a href="/overpick/pages/clean.html" target="_blank">클린 검색</a></li>
-    <li><a href="/overpick/pages/recommend.html" target="_blank">맞춤 추천</a></li>
-    <li><a href="/overpick/pages/celeb.html" target="_blank">셀럽 매칭</a></li>
+    <li><a href="/overpick/pages/clean.html">클린 검색</a></li>
+    <li><a href="/overpick/pages/recommend.html">맞춤 추천</a></li>
+    <li><a href="/overpick/pages/celeb.html">셀럽 매칭</a></li>
   </ul>
   <div class="nav-right">
     <button class="nav-login" onclick="openModal('login')">로그인</button>
@@ -929,12 +929,7 @@ footer{
       거짓된 리뷰와 유해 성분을 철저하게 걸러낸,<br>
       오직 당신의 피부만을 위한 청정 맞춤 제안.
     </p>
-    <div class="hero-search fi delay-2">
-      <input type="text" placeholder="피부 고민을 우아하게 해결하세요">
-      <button class="hero-search-btn" aria-label="검색">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
-    </div>
+  
   </div>
 </section>
 
@@ -1208,12 +1203,7 @@ footer{
       골라드립니다.
     </h2>
     <p class="closing-p fi">가짜 리뷰도, 광고도 없이. 오직 내 피부 데이터만으로.</p>
-    <div class="closing-search fi delay-1">
-      <input type="text" placeholder="피부 고민을 입력하세요">
-      <button class="closing-btn" aria-label="시작">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
-    </div>
+
   </div>
 </section>
 
@@ -1260,27 +1250,36 @@ document.querySelectorAll('.c-card').forEach(card => {
 
 // ── 로그인 성공 후 네비 업데이트 ──
 function setLoggedIn(nick, email, skinType) {
-  // sessionStorage에 저장 → 서브 페이지에서 공유
   sessionStorage.setItem('of_logged',    'true');
   sessionStorage.setItem('of_nick',      nick);
   sessionStorage.setItem('of_email',     email);
   sessionStorage.setItem('of_skin_type', skinType || '');
 
-  // 로그인/회원가입 버튼 숨기기
-  document.querySelector('.nav-login').style.display  = 'none';
-  document.querySelector('.nav-signup').style.display = 'none';
-  // 유저 드롭다운 표시
-  const navUser = document.getElementById('navUser');
-  navUser.classList.add('show');
-  const initial = nick.charAt(0).toUpperCase();
-  document.getElementById('navAvatar').textContent   = initial;
-  document.getElementById('navUserName').textContent = nick;
-  // 마이페이지 프로필 세팅
-  document.getElementById('mpAvatar').textContent   = initial;
-  document.getElementById('mpNick').textContent     = nick;
-  document.getElementById('mpEmail').textContent    = email;
-  document.getElementById('mpNickInput').value      = nick;
-  document.getElementById('mpEmailInput').value     = email;
+  const navLogin  = document.querySelector('.nav-login');
+  const navSignup = document.querySelector('.nav-signup');
+  const navUser   = document.getElementById('navUser');
+  const navAvatar = document.getElementById('navAvatar');
+  const navName   = document.getElementById('navUserName');
+
+  if(navLogin)  navLogin.style.display  = 'none';
+  if(navSignup) navSignup.style.display = 'none';
+  if(navUser)   navUser.classList.add('show');
+
+  const initial = nick ? nick.charAt(0).toUpperCase() : '?';
+  if(navAvatar) navAvatar.textContent = initial;
+  if(navName)   navName.textContent   = nick;
+
+  const mpAvatar = document.getElementById('mpAvatar');
+  const mpNick   = document.getElementById('mpNick');
+  const mpEmail  = document.getElementById('mpEmail');
+  const mpNickInput  = document.getElementById('mpNickInput');
+  const mpEmailInput = document.getElementById('mpEmailInput');
+
+  if(mpAvatar)     mpAvatar.textContent    = initial;
+  if(mpNick)       mpNick.textContent      = nick;
+  if(mpEmail)      mpEmail.textContent     = email;
+  if(mpNickInput)  mpNickInput.value       = nick;
+  if(mpEmailInput) mpEmailInput.value      = email;
 }
 
 // ── 드롭다운 토글 ──
@@ -1616,29 +1615,33 @@ function handleSocial(provider) {
 }
 
 function handleLogin() {
-  const userId = document.getElementById('loginId').value.trim();
-  const pw     = document.getElementById('loginPw').value;
+	  const userId = document.getElementById('loginId').value.trim();
+	  const pw     = document.getElementById('loginPw').value;
 
-  if(!userId) { showErr('loginIdErr', '아이디를 입력해주세요.'); return; }
-  if(!pw)     { showErr('loginPwErr', '비밀번호를 입력해주세요.'); return; }
+	  if(!userId) { showErr('loginIdErr', '아이디를 입력해주세요.'); return; }
+	  if(!pw)     { showErr('loginPwErr', '비밀번호를 입력해주세요.'); return; }
 
-  // ── Servlet 연동 (t_user 테이블) ──
-  fetch('/overpick/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user_id: userId, user_pw: pw })
-  }).then(r => r.json()).then(data => {
-    if(data.success) {
-      closeModal();
-      setLoggedIn(data.nick, data.email, data.skin_type);
-      sessionStorage.setItem('of_user_id', data.user_id);
-    } else {
-      showErr('loginPwErr', data.message);
-    }
-  }).catch(() => {
-    showErr('loginPwErr', '서버 연결에 실패했습니다.');
-  });
-}
+	  fetch('/overpick/api/login', {
+	    method: 'POST',
+	    headers: { 'Content-Type': 'application/json' },
+	    body: JSON.stringify({ user_id: userId, user_pw: pw })
+	  }).then(r => r.json()).then(data => {
+	    if(data.success) {
+	      // sessionStorage 먼저 직접 저장
+	      sessionStorage.setItem('of_logged',    'true');
+	      sessionStorage.setItem('of_nick',      data.nick);
+	      sessionStorage.setItem('of_email',     data.email);
+	      sessionStorage.setItem('of_skin_type', data.skin_type || '');
+	      sessionStorage.setItem('of_user_id',   data.user_id);
+	      closeModal();
+	      setLoggedIn(data.nick, data.email, data.skin_type);
+	    } else {
+	      showErr('loginPwErr', data.message);
+	    }
+	  }).catch(() => {
+	    showErr('loginPwErr', '서버 연결에 실패했습니다.');
+	  });
+	}
 
 function handleSignup() {
   const user_id    = document.getElementById('signupId').value.trim();
@@ -1679,6 +1682,43 @@ function handleSignup() {
     showErr('signupEmailErr', '서버 연결에 실패했습니다.');
   });
 }
+
+//페이지 로드 시 로그인 상태 복원
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('of_logged') === 'true') {
+    const nick     = sessionStorage.getItem('of_nick')      || '';
+    const email    = sessionStorage.getItem('of_email')     || '';
+    const skinType = sessionStorage.getItem('of_skin_type') || '';
+
+    // nav 버튼 직접 숨기기
+    const navLogin  = document.querySelector('.nav-login');
+    const navSignup = document.querySelector('.nav-signup');
+    const navUser   = document.getElementById('navUser');
+    const navAvatar = document.getElementById('navAvatar');
+    const navName   = document.getElementById('navUserName');
+
+    if(navLogin)  navLogin.style.display  = 'none';
+    if(navSignup) navSignup.style.display = 'none';
+    if(navUser)   navUser.classList.add('show');
+
+    const initial = nick ? nick.charAt(0).toUpperCase() : '?';
+    if(navAvatar) navAvatar.textContent = initial;
+    if(navName)   navName.textContent   = nick;
+
+    // 마이페이지 프로필도 세팅
+    const mpAvatar     = document.getElementById('mpAvatar');
+    const mpNick       = document.getElementById('mpNick');
+    const mpEmail      = document.getElementById('mpEmail');
+    const mpNickInput  = document.getElementById('mpNickInput');
+    const mpEmailInput = document.getElementById('mpEmailInput');
+
+    if(mpAvatar)     mpAvatar.textContent  = initial;
+    if(mpNick)       mpNick.textContent    = nick;
+    if(mpEmail)      mpEmail.textContent   = email;
+    if(mpNickInput)  mpNickInput.value     = nick;
+    if(mpEmailInput) mpEmailInput.value    = email;
+  }
+});
 </script>
 </body>
 </html>
