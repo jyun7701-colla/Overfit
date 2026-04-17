@@ -243,7 +243,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   <div id="step2" style="display:none;">
     <div class="loading" id="loadingWrap">
       <div class="dots"><span></span><span></span><span></span></div>
-      <p style="margin-top:14px;font-size:14px;color:var(--mid);font-weight:300;">t_user × t_product × t_ingredient 데이터를 분석 중...</p>
+      <p style="margin-top:14px;font-size:14px;color:var(--mid);font-weight:300;">데이터를 분석 중...</p>
     </div>
     <div id="resultWrap" style="display:none;">
       <div class="result-header">
@@ -434,7 +434,7 @@ async function openAnalyze(prodIdx, prodName) {
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
 
   try {
-    const res = await fetch(`http://127.0.0.1:8000/review/analyze/${prodIdx}`);
+    const res = await fetch(`http://192.168.0.63:8000/review/analyze/${prodIdx}`);
     const d = await res.json();
 
     const recoColor = d.recommendation === '추천' ? '#16A34A' : '#DC2626';

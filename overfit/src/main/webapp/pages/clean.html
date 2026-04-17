@@ -191,7 +191,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
     <div class="fb-prod" id="fbProd"></div>
 
     <div id="fbFormWrap">
-      <span class="fb-label">별점 (rating)</span>
+      <span class="fb-label">별점</span>
       <div class="fb-stars" id="fbStars">
         <span class="fb-star" onclick="setR(1)">⭐</span>
         <span class="fb-star" onclick="setR(2)">⭐</span>
@@ -199,7 +199,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
         <span class="fb-star" onclick="setR(4)">⭐</span>
         <span class="fb-star" onclick="setR(5)">⭐</span>
       </div>
-      <span class="fb-label">리뷰 내용 (fb_content)</span>
+      <span class="fb-label">리뷰 내용</span>
       <textarea class="fb-textarea" id="fbTxt" rows="4" placeholder="실제 사용 후기를 작성해주세요. (최소 10자)"></textarea>
       <button class="fb-submit" onclick="submitFb()">✦ 리뷰 등록</button>
     </div>
@@ -246,7 +246,7 @@ async function doSearch() {
     </div>`;
 
   try {
-    const res = await fetch(`http://127.0.0.1:8000/search?keyword=${encodeURIComponent(keyword)}&top_n=20`);
+    const res = await fetch(`http://192.168.0.63:8000/search?keyword=${encodeURIComponent(keyword)}&top_n=20`);
     const data = await res.json();
     const products = data.products || [];
 
@@ -312,7 +312,7 @@ async function openAnalyze(prodIdx, prodName) {
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
 
   try {
-    const res = await fetch(`http://127.0.0.1:8000/review/analyze/${prodIdx}`);
+    const res = await fetch(`http://192.168.0.63:8000/review/analyze/${prodIdx}`);
     const d = await res.json();
     const recoColor = d.recommendation === '추천' ? '#16A34A' : '#DC2626';
     const recoBg = d.recommendation === '추천' ? '#DCFCE7' : '#FEF2F2';
