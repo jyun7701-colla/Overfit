@@ -243,7 +243,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
   <div id="step2" style="display:none;">
     <div class="loading" id="loadingWrap">
       <div class="dots"><span></span><span></span><span></span></div>
-      <p style="margin-top:14px;font-size:14px;color:var(--mid);font-weight:300;">데이터를 분석 중...</p>
+      <p style="margin-top:14px;font-size:14px;color:var(--mid);font-weight:300;">t_user × t_product × t_ingredient 데이터를 분석 중...</p>
     </div>
     <div id="resultWrap" style="display:none;">
       <div class="result-header">
@@ -363,14 +363,17 @@ async function runMatch() {
   
   try {
     // ① FastAPI 추천 호출
-    const res = await fetch(`http://127.0.0.1:8000/recommend-by-skin/${skinType}?top_n=10&category=${encodeURIComponent(category)}`);
+    const res = await fetch(`http://192.168.0.63:8000/recommend-by-skin/${skinType}?top_n=10&category=${encodeURIComponent(category)}`);
     const data = await res.json();
     const products = data.recommendations || [];
 
     document.getElementById('loadingWrap').style.display = 'none';
     document.getElementById('resultWrap').style.display = 'block';
     document.getElementById('rCount').textContent = products.length + '개';
-    document.getElementById('saveBtn').style.display = S.loggedIn ? 'block' : 'none';
+    const saveBtn = document.getElementById('saveBtn');
+    if (saveBtn) {
+      saveBtn.style.display = S.loggedIn ? 'block' : 'none';
+    }
 
     // 최고 점수 기준으로 적합도 % 계산
     const maxScore = Math.max(...products.map(p => p.score));
