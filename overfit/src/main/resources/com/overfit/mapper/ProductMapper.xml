@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.overfit.mapper.ProductMapper">
+
+  <!-- 클린 검색 (ad_flag = 'N') -->
+  <select id="getCleanProducts" parameterType="map" resultType="ProductVO">
+    SELECT DISTINCT p.*
+    FROM t_product p
+    WHERE EXISTS (
+      SELECT 1 FROM t_review r
+      WHERE r.prod_idx = p.prod_idx AND r.ad_flag = 'N'
+    )
+    <if test="skin_type != null and skin_type != ''">
+      AND p.target_skin LIKE CONCAT('%', #{skin_type}, '%')
+    </if>
+    <if test="category != null and category != ''">
+      AND p.category = #{category}
+    </if>
+    ORDER BY p.prod_idx ASC
+  </select>
+
+  <!-- 피부 타입 맞춤 추천 -->
+  <select id="getRecommendedProducts" parameterType="String" resultType="ProductVO">
+    SELECT DISTINCT p.*
+    FROM t_product p
+    JOIN t_ingredient i ON p.prod_idx = i.prod_idx
+    WHERE p.target_skin LIKE CONCAT('%', #{skin_type}, '%')
+      AND i.allergy_check = 'N'
+      AND i.recommended_skin LIKE CONCAT('%', #{skin_type}, '%')
+    ORDER BY p.prod_idx ASC
+  </select>
+
+  <!-- 제품 단건 조회 -->
+  <select id="getProductById" parameterType="int" resultType="ProductVO">
+    SELECT * FROM t_product WHERE prod_idx = #{prod_idx}
+  </select>
+
+  <!-- 광고 리뷰 수 조회 -->
+  <select id="getAdReviewCount" resultType="int">
+    SELECT COUNT(*) FROM t_review WHERE ad_flag = 'Y'
+  </select>
+
+  <!-- 추천 저장 -->
+  <insert id="insertRecommendation" parameterType="map">
+    INSERT INTO t_recommendation (user_id, prod_idx, reco_reason)
+    VALUES (#{user_id}, #{prod_idx}, #{reco_reason})
+  </insert>
+
+  <!-- 셀럽 목록 조회 -->
+  <select id="getCelebrities" resultType="map">
+    SELECT c.*, p.prod_name, p.brand_name
+    FROM t_celebrity c
+    LEFT JOIN t_product p ON c.prod_idx = p.prod_idx
+    ORDER BY c.celeb_idx ASC
+  </select>
+
+  <!-- 피부 타입으로 셀럽 매칭 -->
+  <select id="getCelebBySkipType" parameterType="String" resultType="map">
+    SELECT c.*, p.prod_name, p.brand_name
+    FROM t_celebrity c
+    LEFT JOIN t_product p ON c.prod_idx = p.prod_idx
+    WHERE c.celeb_skintype LIKE CONCAT('%', #{skin_type}, '%')
+    ORDER BY c.celeb_idx ASC
+  </select>
+
+<!-- 퍼스널컬러로 셀럽 매칭 -->
+<select id="getCelebByPersonalColor" parameterType="String" resultType="map">
+  SELECT celeb_idx, celeb_name, celeb_skintype, personal_color,
+         prod_name, brand_name, category
+  FROM t_celebrity
+  WHERE personal_color = #{personal_color}
+  ORDER BY celeb_idx ASC
+</select>
+
+</mapper>

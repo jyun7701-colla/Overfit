@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>셀럽 매칭 — OverPick</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF6F3;--white:#FFFFFF;
+  --pink:#E8637A;--pink-lt:#F2A0B0;--pink-pal:#FCEEF1;
+  --dark:#2B2320;--navy:#1B1F3A;--mid:#7A6560;--light:#C4ADA8;
+  --green:#16A34A;--green-bg:#DCFCE7;
+  --red:#DC2626;--red-bg:#FEF2F2;
+  --serif:'Cormorant Garamond','Noto Serif KR',Georgia,serif;
+  --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);min-height:100vh;}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:60px;background:rgba(253,246,243,0.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(43,35,32,0.07);}
+.nav-logo{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:2px;color:var(--dark);text-decoration:none;}
+.nav-page-title{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--pink);}
+.nav-right-wrap{display:flex;align-items:center;gap:10px;}
+.nav-back{font-size:13px;color:var(--mid);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--pink);}
+.nav-user-chip{display:none;align-items:center;gap:7px;background:var(--pink-pal);border-radius:20px;padding:4px 12px 4px 5px;}
+.nav-avatar{width:25px;height:25px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#FF9A8B);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.nav-uname{font-size:12px;font-weight:600;color:var(--pink);}
+.nav-skin-badge{font-size:10px;background:var(--white);color:var(--mid);padding:2px 7px;border-radius:8px;font-weight:600;}
+
+/* ── 사진 업로드 섹션 ── */
+.upload-section{background:var(--white);padding:40px 48px;border-bottom:1px solid rgba(43,35,32,0.06);}
+.upload-inner{max-width:560px;margin:0 auto;}
+.upload-title{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--dark);margin-bottom:6px;}
+.upload-desc{font-size:13px;color:var(--mid);font-weight:300;margin-bottom:20px;}
+.upload-area{
+  width:100%;height:200px;border-radius:16px;
+  border:2px dashed rgba(232,99,122,0.3);
+  background:var(--pink-pal);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;margin-bottom:14px;overflow:hidden;
+  position:relative;
+}
+.upload-area:hover{border-color:var(--pink);background:rgba(232,99,122,0.08);}
+.upload-preview{text-align:center;}
+.upload-icon{font-size:36px;margin-bottom:8px;}
+.upload-hint{font-size:14px;font-weight:600;color:var(--pink);}
+.upload-hint-sub{font-size:11px;color:var(--light);margin-top:4px;}
+.analyze-btn{
+  width:100%;padding:13px;border-radius:28px;
+  background:var(--dark);color:#fff;border:none;
+  font-size:14px;font-weight:600;font-family:var(--sans);
+  cursor:pointer;transition:all 0.25s;
+}
+.analyze-btn:hover:not(:disabled){background:var(--pink);}
+.analyze-btn:disabled{background:var(--light);cursor:not-allowed;}
+.result-box{
+  margin-top:20px;background:var(--bg);
+  border-radius:16px;padding:20px;
+  border:1px solid rgba(43,35,32,0.07);
+}
+.result-color-badge{
+  display:inline-block;padding:6px 18px;border-radius:20px;
+  background:var(--pink);color:#fff;
+  font-size:16px;font-weight:700;margin-bottom:10px;
+}
+.result-desc{font-size:14px;color:var(--dark);font-weight:600;margin-bottom:14px;}
+.result-detail{display:flex;flex-direction:column;gap:8px;}
+.result-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;}
+.result-label{color:var(--mid);font-weight:600;white-space:nowrap;min-width:110px;}
+.result-val{color:var(--dark);font-weight:300;line-height:1.6;}
+.analyze-loading{text-align:center;padding:20px 0;}
+
+@media(max-width:700px){.upload-section{padding-left:20px;padding-right:20px;}}
+
+.page-hero{background:var(--navy);padding:52px 48px 48px;position:relative;overflow:hidden;}
+.page-hero::after{content:'';position:absolute;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(232,99,122,0.18) 0%,transparent 70%);right:-60px;top:50%;transform:translateY(-50%);pointer-events:none;}
+.page-kicker{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--pink-lt);margin-bottom:10px;display:block;}
+.page-h1{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:400;line-height:1.2;color:#fff;letter-spacing:-0.5px;margin-bottom:12px;}
+.page-h1 em{font-style:italic;color:var(--pink-lt);}
+.page-desc{font-size:15px;color:rgba(255,255,255,0.55);line-height:1.8;font-weight:300;max-width:540px;}
+
+/* 피부 타입 자동 매칭 배너 */
+.auto-match-banner{display:none;background:rgba(232,99,122,0.15);border-radius:12px;padding:10px 16px;margin-top:20px;font-size:13px;color:var(--pink-lt);max-width:560px;}
+
+/* Quick 피부 타입 선택 바 */
+.quick-bar{background:var(--white);padding:20px 48px;border-bottom:1px solid rgba(43,35,32,0.06);display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.quick-label{font-size:13px;font-weight:600;color:var(--dark);white-space:nowrap;}
+.quick-pills{display:flex;gap:7px;flex-wrap:wrap;flex:1;}
+.qpill{padding:6px 15px;border-radius:18px;border:1px solid rgba(43,35,32,0.12);font-size:12px;color:var(--mid);cursor:pointer;transition:all 0.2s;background:var(--bg);user-select:none;}
+.qpill.on{background:var(--pink);border-color:var(--pink);color:#fff;}
+.quick-btn{padding:8px 20px;border-radius:18px;background:var(--dark);color:#fff;border:none;font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:background 0.2s;white-space:nowrap;}
+.quick-btn:hover{background:var(--pink);}
+
+.content{max-width:1120px;margin:0 auto;padding:40px 48px 80px;}
+
+/* BEST MATCH */
+.s-eyebrow{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--pink);margin-bottom:8px;display:block;}
+.s-title{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--dark);margin-bottom:20px;}
+.best-card{background:linear-gradient(135deg,var(--navy) 0%,#2A3F6E 100%);border-radius:22px;padding:32px;margin-bottom:44px;display:flex;gap:28px;align-items:center;flex-wrap:wrap;}
+.bc-avatar{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;}
+.bc-left{flex:1;min-width:160px;}
+.bc-eyebrow{font-family:var(--serif);font-style:italic;font-size:12px;color:var(--pink-lt);margin-bottom:6px;display:block;}
+.bc-name{font-family:var(--serif);font-size:22px;color:#fff;font-weight:400;margin-bottom:3px;}
+.bc-skintype{font-size:12px;color:rgba(255,255,255,0.5);}
+.bc-pct-wrap{text-align:center;}
+.bc-pct{font-family:var(--serif);font-style:italic;font-size:52px;color:var(--pink-lt);font-weight:600;line-height:1;}
+.bc-pct-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;}
+.bc-products{background:rgba(255,255,255,0.06);border-radius:14px;padding:14px 18px;min-width:200px;}
+.bc-prod-title{font-size:10px;font-weight:700;letter-spacing:0.5px;color:rgba(255,255,255,0.5);text-transform:uppercase;margin-bottom:10px;}
+.bc-prod-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.bc-prod-item:last-child{border:none;}
+.bc-prod-emoji{font-size:16px;width:24px;text-align:center;}
+.bc-prod-name{font-size:12px;color:rgba(255,255,255,0.75);}
+
+/* 자동 매칭 로딩 */
+.match-loading{display:none;text-align:center;padding:40px 0;background:rgba(255,255,255,0.03);border-radius:16px;margin-bottom:28px;}
+.dots{display:inline-flex;gap:6px;}
+.dots span{width:7px;height:7px;border-radius:50%;background:var(--pink-lt);animation:bop 1.2s infinite;}
+.dots span:nth-child(2){animation-delay:0.2s;}
+.dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bop{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
+/* CELEB GRID */
+.celeb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:40px;}
+.celeb-card{background:var(--white);border-radius:18px;border:1px solid rgba(43,35,32,0.07);overflow:hidden;transition:all 0.25s;cursor:pointer;}
+.celeb-card:hover,.celeb-card.active{border-color:rgba(232,99,122,0.3);box-shadow:0 5px 22px rgba(232,99,122,0.10);transform:translateY(-3px);}
+.cc-top{padding:20px;display:flex;gap:12px;align-items:center;}
+.cc-ava{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.cc-name{font-size:14px;font-weight:600;color:var(--dark);}
+.cc-skintype{font-size:11px;color:var(--light);margin-top:2px;}
+.cc-bar-wrap{padding:0 20px 12px;}
+.cc-bar-row{display:flex;align-items:center;gap:8px;}
+.cc-bar-bg{flex:1;height:3px;background:rgba(43,35,32,0.08);border-radius:3px;}
+.cc-bar-fill{height:100%;border-radius:3px;background:var(--pink);}
+.cc-pct{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--pink);font-weight:600;}
+.cc-body{padding:0 20px 18px;}
+.cc-body-label{font-size:9px;font-weight:700;letter-spacing:0.5px;color:var(--light);text-transform:uppercase;margin-bottom:7px;}
+.cc-prods{display:flex;flex-wrap:wrap;gap:4px;}
+.cc-prod{padding:3px 9px;background:var(--pink-pal);border-radius:7px;font-size:10px;color:var(--pink);font-weight:600;}
+
+/* DETAIL PANEL */
+.detail-panel{background:var(--white);border-radius:22px;border:1px solid rgba(43,35,32,0.07);padding:32px;margin-bottom:40px;display:none;}
+.detail-panel.show{display:block;}
+.dp-header{display:flex;gap:18px;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;}
+.dp-ava{width:64px;height:64px;border-radius:50%;font-size:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dp-name{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--dark);margin-bottom:3px;}
+.dp-sub{font-size:12px;color:var(--mid);font-weight:300;}
+.dp-pct{font-family:var(--serif);font-style:italic;font-size:40px;color:var(--pink);font-weight:600;margin-left:auto;}
+.dp-label{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--light);text-transform:uppercase;margin-bottom:14px;}
+.dp-products{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.dp-prod{background:var(--bg);border-radius:13px;padding:14px;border:1px solid rgba(43,35,32,0.07);}
+.dp-emoji{font-size:22px;margin-bottom:8px;}
+.dp-prod-name{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:2px;}
+.dp-prod-brand{font-size:10px;color:var(--light);margin-bottom:6px;}
+.dp-prod-why{font-size:10px;color:var(--green);font-weight:600;margin-bottom:8px;}
+.dp-buy-btn{width:100%;padding:7px;border-radius:9px;background:var(--dark);color:#fff;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:background 0.2s;}
+.dp-buy-btn:hover{background:var(--pink);}
+.dp-fb-btn{width:100%;padding:7px;border-radius:9px;background:transparent;color:var(--mid);border:1px solid rgba(43,35,32,0.12);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all 0.2s;margin-top:4px;}
+.dp-fb-btn:hover{border-color:var(--pink);color:var(--pink);}
+
+/* ALL CELEBS */
+.all-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.all-card{background:var(--white);border-radius:14px;border:1px solid rgba(43,35,32,0.07);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.2s;}
+.all-card:hover{border-color:rgba(232,99,122,0.25);box-shadow:0 3px 12px rgba(232,99,122,0.07);}
+.ac-ava{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ac-name{font-size:13px;font-weight:600;color:var(--dark);}
+.ac-skin{font-size:11px;color:var(--light);}
+.ac-pct{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--pink);font-weight:600;margin-left:auto;}
+
+/* FEEDBACK MODAL */
+.fb-overlay{position:fixed;inset:0;z-index:300;background:rgba(43,35,32,0.45);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.fb-overlay.open{opacity:1;pointer-events:all;}
+.fb-modal{background:var(--white);border-radius:22px;width:100%;max-width:400px;padding:32px;position:relative;transform:translateY(14px);transition:transform 0.3s;}
+.fb-overlay.open .fb-modal{transform:none;}
+.fb-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:16px;color:var(--light);cursor:pointer;}
+.fb-logo{font-family:var(--serif);font-size:13px;font-weight:600;letter-spacing:2px;color:var(--pink);margin-bottom:12px;}
+.fb-title{font-family:var(--serif);font-size:20px;color:var(--dark);margin-bottom:4px;}
+.fb-prod{font-size:12px;color:var(--mid);font-weight:300;margin-bottom:18px;}
+.fb-label{font-size:11px;font-weight:600;letter-spacing:0.5px;color:var(--light);text-transform:uppercase;margin-bottom:7px;display:block;}
+.fb-stars{display:flex;gap:5px;margin-bottom:16px;}
+.fb-star{font-size:24px;cursor:pointer;filter:grayscale(1);}
+.fb-star.on{filter:none;}
+.fb-textarea{width:100%;padding:11px 13px;border:1px solid rgba(43,35,32,0.12);border-radius:11px;font-size:13px;font-family:var(--sans);color:var(--dark);background:var(--bg);outline:none;resize:none;line-height:1.65;transition:border-color 0.2s;margin-bottom:13px;}
+.fb-textarea:focus{border-color:var(--pink);}
+.fb-submit{width:100%;padding:11px;border-radius:24px;background:var(--pink);color:#fff;border:none;font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:background 0.2s;}
+.fb-submit:hover{background:var(--dark);}
+.fb-notice{background:var(--pink-pal);border-radius:11px;padding:14px;text-align:center;font-size:13px;color:var(--mid);}
+.fb-notice button{margin-top:9px;padding:6px 18px;border-radius:14px;background:var(--pink);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+
+@media(max-width:900px){
+  nav,.page-hero,.login-banner,.quick-bar,.content{padding-left:20px;padding-right:20px;}
+  .celeb-grid{grid-template-columns:repeat(2,1fr);}
+  .dp-products{grid-template-columns:1fr 1fr;}
+  .all-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){.celeb-grid{grid-template-columns:1fr;}.dp-products{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/overpick/index.html">OVERPICK</a>
+  <span class="nav-page-title">셀럽 매칭</span>
+  <div class="nav-right-wrap">
+    <div class="nav-user-chip" id="navChip">
+      <div class="nav-avatar" id="navAv">김</div>
+      <span class="nav-uname" id="navUn">닉네임</span>
+      <span class="nav-skin-badge" id="navSk">건성</span>
+    </div>
+    <a class="nav-back" href="/overpick/index.html">← 홈</a>
+  </div>
+</nav>
+
+
+<div class="page-hero">
+  <span class="page-kicker">AI Personal Color</span>
+  <h1 class="page-h1">내 퍼스널컬러로<br><em>셀럽 매칭</em></h1>
+  <p class="page-desc">사진을 업로드하면 AI가 퍼스널컬러를 분석하고 같은 톤의 셀럽과 그 셀럽이 사용한 제품을 추천해드립니다.</p>
+  <div class="auto-match-banner" id="autoMatchBanner">
+    ✅ <strong id="autoMatchTxt">건성</strong> 피부 타입으로 자동 매칭 완료!
+  </div>
+</div>
+
+<!-- 사진 업로드 섹션 -->
+<div class="upload-section">
+  <div class="upload-inner">
+    <div class="upload-title">📸 내 사진으로 퍼스널컬러 분석</div>
+    <div class="upload-desc">정면 사진을 업로드하면 AI가 피부톤을 분석해드려요</div>
+
+    <!-- 업로드 영역 -->
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('photoInput').click()">
+      <div class="upload-preview" id="uploadPreview">
+        <div class="upload-icon">📷</div>
+        <div class="upload-hint">클릭하거나 사진을 드래그하세요</div>
+        <div class="upload-hint-sub">JPG, PNG 지원 · 최대 10MB</div>
+      </div>
+      <img id="previewImg" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:16px;">
+    </div>
+    <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
+
+    <button class="analyze-btn" id="analyzeBtn" onclick="analyzePersonalColor()" disabled>
+      ✦ 퍼스널컬러 분석하기
+    </button>
+
+    <!-- 분석 결과 -->
+    <div class="result-box" id="resultBox" style="display:none;">
+      <div class="result-color-badge" id="resultBadge">봄웜</div>
+      <div class="result-desc" id="resultDesc"></div>
+      <div class="result-detail">
+        <div class="result-row">
+          <span class="result-label">🎨 어울리는 색상</span>
+          <span class="result-val" id="resultColors"></span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">💄 추천 메이크업</span>
+          <span class="result-val" id="resultMakeup"></span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">🚫 피해야 할 색상</span>
+          <span class="result-val" id="resultAvoid"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로딩 -->
+    <div class="analyze-loading" id="analyzeLoading" style="display:none;">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div style="margin-top:10px;font-size:13px;color:var(--mid);">퍼스널컬러 분석 중...</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <!-- 매칭 로딩 -->
+  <div class="match-loading" id="matchLoading" style="display:none;">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <p style="margin-top:14px;font-size:14px;color:var(--mid);font-weight:300;">퍼스널컬러 매칭 중...</p>
+  </div>
+
+  <!-- CELEB GRID -->
+  <div class="s-title" id="celebTitle" style="display:none;margin-bottom:20px;"></div>
+  <div class="celeb-grid" id="celebGrid"></div>
+</div>
+
+<!-- 셀럽 제품 팝업 -->
+<div id="celebPopup" onclick="closeCelebPopup()" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+  <div onclick="event.stopPropagation()" style="background:#fff;border-radius:20px;width:90%;max-width:520px;max-height:80vh;overflow-y:auto;padding:28px;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+      <div id="popupCelebImg"></div>
+      <div>
+        <div id="popupCelebName" style="font-family:var(--serif);font-size:22px;color:var(--dark);"></div>
+        <div id="popupCelebPC" style="font-size:13px;color:var(--pink);font-weight:600;margin-top:2px;"></div>
+      </div>
+      <button onclick="closeCelebPopup()" style="margin-left:auto;background:none;border:none;font-size:20px;cursor:pointer;color:var(--light);">✕</button>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--light);margin-bottom:12px;">💄 추천 색조 제품</div>
+    <div id="popupProducts"></div>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL (t_feedback) -->
+<div class="fb-overlay" id="fbOv" onclick="closeFb()">
+  <div class="fb-modal" onclick="event.stopPropagation()">
+    <button class="fb-close" onclick="closeFb()">✕</button>
+    <div class="fb-logo">OVERPICK</div>
+    <div class="fb-title">리뷰 작성</div>
+    <div class="fb-prod" id="fbProd"></div>
+    <div id="fbNeedLogin" style="display:none;">
+      <div class="fb-notice">🔒 리뷰는 로그인 후 작성 가능합니다.<button onclick="location.href='/overpick/index.html'">로그인하러 가기</button></div>
+    </div>
+    <div id="fbFormWrap">
+      <span class="fb-label">별점 (t_feedback.rating)</span>
+      <div class="fb-stars" id="fbStars">
+        <span class="fb-star" onclick="setR(1)">⭐</span>
+        <span class="fb-star" onclick="setR(2)">⭐</span>
+        <span class="fb-star" onclick="setR(3)">⭐</span>
+        <span class="fb-star" onclick="setR(4)">⭐</span>
+        <span class="fb-star" onclick="setR(5)">⭐</span>
+      </div>
+      <span class="fb-label">리뷰 내용 (t_feedback.fb_content)</span>
+      <textarea class="fb-textarea" id="fbTxt" rows="4" placeholder="실제 사용 후기를 작성해주세요. (최소 10자)"></textarea>
+      <button class="fb-submit" onclick="submitFb()">✦ 리뷰 등록</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── sessionStorage에서 로그인 정보 ──
+const S={
+  loggedIn:sessionStorage.getItem('of_logged')==='true',
+  userId:  sessionStorage.getItem('of_user_id')||'',
+  nick:    sessionStorage.getItem('of_nick')||'',
+  skin:    sessionStorage.getItem('of_skin_type')||'',
+  email:   sessionStorage.getItem('of_email')||''
+};
+let curRating=0;
+let fbProdIdx=null;
+
+// ── 사진 미리보기 ──
+function previewPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById('previewImg').style.display = 'block';
+    document.getElementById('uploadPreview').style.display = 'none';
+    document.getElementById('analyzeBtn').disabled = false;
+    document.getElementById('resultBox').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// 드래그 앤 드롭
+window.addEventListener('load', () => {
+  const uploadArea = document.getElementById('uploadArea');
+  if (!uploadArea) return;
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor='var(--pink)'; });
+  uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor=''; });
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadArea.style.borderColor='';
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      document.getElementById('photoInput').files = dt.files;
+      previewPhoto(document.getElementById('photoInput'));
+    }
+  });
+});
+
+// ── 퍼스널컬러 분석 ──
+function analyzePersonalColor() {
+  const fileInput = document.getElementById('photoInput');
+  if (!fileInput.files[0]) { alert('사진을 업로드해주세요.'); return; }
+
+  document.getElementById('analyzeLoading').style.display = 'block';
+  document.getElementById('analyzeBtn').disabled = true;
+  document.getElementById('resultBox').style.display = 'none';
+
+  const formData = new FormData();
+  formData.append('photo', fileInput.files[0]);
+
+  fetch('http://192.168.0.63:8000/analyze', { method: 'POST', body: formData })
+  .then(r => {
+      console.log('상태코드:', r.status);
+      return r.text();
+  })
+  .then(text => {
+      console.log('응답내용:', text);
+      const data = JSON.parse(text);
+      
+      document.getElementById('analyzeLoading').style.display = 'none';
+      document.getElementById('analyzeBtn').disabled = false;
+
+      if (!data.success) { alert(data.message || '분석에 실패했습니다.'); return; }
+
+      const colorMap = {
+        '봄웜':  { bg:'linear-gradient(135deg,#FFB347,#FF8C69)', emoji:'🌸' },
+        '여름쿨': { bg:'linear-gradient(135deg,#87CEEB,#DDA0DD)', emoji:'🌊' },
+        '가을웜': { bg:'linear-gradient(135deg,#D2691E,#DAA520)', emoji:'🍂' },
+        '겨울쿨': { bg:'linear-gradient(135deg,#4169E1,#800080)', emoji:'❄️' }
+      };
+      const cm = colorMap[data.personal_color] || { bg:'var(--pink)', emoji:'✨' };
+
+      document.getElementById('resultBadge').textContent       = cm.emoji + ' ' + data.personal_color;
+      document.getElementById('resultBadge').style.background  = cm.bg;
+      document.getElementById('resultDesc').textContent        = data.description;
+      document.getElementById('resultColors').textContent      = data.colors;
+      document.getElementById('resultMakeup').textContent      = data.makeup;
+      document.getElementById('resultAvoid').textContent       = data.avoid;
+      document.getElementById('resultBox').style.display       = 'block';
+
+      if (data.celebs && data.celebs.length > 0) {
+        updateCelebsByPersonalColor(data.personal_color, data.celebs);
+      }
+  })
+  .catch((err) => {
+      console.error('fetch 에러:', err);
+      document.getElementById('analyzeLoading').style.display = 'none';
+      document.getElementById('analyzeBtn').disabled = false;
+      alert('에러: ' + err.message);
+  });
+}
+
+// 퍼스널컬러 기반 셀럽 전체 표시 (DB 데이터 사용)
+// t_celebrity: celeb_idx, celeb_name, celeb_skintype, personal_color, prod_name, brand_name, category
+function updateCelebsByPersonalColor(personalColor, celebs) {
+  const colorMap = {
+    '봄웜':  { bg:'linear-gradient(135deg,#FFB347,#FF8C69)', emoji:'🌸' },
+    '여름쿨': { bg:'linear-gradient(135deg,#87CEEB,#DDA0DD)', emoji:'🌊' },
+    '가을웜': { bg:'linear-gradient(135deg,#D2691E,#DAA520)', emoji:'🍂' },
+    '겨울쿨': { bg:'linear-gradient(135deg,#4169E1,#800080)', emoji:'❄️' }
+  };
+  const cm = colorMap[personalColor] || { bg:'var(--pink)', emoji:'✨' };
+  window.currentCelebs   = celebs;
+  window.currentColorMap = cm;
+
+  if (!celebs || celebs.length === 0) {
+    document.getElementById('celebGrid').innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--light);font-size:14px;">' +
+      '해당 퍼스널컬러의 셀럽 데이터가 없습니다.</div>';
+    return;
+  }
+
+  // ── Best Match 카드 ──
+  const bestCard = document.getElementById('bestCard');
+  if (bestCard) {
+  	bestCard.style.display = 'flex';
+  	const best = celebs[0];
+  	document.getElementById('bcAva').style.background = cm.bg;
+  	document.getElementById('bcAva').textContent      = cm.emoji;
+  	document.getElementById('bcName').textContent     = best.celeb_name;
+  	document.getElementById('bcSkintype').textContent = personalColor + ' 퍼스널컬러';
+  	document.getElementById('bcPct').textContent      = '매칭!';
+  	document.getElementById('bcProdList').innerHTML   =
+    	celebs.slice(0,3).map(c =>
+      		`<div class="bc-prod-item">
+        		<span class="bc-prod-emoji">💄</span>
+        		<span class="bc-prod-name">${c.celeb_name} — ${c.prod_name || ''}</span>
+      		</div>`
+    ).join('');
+}
+
+  // ── 중복 없는 셀럽 목록 ──
+  const uniqueCelebs = [];
+  const seen = new Set();
+  celebs.forEach(c => {
+    if (!seen.has(c.celeb_name)) { seen.add(c.celeb_name); uniqueCelebs.push(c); }
+  });
+
+  // 타이틀 표시
+  const titleEl = document.getElementById('celebTitle');
+  if (titleEl) {
+    titleEl.style.display = 'block';
+    titleEl.textContent   = personalColor + ' 퍼스널컬러 셀럽';
+  }
+
+  // ── 셀럽 그리드 (이미지 + 제품명) ──
+  document.getElementById('celebGrid').innerHTML = uniqueCelebs.map((c, i) => {
+    // 셀럽 이미지 URL (t_celebrity.img_url 컬럼 있으면 사용, 없으면 이니셜)
+    const imgHtml = c.img_url
+      ? `<img src="${c.img_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <span style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;">${c.celeb_name.charAt(0)}</span>`
+      : `<span style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;">${c.celeb_name.charAt(0)}</span>`;
+
+    // 해당 셀럽 제품명 2개
+    const prodTags = celebs.filter(x=>x.celeb_name===c.celeb_name).slice(0,2)
+      .map(x=>`<span class="cc-prod">${x.prod_name ? x.prod_name.split(' ').slice(0,2).join(' ') : ''}</span>`).join('');
+
+    return `
+    <div class="celeb-card ${i===0?'active':''}" onclick="showCelebProducts('${c.celeb_name.replace(/'/g,"\\'")}')">
+      <div class="cc-top">
+        <div class="cc-ava" style="background:${cm.bg};">${imgHtml}</div>
+        <div>
+          <div class="cc-name">${c.celeb_name}</div>
+          <div class="cc-skintype">${personalColor}</div>
+        </div>
+      </div>
+      <div class="cc-body" style="margin-top:12px;">
+        <div class="cc-body-label">추천 색조 제품</div>
+        <div class="cc-prods">${prodTags}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('celebGrid').scrollIntoView({ behavior:'smooth' });
+}
+
+// 셀럽 카드 클릭 시 팝업으로 제품 목록 표시
+function showCelebProducts(celebName) {
+  const celebs = window.currentCelebs;
+  const cm     = window.currentColorMap || { bg:'var(--pink)', emoji:'✨' };
+  if (!celebs) return;
+
+  const products = celebs.filter(c => c.celeb_name === celebName);
+  if (products.length === 0) return;
+
+  document.querySelectorAll('.celeb-card').forEach(card => {
+    const name = card.querySelector('.cc-name')?.textContent;
+    card.classList.toggle('active', name === celebName);
+  });
+
+  const firstCeleb = products[0];
+  const imgHtml = firstCeleb.img_url
+    ? `<img src="${firstCeleb.img_url}" style="width:56px;height:56px;object-fit:cover;border-radius:50%;flex-shrink:0;">`
+    : `<div style="width:56px;height:56px;border-radius:50%;background:${cm.bg};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;">${celebName.charAt(0)}</div>`;
+
+  document.getElementById('popupCelebImg').innerHTML   = imgHtml;
+  document.getElementById('popupCelebName').textContent = celebName;
+  document.getElementById('popupCelebPC').textContent   = firstCeleb.personal_color + ' 퍼스널컬러';
+  document.getElementById('popupProducts').innerHTML    = products.map(c => `
+    <div class="dp-prod">
+      <div class="dp-emoji">💄</div>
+      <div class="dp-prod-name">${c.prod_name || '제품 없음'}</div>
+      <div class="dp-prod-brand">${c.brand_name || ''} · ${c.category || ''}</div>
+      <div class="dp-prod-why">✓ ${c.personal_color} 퍼스널컬러 추천 색조</div>
+    </div>
+  `).join('');
+
+  document.getElementById('celebPopup').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCelebPopup() {
+  document.getElementById('celebPopup').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+window.onload=()=>{
+  if(S.loggedIn){
+    document.getElementById('loginBanner').style.display='none';
+    document.getElementById('navChip').style.display='flex';
+    document.getElementById('navAv').textContent=S.nick.charAt(0).toUpperCase();
+    document.getElementById('navUn').textContent=S.nick;
+    if(S.skin){
+      document.getElementById('navSk').textContent=S.skin;
+      document.getElementById('autoMatchBanner').style.display='block';
+      document.getElementById('autoMatchTxt').textContent=S.skin;
+      document.querySelectorAll('#quickPills .qpill').forEach(p=>{
+        if(p.textContent===S.skin)p.classList.add('on');
+      });
+    }
+  }
+  document.getElementById('celebGrid').innerHTML =
+    '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--light);font-size:14px;font-weight:300;">' +
+    '📸 위에서 사진을 업로드하면 퍼스널컬러에 맞는 셀럽이 여기에 표시돼요!</div>';
+};
+
+function toggleQ(el){
+  document.querySelectorAll('#quickPills .qpill').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// 매칭 업데이트 버튼 클릭 시 (사진 업로드 영역으로 스크롤)
+function runCeleb(){
+  document.getElementById('uploadArea').scrollIntoView({ behavior:'smooth' });
+  alert('📸 위의 사진 업로드 영역에서 사진을 업로드해주세요!');
+}
+
+// FEEDBACK (t_feedback)
+function openFb(idx,name){
+  fbProdIdx=idx;
+  document.getElementById('fbProd').textContent=name;
+  document.getElementById('fbOv').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('fbNeedLogin').style.display=S.loggedIn?'none':'block';
+  document.getElementById('fbFormWrap').style.display=S.loggedIn?'block':'none';
+}
+function closeFb(){
+  document.getElementById('fbOv').classList.remove('open');
+  document.body.style.overflow='';
+  curRating=0;
+  document.querySelectorAll('.fb-star').forEach(s=>s.classList.remove('on'));
+  document.getElementById('fbTxt').value='';
+}
+function setR(n){curRating=n;document.querySelectorAll('.fb-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
+function submitFb(){
+  let txt=document.getElementById('fbTxt').value.trim();
+  if(!curRating){alert('별점을 선택해주세요.');return;}
+  if(txt.length<10){alert('10자 이상 입력해주세요.');return;}
+  // fetch('/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},
+  //   body:JSON.stringify({user_id:S.userId,prod_idx:fbProdIdx,rating:curRating,fb_content:txt})
+  // }).then(r=>r.json()).then(d=>{if(d.success){alert('등록 완료!');closeFb();}});
+  alert('✅ t_feedback에 리뷰가 등록되었습니다!');
+  closeFb();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFb();});
+</script>
+</body>
+</html>

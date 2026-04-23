@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.overfit.mapper.UserMapper">
+
+  <!-- 회원가입 (INSERT) -->
+  <insert id="insertUser" parameterType="UserVO">
+    INSERT INTO t_user (user_id, user_pw, nick, phone, email, gender, birthdate, skin_type)
+    VALUES (
+      #{user_id},
+      SHA2(#{user_pw}, 256),
+      #{nick},
+      #{phone},
+      #{email},
+      #{gender},
+      #{birthdate},
+      #{skin_type}
+    )
+  </insert>
+
+  <!-- 로그인 (SELECT) -->
+  <select id="loginUser" parameterType="UserVO" resultType="UserVO">
+    SELECT user_id, nick, phone, email, gender, birthdate, skin_type, joined_at
+    FROM t_user
+    WHERE user_id = #{user_id}
+      AND user_pw = SHA2(#{user_pw}, 256)
+  </select>
+
+  <!-- 아이디 중복 확인 (SELECT) -->
+  <select id="isIdDuplicate" parameterType="String" resultType="int">
+    SELECT COUNT(*) FROM t_user WHERE user_id = #{user_id}
+  </select>
+
+  <!-- 이메일로 아이디 찾기 (SELECT) -->
+  <select id="findIdByEmail" parameterType="String" resultType="String">
+    SELECT user_id FROM t_user WHERE email = #{email}
+  </select>
+
+  <!-- 기본 정보 수정 (UPDATE) -->
+  <update id="updateUser" parameterType="UserVO">
+    UPDATE t_user
+    SET nick      = #{nick},
+        phone     = #{phone},
+        email     = #{email},
+        gender    = #{gender},
+        birthdate = #{birthdate}
+    WHERE user_id = #{user_id}
+  </update>
+
+  <!-- 비밀번호 변경 (UPDATE) -->
+  <update id="updatePassword" parameterType="UserVO">
+    UPDATE t_user
+    SET user_pw = SHA2(#{user_pw}, 256)
+    WHERE user_id = #{user_id}
+      AND user_pw = SHA2(#{cur_pw}, 256)
+  </update>
+
+  <!-- 피부 타입 수정 (UPDATE) -->
+  <update id="updateSkinType" parameterType="UserVO">
+    UPDATE t_user
+    SET skin_type = #{skin_type}
+    WHERE user_id = #{user_id}
+  </update>
+
+  <!-- 회원 탈퇴 (DELETE) -->
+  <delete id="deleteUser" parameterType="UserVO">
+    DELETE FROM t_user
+    WHERE user_id = #{user_id}
+      AND user_pw = SHA2(#{user_pw}, 256)
+  </delete>
+
+</mapper>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>클린 검색 — OverPick</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF6F3;--white:#FFFFFF;
+  --pink:#E8637A;--pink-lt:#F2A0B0;--pink-pal:#FCEEF1;
+  --dark:#2B2320;--mid:#7A6560;--light:#C4ADA8;
+  --green:#16A34A;--green-bg:#DCFCE7;
+  --red:#DC2626;--red-bg:#FEF2F2;
+  --blue:#1D4ED8;--blue-bg:#EFF6FF;
+  --amber:#D97706;--amber-bg:#FEF3C7;
+  --serif:'Cormorant Garamond','Noto Serif KR',Georgia,serif;
+  --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);min-height:100vh;}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:60px;background:rgba(253,246,243,0.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(43,35,32,0.07);}
+.nav-logo{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:2px;color:var(--dark);text-decoration:none;}
+.nav-page-title{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--pink);}
+.nav-right-wrap{display:flex;align-items:center;gap:10px;}
+.nav-back{font-size:13px;color:var(--mid);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--pink);}
+.nav-user-chip{display:none;align-items:center;gap:7px;background:var(--pink-pal);border-radius:20px;padding:4px 12px 4px 5px;}
+.nav-avatar{width:25px;height:25px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#FF9A8B);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.nav-uname{font-size:12px;font-weight:600;color:var(--pink);}
+.nav-skin-badge{font-size:10px;background:var(--white);color:var(--mid);padding:2px 7px;border-radius:8px;font-weight:600;}
+
+.login-banner{background:var(--pink-pal);padding:10px 48px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--mid);}
+.login-banner-btn{padding:5px 16px;border-radius:16px;background:var(--pink);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+
+.page-hero{background:var(--white);padding:52px 48px 40px;border-bottom:1px solid rgba(43,35,32,0.06);position:relative;overflow:hidden;}
+.page-hero::after{content:'';position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(232,99,122,0.09) 0%,transparent 70%);right:-40px;top:50%;transform:translateY(-50%);pointer-events:none;}
+.page-kicker{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--pink);margin-bottom:10px;display:block;}
+.page-h1{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:400;line-height:1.2;color:var(--dark);letter-spacing:-0.5px;margin-bottom:12px;}
+.page-h1 em{font-style:italic;color:var(--pink);}
+.page-desc{font-size:15px;color:var(--mid);line-height:1.8;font-weight:300;margin-bottom:24px;max-width:560px;}
+.auto-banner{display:none;align-items:center;gap:8px;background:var(--green-bg);border-radius:10px;padding:9px 14px;font-size:13px;color:var(--green);font-weight:500;margin-bottom:18px;max-width:560px;}
+.search-wrap{display:flex;align-items:center;background:var(--bg);border-radius:40px;padding:6px 6px 6px 22px;border:1px solid rgba(43,35,32,0.10);max-width:560px;box-shadow:0 2px 14px rgba(232,99,122,0.08);}
+.search-wrap input{flex:1;border:none;outline:none;background:transparent;font-size:14px;font-family:var(--sans);color:var(--dark);font-weight:300;}
+.search-wrap input::placeholder{color:var(--light);}
+.search-btn{padding:9px 22px;border-radius:28px;background:var(--dark);color:#fff;border:none;font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:background 0.2s;}
+.search-btn:hover{background:var(--pink);}
+.filter-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px;max-width:560px;}
+.chip{padding:5px 14px;border-radius:18px;border:1px solid rgba(43,35,32,0.12);font-size:12px;color:var(--mid);cursor:pointer;background:var(--white);transition:all 0.2s;}
+.chip.on,.chip:hover{border-color:var(--pink);color:var(--pink);background:var(--pink-pal);}
+
+.content{max-width:860px;margin:0 auto;padding:36px 48px 80px;}
+
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.results-count{font-size:14px;color:var(--mid);font-weight:300;}
+.results-count strong{color:var(--dark);font-weight:600;}
+.ad-removed{font-size:11px;font-weight:600;color:var(--green);background:var(--green-bg);padding:4px 11px;border-radius:9px;}
+.sort-row{display:flex;gap:5px;}
+.sort-btn{padding:5px 12px;border-radius:12px;border:1px solid rgba(43,35,32,0.10);font-size:12px;color:var(--mid);cursor:pointer;background:var(--white);transition:all 0.2s;font-family:var(--sans);}
+.sort-btn.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+
+.product-grid{display:flex;flex-direction:column;gap:13px;}
+.product-card{background:var(--white);border-radius:16px;padding:18px 20px;border:1px solid rgba(43,35,32,0.07);display:flex;gap:16px;align-items:flex-start;transition:all 0.2s;cursor:pointer;}
+.product-card:hover{border-color:rgba(232,99,122,0.28);box-shadow:0 4px 18px rgba(232,99,122,0.08);}
+.prod-rank{font-family:var(--serif);font-style:italic;font-size:24px;color:var(--pink-lt);font-weight:600;width:26px;text-align:center;flex-shrink:0;padding-top:4px;}
+.prod-img{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--pink-pal),rgba(232,99,122,0.14));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.prod-info{flex:1;min-width:0;}
+.prod-name{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:2px;}
+.prod-meta{font-size:11px;color:var(--light);margin-bottom:7px;}
+.prod-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;}
+.prod-tag{padding:2px 8px;border-radius:7px;font-size:10px;font-weight:600;}
+.t-clean{background:var(--green-bg);color:var(--green);}
+.t-skin{background:var(--pink-pal);color:var(--pink);}
+.t-ingr{background:var(--blue-bg);color:var(--blue);}
+.t-allergy{background:var(--red-bg);color:var(--red);}
+.ingr-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
+.ingr-chip{padding:2px 8px;border-radius:7px;font-size:10px;font-weight:600;}
+.ingr-safe{background:var(--green-bg);color:var(--green);}
+.ingr-caution{background:var(--amber-bg);color:var(--amber);}
+.ingr-allergy{background:var(--red-bg);color:var(--red);}
+.prod-right{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.prod-score{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--pink);font-weight:600;line-height:1;}
+.prod-score-label{font-size:10px;color:var(--light);}
+.prod-rating{font-size:12px;color:var(--amber);font-weight:600;}
+.ad-flag-tag{padding:2px 8px;border-radius:7px;font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green);}
+.fb-btn{padding:5px 12px;border-radius:12px;border:1px solid rgba(43,35,32,0.12);background:transparent;font-size:11px;color:var(--mid);cursor:pointer;font-family:var(--sans);transition:all 0.2s;}
+.fb-btn:hover{border-color:var(--pink);color:var(--pink);}
+
+/* 로딩 dots */
+.dots{display:inline-flex;gap:6px;align-items:center;}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--pink);animation:bop 1.2s infinite;}
+.dots span:nth-child(2){animation-delay:0.2s;}
+.dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bop{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
+/* FEEDBACK MODAL */
+.fb-overlay{position:fixed;inset:0;z-index:300;background:rgba(43,35,32,0.45);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.fb-overlay.open{opacity:1;pointer-events:all;}
+.fb-modal{background:var(--white);border-radius:24px;width:100%;max-width:420px;padding:34px;position:relative;transform:translateY(14px);transition:transform 0.3s;}
+.fb-overlay.open .fb-modal{transform:none;}
+.fb-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:16px;color:var(--light);cursor:pointer;}
+.fb-logo{font-family:var(--serif);font-size:13px;font-weight:600;letter-spacing:2px;color:var(--pink);margin-bottom:14px;}
+.fb-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--dark);margin-bottom:4px;}
+.fb-prod{font-size:13px;color:var(--mid);font-weight:300;margin-bottom:20px;}
+.fb-label{font-size:11px;font-weight:600;letter-spacing:0.6px;color:var(--light);text-transform:uppercase;margin-bottom:7px;display:block;}
+.fb-stars{display:flex;gap:5px;margin-bottom:18px;}
+.fb-star{font-size:26px;cursor:pointer;filter:grayscale(1);transition:transform 0.1s;}
+.fb-star.on{filter:none;}
+.fb-textarea{width:100%;padding:11px 14px;border:1px solid rgba(43,35,32,0.12);border-radius:12px;font-size:13px;font-family:var(--sans);color:var(--dark);background:var(--bg);outline:none;resize:none;line-height:1.65;transition:border-color 0.2s;margin-bottom:14px;}
+.fb-textarea:focus{border-color:var(--pink);}
+.fb-submit{width:100%;padding:12px;border-radius:26px;background:var(--pink);color:#fff;border:none;font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:background 0.2s;}
+.fb-submit:hover{background:var(--dark);}
+.fb-notice{background:var(--pink-pal);border-radius:12px;padding:16px;text-align:center;font-size:13px;color:var(--mid);}
+.fb-notice button{margin-top:10px;padding:7px 20px;border-radius:16px;background:var(--pink);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+
+.pagination{display:flex;justify-content:center;gap:6px;margin-top:28px;}
+.page-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(43,35,32,0.10);background:var(--white);font-size:13px;color:var(--mid);cursor:pointer;transition:all 0.2s;font-family:var(--sans);}
+.page-btn.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+
+@media(max-width:800px){
+  nav,.page-hero,.login-banner{padding-left:20px;padding-right:20px;}
+  .content{grid-template-columns:1fr;padding:20px 20px 60px;}
+  
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/overpick/index.html">OVERPICK</a>
+  <span class="nav-page-title">클린 검색</span>
+  <div class="nav-right-wrap">
+    <div class="nav-user-chip" id="navChip">
+      <div class="nav-avatar" id="navAv">김</div>
+      <span class="nav-uname" id="navUn">닉네임</span>
+      <span class="nav-skin-badge" id="navSk">건성</span>
+    </div>
+    <a class="nav-back" href="/overpick/index.html">← 홈</a>
+  </div>
+</nav>
+
+
+<div class="page-hero">
+  <span class="page-kicker">Ad-Free Clean Search</span>
+  <h1 class="page-h1">광고를 지운<br><em>순수한 결과</em>만</h1>
+  <p class="page-desc">GPT-4o-mini가 협찬·뒷광고·PPL 리뷰를 문맥으로 식별·제거합니다.</p>
+  <div class="auto-banner" id="autoBanner">✅ <strong id="autoSkinTxt">건성</strong> 피부 타입이 자동 적용되었습니다 (t_user.skin_type)</div>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="제품명, 성분, 피부 고민 검색..." onkeydown="if(event.key==='Enter')doSearch()">
+    <button class="search-btn" onclick="doSearch()">검색하기</button>
+  </div>
+
+</div>
+
+<div class="content">
+
+  <main>
+    <div class="results-header">
+      <div class="results-count">총 <strong id="rcnt">0건</strong> · 클린 결과</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span class="ad-removed" id="adRemovedBadge" style="display:none;">✓ 광고 리뷰 제거됨</span>
+        <div class="sort-row">
+          <button class="sort-btn" onclick="setSt(this)">별점순</button>
+          <button class="sort-btn" onclick="setSt(this)">리뷰많은순</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-grid" id="grid">
+      <div style="text-align:center;padding:60px 0;color:var(--light);">
+        <div style="font-size:32px;margin-bottom:12px;">🔍</div>
+        <div style="font-size:14px;">검색어를 입력하면 클린 결과를 보여드려요</div>
+      </div>
+    </div>
+    <div class="pagination">
+      <button class="page-btn on">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">4</button>
+      <button class="page-btn">5</button>
+    </div>
+  </main>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div class="fb-overlay" id="fbOv" onclick="closeFb()">
+  <div class="fb-modal" onclick="event.stopPropagation()">
+    <button class="fb-close" onclick="closeFb()">✕</button>
+    <div class="fb-logo">OVERPICK</div>
+    <div class="fb-title">리뷰 작성</div>
+    <div class="fb-prod" id="fbProd"></div>
+
+    <div id="fbFormWrap">
+      <span class="fb-label">별점</span>
+      <div class="fb-stars" id="fbStars">
+        <span class="fb-star" onclick="setR(1)">⭐</span>
+        <span class="fb-star" onclick="setR(2)">⭐</span>
+        <span class="fb-star" onclick="setR(3)">⭐</span>
+        <span class="fb-star" onclick="setR(4)">⭐</span>
+        <span class="fb-star" onclick="setR(5)">⭐</span>
+      </div>
+      <span class="fb-label">리뷰 내용</span>
+      <textarea class="fb-textarea" id="fbTxt" rows="4" placeholder="실제 사용 후기를 작성해주세요. (최소 10자)"></textarea>
+      <button class="fb-submit" onclick="submitFb()">✦ 리뷰 등록</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const S = {
+  loggedIn: sessionStorage.getItem('of_logged')==='true',
+  userId:   sessionStorage.getItem('of_user_id')||'',
+  nick:     sessionStorage.getItem('of_nick')||'',
+  skin:     sessionStorage.getItem('of_skin_type')||'',
+  email:    sessionStorage.getItem('of_email')||''
+};
+
+let curRating = 0;
+let fbProdIdx = null;
+
+window.onload = () => {
+  if(S.loggedIn){
+    document.getElementById('loginBanner').style.display='none';
+    document.getElementById('navChip').style.display='flex';
+    document.getElementById('navAv').textContent = S.nick.charAt(0).toUpperCase();
+    document.getElementById('navUn').textContent = S.nick;
+    if(S.skin){
+      document.getElementById('navSk').textContent = S.skin;
+      document.getElementById('autoBanner').style.display='flex';
+      document.getElementById('autoSkinTxt').textContent = S.skin;
+      document.querySelectorAll('#skinCbs input').forEach(cb=>{if(cb.value===S.skin)cb.checked=true;});
+      document.querySelectorAll('#chipArea .chip').forEach(c=>{if(c.textContent.trim()===S.skin)c.classList.add('on');});
+    }
+  }
+};
+
+async function doSearch() {
+  const keyword = document.getElementById('searchInput').value.trim();
+  if (!keyword) { alert('검색어를 입력해주세요.'); return; }
+
+  document.getElementById('adRemovedBadge').style.display = 'none';
+  document.getElementById('grid').innerHTML = `
+    <div style="text-align:center;padding:60px 0;">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <p style="margin-top:14px;font-size:14px;color:var(--mid);font-weight:300;">키워드로 제품을 찾는 중...</p>
+    </div>`;
+
+  try {
+    const res = await fetch(`http://192.168.0.63:8000/search?keyword=${encodeURIComponent(keyword)}&top_n=20`);
+    const data = await res.json();
+    const products = data.products || [];
+
+    document.getElementById('rcnt').textContent = products.length + '건';
+    document.getElementById('adRemovedBadge').style.display = products.length > 0 ? 'inline-block' : 'none';
+
+    if (products.length === 0) {
+      document.getElementById('grid').innerHTML = `
+        <div style="text-align:center;padding:60px 0;color:var(--mid);">
+          <div style="font-size:32px;margin-bottom:12px;">🔍</div>
+          <div>검색 결과가 없습니다.</div>
+        </div>`;
+      return;
+    }
+
+    const maxScore = Math.max(...products.map(p => p.score));
+    const minScore = Math.min(...products.map(p => p.score));
+    const emojis = ['🧴','💧','🌿','✨','🌸','🍃','🌙','🫧','🌾','💎','🌺','🍀','🌊','🌟','💫','🎯','🌈','🍃','💎','✨'];
+
+    document.getElementById('grid').innerHTML = products.map((p, i) => {
+      const pct = minScore === maxScore ? 95 : Math.round(75 + ((p.score - minScore) / (maxScore - minScore)) * 20);
+      const emoji = emojis[i] || '🧴';
+      return `
+        <div class="product-card" onclick="openAnalyze(${p.prod_idx}, '${p.prod_name.replace(/'/g,"\\'")}')">
+          <div class="prod-rank">${i + 1}</div>
+          <div class="prod-img">${emoji}</div>
+          <div class="prod-info">
+            <div class="prod-name">${p.prod_name}</div>
+            <div class="prod-meta">${p.brand_name} · ${p.category} · 타겟: ${p.target_skin || '-'}</div>
+            <div class="prod-tags">
+              <span class="prod-tag t-skin">${p.target_skin || '-'}</span>
+            </div>
+            <div style="font-size:11px;color:var(--mid);margin-top:4px;">클릭하면 AI 리뷰 분석 결과를 볼 수 있어요 👆</div>
+          </div>
+          <div class="prod-right">
+            <button class="fb-btn" onclick="event.stopPropagation();openFb(${p.prod_idx},'${p.prod_name.replace(/'/g,"\\'")}')">📝 리뷰 작성</button>
+          </div>
+        </div>`;
+    }).join('');
+
+  } catch (e) {
+    document.getElementById('grid').innerHTML = `
+      <div style="text-align:center;padding:40px 0;color:var(--red);">
+        서버에 연결할 수 없습니다. FastAPI가 실행 중인지 확인해주세요.
+      </div>`;
+  }
+}
+
+async function openAnalyze(prodIdx, prodName) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:400;background:rgba(43,35,32,0.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:22px;width:100%;max-width:480px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;">
+      <button onclick="this.parentElement.parentElement.remove()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:16px;color:#C4ADA8;cursor:pointer;">✕</button>
+      <div style="font-family:var(--serif);font-size:13px;color:var(--pink);margin-bottom:8px;">OVERPICK · AI 리뷰 분석</div>
+      <div style="font-family:var(--serif);font-size:20px;color:var(--dark);margin-bottom:4px;">${prodName}</div>
+      <div style="font-size:12px;color:var(--mid);margin-bottom:20px;">GPT가 뒷광고를 걸러내고 리뷰를 분석합니다...</div>
+      <div id="analyzeResult" style="text-align:center;padding:20px 0;">
+        <div class="dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+  try {
+    const res = await fetch(`http://192.168.0.63:8000/review/analyze/${prodIdx}`);
+    const d = await res.json();
+    const recoColor = d.recommendation === '추천' ? '#16A34A' : '#DC2626';
+    const recoBg = d.recommendation === '추천' ? '#DCFCE7' : '#FEF2F2';
+
+    document.getElementById('analyzeResult').innerHTML = `
+      <div style="background:${recoBg};border-radius:14px;padding:16px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:28px;margin-bottom:6px;">${d.recommendation === '추천' ? '👍' : '👎'}</div>
+        <div style="font-size:20px;font-weight:700;color:${recoColor};">${d.recommendation}</div>
+        <div style="font-size:12px;color:#7A6560;margin-top:4px;">뒷광고 ${d.ad_filtered_count}건 필터링 · 총 ${d.total_reviews}개 리뷰 분석</div>
+      </div>
+      <div style="text-align:left;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:#C4ADA8;letter-spacing:0.5px;margin-bottom:8px;">핵심 이유</div>
+        ${(d.reasons||[]).map(r=>`<div style="font-size:13px;color:#2B2320;padding:5px 0;border-bottom:1px solid rgba(43,35,32,0.06);">· ${r}</div>`).join('')}
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <div style="flex:1;background:#EFF6FF;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;font-weight:700;color:#1D4ED8;margin-bottom:6px;">👍 긍정 키워드</div>
+          ${(d.positive_keywords||[]).map(k=>`<div style="font-size:12px;color:#2B2320;margin-bottom:3px;">${k}</div>`).join('')}
+        </div>
+        <div style="flex:1;background:#FEF2F2;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;font-weight:700;color:#DC2626;margin-bottom:6px;">👎 부정 키워드</div>
+          ${(d.negative_keywords||[]).map(k=>`<div style="font-size:12px;color:#2B2320;margin-bottom:3px;">${k}</div>`).join('')}
+        </div>
+      </div>
+      <div style="background:#FCEEF1;border-radius:12px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#C4ADA8;margin-bottom:4px;">적합 피부타입</div>
+        <div style="font-size:14px;font-weight:600;color:#E8637A;">${d.suitable_skin || '-'}</div>
+      </div>`;
+  } catch (e) {
+    document.getElementById('analyzeResult').innerHTML = '<p style="color:#DC2626;">분석 서버에 연결할 수 없습니다.</p>';
+  }
+}
+
+function setSt(btn){document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+document.querySelectorAll('.page-btn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.page-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}));
+
+function openFb(idx,name){
+  fbProdIdx=idx;
+  document.getElementById('fbProd').textContent=name;
+  document.getElementById('fbOv').classList.add('open');
+  document.body.style.overflow='hidden';
+  if(!S.loggedIn){
+    document.getElementById('fbNeedLogin').style.display='block';
+    document.getElementById('fbFormWrap').style.display='none';
+  } else {
+    document.getElementById('fbNeedLogin').style.display='none';
+    document.getElementById('fbFormWrap').style.display='block';
+  }
+}
+function closeFb(){
+  document.getElementById('fbOv').classList.remove('open');
+  document.body.style.overflow='';
+  curRating=0;
+  document.querySelectorAll('.fb-star').forEach(s=>s.classList.remove('on'));
+  document.getElementById('fbTxt').value='';
+}
+function setR(n){curRating=n;document.querySelectorAll('.fb-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
+function submitFb(){
+  const txt=document.getElementById('fbTxt').value.trim();
+  if(!curRating){alert('별점을 선택해주세요.');return;}
+  if(txt.length<10){alert('10자 이상 입력해주세요.');return;}
+  alert('✅ 리뷰가 등록되었습니다!');
+  closeFb();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFb();});
+</script>
+</body>
+</html>

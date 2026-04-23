@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>맞춤 추천 — OverPick</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF6F3;--white:#FFFFFF;
+  --pink:#E8637A;--pink-lt:#F2A0B0;--pink-pal:#FCEEF1;
+  --dark:#2B2320;--mid:#7A6560;--light:#C4ADA8;
+  --green:#16A34A;--green-bg:#DCFCE7;
+  --red:#DC2626;--red-bg:#FEF2F2;
+  --blue:#1D4ED8;--blue-bg:#EFF6FF;
+  --serif:'Cormorant Garamond','Noto Serif KR',Georgia,serif;
+  --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--dark);min-height:100vh;}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:60px;background:rgba(253,246,243,0.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(43,35,32,0.07);}
+.nav-logo{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:2px;color:var(--dark);text-decoration:none;}
+.nav-page-title{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--pink);}
+.nav-right-wrap{display:flex;align-items:center;gap:10px;}
+.nav-back{font-size:13px;color:var(--mid);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--pink);}
+.nav-user-chip{display:none;align-items:center;gap:7px;background:var(--pink-pal);border-radius:20px;padding:4px 12px 4px 5px;}
+.nav-avatar{width:25px;height:25px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#FF9A8B);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.nav-uname{font-size:12px;font-weight:600;color:var(--pink);}
+.nav-skin-badge{font-size:10px;background:var(--white);color:var(--mid);padding:2px 7px;border-radius:8px;font-weight:600;}
+
+.login-banner{background:var(--pink-pal);padding:10px 48px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--mid);}
+.login-banner-btn{padding:5px 16px;border-radius:16px;background:var(--pink);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+
+.page-hero{background:var(--white);padding:52px 48px 40px;border-bottom:1px solid rgba(43,35,32,0.06);position:relative;overflow:hidden;}
+.page-hero::after{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(232,99,122,0.09) 0%,transparent 70%);right:-40px;top:50%;transform:translateY(-50%);pointer-events:none;}
+.page-kicker{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--pink);margin-bottom:10px;display:block;}
+.page-h1{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:400;line-height:1.2;color:var(--dark);letter-spacing:-0.5px;margin-bottom:12px;}
+.page-h1 em{font-style:italic;color:var(--pink);}
+.page-desc{font-size:15px;color:var(--mid);line-height:1.8;font-weight:300;max-width:560px;}
+
+/* 로그인 자동 불러오기 배너 */
+.auto-fill-banner{display:none;align-items:center;gap:8px;background:var(--green-bg);border-radius:10px;padding:9px 16px;font-size:13px;color:var(--green);font-weight:500;margin-top:20px;max-width:560px;}
+
+/* 탭 */
+.steps-bar{background:var(--white);padding:0 48px;border-bottom:1px solid rgba(43,35,32,0.06);display:flex;}
+.step-tab{padding:14px 24px;font-size:13px;font-weight:500;color:var(--light);border-bottom:2px solid transparent;cursor:pointer;transition:all 0.2s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans);}
+.step-tab.on{color:var(--pink);border-bottom-color:var(--pink);}
+
+.content{max-width:860px;margin:0 auto;padding:40px 48px 80px;}
+
+/* 프로필 카드 */
+.profile-card{background:var(--white);border-radius:22px;padding:32px;border:1px solid rgba(43,35,32,0.07);margin-bottom:24px;}
+.card-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--dark);margin-bottom:4px;}
+.card-desc{font-size:13px;color:var(--mid);font-weight:300;margin-bottom:26px;line-height:1.7;}
+
+/* 자동 불러온 프로필 표시 */
+.loaded-profile{background:var(--green-bg);border-radius:12px;padding:14px 16px;margin-bottom:20px;display:none;}
+.lp-title{font-size:11px;font-weight:700;letter-spacing:0.6px;color:var(--green);text-transform:uppercase;margin-bottom:8px;}
+.lp-row{display:flex;gap:8px;flex-wrap:wrap;}
+.lp-tag{padding:4px 12px;border-radius:10px;background:var(--white);font-size:12px;font-weight:600;color:var(--green);}
+
+.field-label{font-size:11px;font-weight:600;letter-spacing:0.6px;color:var(--light);text-transform:uppercase;margin-bottom:9px;display:block;}
+.pill-group{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px;}
+.pill{padding:7px 16px;border-radius:20px;border:1px solid rgba(43,35,32,0.12);font-size:13px;color:var(--mid);cursor:pointer;transition:all 0.2s;background:var(--bg);user-select:none;}
+.pill.on{background:var(--pink);border-color:var(--pink);color:#fff;}
+.pill.avoid.on{background:var(--red);border-color:var(--red);color:#fff;}
+.pill:hover:not(.on){border-color:var(--pink);color:var(--pink);}
+.divider{height:1px;background:rgba(43,35,32,0.06);margin:20px 0;}
+.concern-input{width:100%;padding:12px 14px;border:1px solid rgba(43,35,32,0.12);border-radius:12px;font-size:14px;font-family:var(--sans);color:var(--dark);background:var(--bg);outline:none;resize:none;transition:border-color 0.2s;line-height:1.65;font-weight:300;}
+.concern-input:focus{border-color:var(--pink);}
+.submit-btn{width:100%;padding:14px;border-radius:28px;background:var(--dark);color:#fff;border:none;font-size:15px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:all 0.25s;margin-top:4px;}
+.submit-btn:hover{background:var(--pink);}
+
+/* 결과 */
+.result-header{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap;}
+.result-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--dark);}
+.result-count{font-size:12px;color:var(--pink);font-weight:600;background:var(--pink-pal);padding:4px 12px;border-radius:10px;}
+.save-reco-btn{margin-left:auto;padding:8px 18px;border-radius:16px;background:var(--green-bg);color:var(--green);border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all 0.2s;}
+.save-reco-btn:hover{background:var(--green);color:#fff;}
+
+.result-cards{display:flex;flex-direction:column;gap:14px;}
+.result-card{background:var(--white);border-radius:16px;padding:20px 22px;border:1px solid rgba(43,35,32,0.07);display:flex;gap:18px;align-items:flex-start;transition:all 0.2s;cursor:pointer;}
+.result-card:hover{border-color:rgba(232,99,122,0.28);box-shadow:0 4px 18px rgba(232,99,122,0.08);}
+.result-card.top{border-color:rgba(232,99,122,0.3);background:linear-gradient(135deg,var(--white),var(--pink-pal));}
+.rc-emoji{width:56px;height:56px;border-radius:13px;background:linear-gradient(135deg,var(--pink-pal),rgba(232,99,122,0.14));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.rc-info{flex:1;}
+.best-badge{display:inline-block;margin-bottom:7px;background:var(--pink);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;}
+.rc-name{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:2px;}
+.rc-brand{font-size:11px;color:var(--light);margin-bottom:8px;}
+.rc-reasons{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;}
+.rc-reason{padding:2px 8px;border-radius:7px;font-size:10px;font-weight:600;}
+.r-match{background:var(--green-bg);color:var(--green);}
+.r-ingr{background:var(--blue-bg);color:var(--blue);}
+.r-avoid{background:var(--red-bg);color:var(--red);}
+.reco-reason-txt{font-size:11px;color:var(--mid);font-style:italic;margin-top:4px;}
+.rc-right{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.rc-pct{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--pink);font-weight:600;line-height:1;}
+.rc-pct-label{font-size:10px;color:var(--light);}
+.fb-btn-sm{padding:5px 11px;border-radius:11px;border:1px solid rgba(43,35,32,0.12);background:transparent;font-size:10px;color:var(--mid);cursor:pointer;font-family:var(--sans);transition:all 0.2s;}
+.fb-btn-sm:hover{border-color:var(--pink);color:var(--pink);}
+
+/* 로딩 */
+.loading{text-align:center;padding:60px 0;display:none;}
+.dots{display:inline-flex;gap:6px;align-items:center;}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--pink);animation:bop 1.2s infinite;}
+.dots span:nth-child(2){animation-delay:0.2s;}
+.dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bop{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
+/* FEEDBACK MODAL */
+.fb-overlay{position:fixed;inset:0;z-index:300;background:rgba(43,35,32,0.45);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.fb-overlay.open{opacity:1;pointer-events:all;}
+.fb-modal{background:var(--white);border-radius:22px;width:100%;max-width:400px;padding:32px;position:relative;transform:translateY(14px);transition:transform 0.3s;}
+.fb-overlay.open .fb-modal{transform:none;}
+.fb-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:16px;color:var(--light);cursor:pointer;}
+.fb-logo{font-family:var(--serif);font-size:13px;font-weight:600;letter-spacing:2px;color:var(--pink);margin-bottom:12px;}
+.fb-title{font-family:var(--serif);font-size:20px;color:var(--dark);margin-bottom:4px;}
+.fb-prod{font-size:12px;color:var(--mid);font-weight:300;margin-bottom:18px;}
+.fb-label{font-size:11px;font-weight:600;letter-spacing:0.5px;color:var(--light);text-transform:uppercase;margin-bottom:7px;display:block;}
+.fb-stars{display:flex;gap:5px;margin-bottom:16px;}
+.fb-star{font-size:24px;cursor:pointer;filter:grayscale(1);transition:transform 0.1s;}
+.fb-star.on{filter:none;}
+.fb-textarea{width:100%;padding:11px 13px;border:1px solid rgba(43,35,32,0.12);border-radius:11px;font-size:13px;font-family:var(--sans);color:var(--dark);background:var(--bg);outline:none;resize:none;line-height:1.65;transition:border-color 0.2s;margin-bottom:13px;}
+.fb-textarea:focus{border-color:var(--pink);}
+.fb-submit{width:100%;padding:11px;border-radius:24px;background:var(--pink);color:#fff;border:none;font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:background 0.2s;}
+.fb-submit:hover{background:var(--dark);}
+.fb-notice{background:var(--pink-pal);border-radius:11px;padding:14px;text-align:center;font-size:13px;color:var(--mid);}
+.fb-notice button{margin-top:9px;padding:6px 18px;border-radius:14px;background:var(--pink);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+
+@media(max-width:700px){nav,.page-hero,.login-banner,.steps-bar,.content{padding-left:20px;padding-right:20px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/overpick/index.html">OVERPICK</a>
+  <span class="nav-page-title">맞춤 추천</span>
+  <div class="nav-right-wrap">
+    <div class="nav-user-chip" id="navChip">
+      <div class="nav-avatar" id="navAv">김</div>
+      <span class="nav-uname" id="navUn">닉네임</span>
+      <span class="nav-skin-badge" id="navSk">건성</span>
+    </div>
+    <a class="nav-back" href="/overpick/index.html">← 홈</a>
+  </div>
+</nav>
+
+
+<div class="page-hero">
+  <span class="page-kicker">Customization recommend</span>
+  <h1 class="page-h1">내 피부 데이터로<br><em>정밀하게</em> 찾아드려요</h1>
+  <div class="auto-fill-banner" id="autoFillBanner">
+    ✅ <strong id="autoFillTxt">내 프로필</strong>이 자동으로 불러와졌습니다!
+  </div>
+</div>
+
+<div class="steps-bar">
+  <button class="step-tab on" id="tab1" onclick="showTab(1)">① 피부 프로필 입력</button>
+  <button class="step-tab"    id="tab2" onclick="showTab(2)">② AI 추천 결과</button>
+</div>
+
+<div class="content">
+  <!-- STEP 1 -->
+  <div id="step1">
+    <div class="profile-card">
+      <div class="card-title">내 피부 프로필</div>
+
+      <!-- 자동 불러온 프로필 표시 -->
+      <div class="loaded-profile" id="loadedProfile">
+        <div class="lp-title">✅ 내 프로필 자동 불러옴 (t_user)</div>
+        <div class="lp-row" id="lpRow"></div>
+      </div>
+
+      <span class="field-label">피부 타입</span>
+      <div class="pill-group" id="skinPills">
+        <span class="pill" onclick="toggleOne(this,'skin')">건성</span>
+        <span class="pill" onclick="toggleOne(this,'skin')">지성</span>
+        <span class="pill" onclick="toggleOne(this,'skin')">복합성</span>
+        <span class="pill" onclick="toggleOne(this,'skin')">민감성</span>
+        <span class="pill" onclick="toggleOne(this,'skin')">아토피</span>
+        <span class="pill" onclick="toggleOne(this,'skin')">정상</span>
+      </div>
+
+      <span class="field-label">피부 고민</span>
+      <div class="pill-group">
+        <span class="pill" onclick="this.classList.toggle('on')">보습 부족</span>
+        <span class="pill" onclick="this.classList.toggle('on')">트러블·여드름</span>
+        <span class="pill" onclick="this.classList.toggle('on')">모공</span>
+        <span class="pill" onclick="this.classList.toggle('on')">주름·탄력</span>
+        <span class="pill" onclick="this.classList.toggle('on')">미백·칙칙함</span>
+        <span class="pill" onclick="this.classList.toggle('on')">피부 장벽</span>
+        <span class="pill" onclick="this.classList.toggle('on')">홍조</span>
+      </div>
+
+      <span class="field-label">선호 성분</span>
+      <div class="pill-group">
+        <span class="pill" onclick="this.classList.toggle('on')">히알루론산</span>
+        <span class="pill" onclick="this.classList.toggle('on')">나이아신아마이드</span>
+        <span class="pill" onclick="this.classList.toggle('on')">세라마이드</span>
+        <span class="pill" onclick="this.classList.toggle('on')">레티놀</span>
+        <span class="pill" onclick="this.classList.toggle('on')">비타민C</span>
+        <span class="pill" onclick="this.classList.toggle('on')">펩타이드</span>
+        <span class="pill" onclick="this.classList.toggle('on')">달팽이분비물</span>
+      </div>
+
+      <span class="field-label" style="color:var(--red);">기피 성분</span>
+      <div class="pill-group">
+        <span class="pill avoid" onclick="this.classList.toggle('on')">파라벤</span>
+        <span class="pill avoid" onclick="this.classList.toggle('on')">향료</span>
+        <span class="pill avoid" onclick="this.classList.toggle('on')">알코올</span>
+        <span class="pill avoid" onclick="this.classList.toggle('on')">실리콘</span>
+        <span class="pill avoid" onclick="this.classList.toggle('on')">미네랄오일</span>
+        <span class="pill avoid" onclick="this.classList.toggle('on')">설페이트</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <span class="field-label">추가 피부 고민 (자유 입력)</span>
+      <textarea class="concern-input" id="concernTxt" rows="3" placeholder="예) 환절기마다 볼이 당기고 각질이 생겨요. 자극이 적은 세럼을 찾고 있어요."></textarea>
+
+      <div class="divider"></div>
+
+      <span class="field-label">찾는 카테고리</span>
+      <div class="pill-group" id="catPills">
+        <span class="pill on" onclick="toggleOne(this,'cat')">에센스/세럼</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">스킨/토너</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">크림</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">로션</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">미스트/오일</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">미스트</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">페이스오일</span>
+        <span class="pill" onclick="toggleOne(this,'cat')">멀티</span>
+      </div>
+
+      <button class="submit-btn" onclick="runMatch()">✦ AI 맞춤 추천 받기</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step2" style="display:none;">
+    <div class="loading" id="loadingWrap">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <p style="margin-top:14px;font-size:14px;color:var(--mid);font-weight:300;">t_user × t_product × t_ingredient 데이터를 분석 중...</p>
+    </div>
+    <div id="resultWrap" style="display:none;">
+      <div class="result-header">
+        <div class="result-title">AI 맞춤 추천 결과</div>
+        <div class="result-count" id="rCount">6개</div>
+        <button class="save-reco-btn" onclick="saveReco()" id="saveBtn" style="display:none;">💾 추천 저장 (t_recommendation)</button>
+      </div>
+      <div class="result-cards" id="resultCards"></div>
+      <div style="text-align:center;margin-top:24px;">
+        <button onclick="showTab(1)" style="padding:10px 24px;border-radius:18px;border:1px solid rgba(43,35,32,0.12);background:transparent;font-size:13px;color:var(--mid);cursor:pointer;font-family:var(--sans);">← 프로필 다시 설정</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL (t_feedback) -->
+<div class="fb-overlay" id="fbOv" onclick="closeFb()">
+  <div class="fb-modal" onclick="event.stopPropagation()">
+    <button class="fb-close" onclick="closeFb()">✕</button>
+    <div class="fb-logo">OVERPICK</div>
+    <div class="fb-title">리뷰 작성</div>
+    <div class="fb-prod" id="fbProd"></div>
+    <div id="fbNeedLogin" style="display:none;">
+      <div class="fb-notice">🔒 리뷰는 로그인 후 작성 가능합니다.<button onclick="location.href='/overpick/index.html'">로그인하러 가기</button></div>
+    </div>
+    <div id="fbFormWrap">
+      <span class="fb-label">별점 (rating)</span>
+      <div class="fb-stars" id="fbStars">
+        <span class="fb-star" onclick="setR(1)">⭐</span>
+        <span class="fb-star" onclick="setR(2)">⭐</span>
+        <span class="fb-star" onclick="setR(3)">⭐</span>
+        <span class="fb-star" onclick="setR(4)">⭐</span>
+        <span class="fb-star" onclick="setR(5)">⭐</span>
+      </div>
+      <span class="fb-label">리뷰 내용 (fb_content)</span>
+      <textarea class="fb-textarea" id="fbTxt" rows="4" placeholder="실제 사용 후기를 작성해주세요. (최소 10자)"></textarea>
+      <button class="fb-submit" onclick="submitFb()">✦ 리뷰 등록</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── sessionStorage에서 로그인 정보 ──
+const S={
+  loggedIn:sessionStorage.getItem('of_logged')==='true',
+  userId:  sessionStorage.getItem('of_user_id')||'',
+  nick:    sessionStorage.getItem('of_nick')||'',
+  skin:    sessionStorage.getItem('of_skin_type')||'',
+  email:   sessionStorage.getItem('of_email')||''
+};
+
+// 피드백 전용 상태 변수 (curRating, fbProdIdx 로 명확히 구분)
+let curRating  = 0;
+let fbProdIdx  = null;
+
+window.onload=()=>{
+  if(S.loggedIn){
+    document.getElementById('loginBanner').style.display='none';
+    document.getElementById('navChip').style.display='flex';
+    document.getElementById('navAv').textContent=S.nick.charAt(0).toUpperCase();
+    document.getElementById('navUn').textContent=S.nick;
+    if(S.skin){
+      document.getElementById('navSk').textContent=S.skin;
+      // 자동 피부 타입 선택
+      document.querySelectorAll('#skinPills .pill').forEach(p=>{
+        if(p.textContent===S.skin){p.classList.add('on');}
+      });
+      // 자동 불러온 프로필 배너
+      document.getElementById('autoFillBanner').style.display='flex';
+      document.getElementById('autoFillTxt').textContent=S.nick+'님의 프로필('+S.skin+')';
+      let lp=document.getElementById('loadedProfile');
+      lp.style.display='block';
+      document.getElementById('lpRow').innerHTML=
+        `<span class="lp-tag">피부: ${S.skin}</span>
+         <span class="lp-tag">닉네임: ${S.nick}</span>
+         <span class="lp-tag">이메일: ${S.email}</span>`;
+    }
+    document.getElementById('saveBtn').style.display='block';
+  }
+};
+
+function toggleOne(el,type){
+  let group=el.parentNode;
+  group.querySelectorAll('.pill').forEach(p=>{if(!p.classList.contains('avoid'))p.classList.remove('on');});
+  el.classList.add('on');
+}
+
+function showTab(n){
+  document.getElementById('step1').style.display=n===1?'block':'none';
+  document.getElementById('step2').style.display=n===2?'block':'none';
+  document.getElementById('tab1').classList.toggle('on',n===1);
+  document.getElementById('tab2').classList.toggle('on',n===2);
+}
+
+
+//기존 runMatch() 함수 전체를 이걸로 교체
+
+async function runMatch() {
+  showTab(2);
+  document.getElementById('loadingWrap').style.display = 'block';
+  document.getElementById('resultWrap').style.display = 'none';
+
+  // 선택된 피부 타입 가져오기 (세션 우선, 없으면 직접 선택)
+  let skinType = S.skin;
+  const selectedPill = document.querySelector('#skinPills .pill.on');
+  if (selectedPill) skinType = selectedPill.textContent.trim();
+
+  if (!skinType) {
+    alert('피부 타입을 선택해주세요.');
+    showTab(1);
+    return;
+  }
+
+  let category = '';
+  const selectedCat = document.querySelector('#catPills .pill.on');
+  if (selectedCat) category = selectedCat.textContent.trim();  
+  
+  try {
+    // ① FastAPI 추천 호출
+    const res = await fetch(`http://192.168.0.63:8000/recommend-by-skin/${skinType}?top_n=10&category=${encodeURIComponent(category)}`);
+    const data = await res.json();
+    const products = data.recommendations || [];
+
+    document.getElementById('loadingWrap').style.display = 'none';
+    document.getElementById('resultWrap').style.display = 'block';
+    document.getElementById('rCount').textContent = products.length + '개';
+    const saveBtn = document.getElementById('saveBtn');
+    if (saveBtn) {
+      saveBtn.style.display = S.loggedIn ? 'block' : 'none';
+    }
+
+    // 최고 점수 기준으로 적합도 % 계산
+    const maxScore = Math.max(...products.map(p => p.score));
+    const minScore = Math.min(...products.map(p => p.score));
+    
+    products.sort((a, b) => b.score - a.score);
+
+    document.getElementById('resultCards').innerHTML = products.map((p, i) => {
+        const pct = minScore === maxScore ? 95 : Math.round(75 + ((p.score - minScore) / (maxScore - minScore)) * 20);
+        const isTop = i === 0;
+        const emoji = ['🧴','💧','🌿','✨','🌸','🍃','🌙','🫧','🌾','💎'][i] || '🧴';
+
+      return `
+        <div class="result-card ${isTop ? 'top' : ''}" onclick="openAnalyze(${p.prod_idx}, '${p.prod_name.replace(/'/g,"\\'")}')">
+          <div class="rc-emoji">${emoji}</div>
+          <div class="rc-info">
+            ${isTop ? '<div class="best-badge">🏆 최고 적합</div>' : ''}
+            <div class="rc-name">${p.prod_name}</div>
+            <div class="rc-brand">${p.brand_name} · ${p.category}</div>
+            <div class="rc-reasons">
+              <span class="rc-reason r-match">${p.target_skin || ''}</span>
+              <span class="rc-reason r-ingr">성분점수 ${p.score}</span>
+            </div>
+            <div class="reco-reason-txt">클릭하면 리뷰 분석 결과를 볼 수 있어요 👆</div>
+          </div>
+          <div class="rc-right">
+            <div>
+              <div class="rc-pct">${pct}<span style="font-size:13px;opacity:0.5;">%</span></div>
+              <div class="rc-pct-label">적합도</div>
+            </div>
+            <button class="fb-btn-sm" onclick="event.stopPropagation();openFb(${p.prod_idx},'${p.prod_name.replace(/'/g,"\\'")}')">📝 리뷰</button>
+          </div>
+        </div>`;
+    }).join('');
+
+  } catch (e) {
+    document.getElementById('loadingWrap').style.display = 'none';
+    alert('추천 서버에 연결할 수 없습니다. FastAPI 서버가 실행 중인지 확인해주세요.');
+    showTab(1);
+  }
+}
+
+// ② 제품 클릭 시 리뷰 분석 모달
+let analyzeModal = null;
+
+async function openAnalyze(prodIdx, prodName) {
+  // 모달 생성
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:400;background:rgba(43,35,32,0.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:22px;width:100%;max-width:480px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;">
+      <button onclick="this.closest('[style]').remove()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:16px;color:#C4ADA8;cursor:pointer;">✕</button>
+      <div style="font-family:var(--serif);font-size:13px;color:var(--pink);margin-bottom:8px;">OVERPICK · 리뷰 분석</div>
+      <div style="font-family:var(--serif);font-size:20px;color:var(--dark);margin-bottom:4px;">${prodName}</div>
+      <div style="font-size:12px;color:var(--mid);margin-bottom:20px;">GPT가 뒷광고를 걸러내고 리뷰를 분석합니다...</div>
+      <div id="analyzeResult" style="text-align:center;padding:20px 0;">
+        <div class="dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+  try {
+    const res = await fetch(`http://192.168.0.63:8000/review/analyze/${prodIdx}`);
+    const d = await res.json();
+
+    const recoColor = d.recommendation === '추천' ? '#16A34A' : '#DC2626';
+    const recoBg = d.recommendation === '추천' ? '#DCFCE7' : '#FEF2F2';
+
+    document.getElementById('analyzeResult').innerHTML = `
+      <div style="background:${recoBg};border-radius:14px;padding:16px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:28px;margin-bottom:6px;">${d.recommendation === '추천' ? '👍' : '👎'}</div>
+        <div style="font-size:20px;font-weight:700;color:${recoColor};">${d.recommendation}</div>
+        <div style="font-size:12px;color:#7A6560;margin-top:4px;">뒷광고 ${d.ad_filtered_count}건 필터링 · 총 ${d.total_reviews}개 리뷰 분석</div>
+      </div>
+      <div style="text-align:left;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:#C4ADA8;letter-spacing:0.5px;margin-bottom:8px;">핵심 이유</div>
+        ${(d.reasons||[]).map(r=>`<div style="font-size:13px;color:#2B2320;padding:5px 0;border-bottom:1px solid rgba(43,35,32,0.06);">· ${r}</div>`).join('')}
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <div style="flex:1;background:#EFF6FF;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;font-weight:700;color:#1D4ED8;margin-bottom:6px;">👍 긍정 키워드</div>
+          ${(d.positive_keywords||[]).map(k=>`<div style="font-size:12px;color:#2B2320;margin-bottom:3px;">${k}</div>`).join('')}
+        </div>
+        <div style="flex:1;background:#FEF2F2;border-radius:12px;padding:12px;">
+          <div style="font-size:10px;font-weight:700;color:#DC2626;margin-bottom:6px;">👎 부정 키워드</div>
+          ${(d.negative_keywords||[]).map(k=>`<div style="font-size:12px;color:#2B2320;margin-bottom:3px;">${k}</div>`).join('')}
+        </div>
+      </div>
+      <div style="background:#FCEEF1;border-radius:12px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#C4ADA8;margin-bottom:4px;">적합 피부타입</div>
+        <div style="font-size:14px;font-weight:600;color:#E8637A;">${d.suitable_skin || '-'}</div>
+      </div>`;
+  } catch (e) {
+    document.getElementById('analyzeResult').innerHTML = '<p style="color:#DC2626;">분석 서버에 연결할 수 없습니다.</p>';
+  }
+}
+
+// t_recommendation 저장
+function saveReco(){
+  if(!S.loggedIn){alert('로그인 후 이용해주세요.');return;}
+  // fetch('/api/recommendation',{method:'POST',headers:{'Content-Type':'application/json'},
+  //   body:JSON.stringify({user_id:S.userId,results:RESULTS.map(r=>({prod_idx:r.prod_idx,reco_reason:r.reco_reason}))})
+  // }).then(r=>r.json()).then(d=>{if(d.success)alert('추천 결과가 저장되었습니다!');});
+  alert('✅ 추천 결과가 t_recommendation에 저장되었습니다! (Servlet 연동 후 실제 저장)');
+}
+
+// FEEDBACK (t_feedback)
+function openFb(idx,name){
+  fbProdIdx=idx;
+  document.getElementById('fbProd').textContent=name;
+  document.getElementById('fbOv').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('fbNeedLogin').style.display=S.loggedIn?'none':'block';
+  document.getElementById('fbFormWrap').style.display=S.loggedIn?'block':'none';
+}
+function closeFb(){
+  document.getElementById('fbOv').classList.remove('open');
+  document.body.style.overflow='';
+  curRating=0;
+  document.querySelectorAll('.fb-star').forEach(s=>s.classList.remove('on'));
+  document.getElementById('fbTxt').value='';
+}
+function setR(n){curRating=n;document.querySelectorAll('.fb-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
+function submitFb(){
+  const txt=document.getElementById('fbTxt').value.trim();
+  if(!curRating){alert('별점을 선택해주세요.');return;}
+  if(txt.length<10){alert('10자 이상 입력해주세요.');return;}
+  // fetch('/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},
+  //   body:JSON.stringify({user_id:S.userId,prod_idx:fbProdIdx,rating:curRating,fb_content:txt})
+  // }).then(r=>r.json()).then(d=>{if(d.success){alert('등록 완료!');closeFb();}});
+  alert('✅ t_feedback에 리뷰가 등록되었습니다!');
+  closeFb();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFb();});
+</script>
+</body>
+</html>
