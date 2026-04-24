@@ -8,9 +8,10 @@ import cv2
 import numpy as np
 import os
 import uvicorn
+from dotenv import load_dotenv
 
 app = FastAPI()
-
+load_dotenv() 
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
@@ -21,18 +22,18 @@ app.add_middleware(
 )
 
 # DB 연결
-DB_HOST = 'mp.smhrd.or.kr'
-DB_PORT = 3306
-DB_USER = 'lang9_core_overfit'
-DB_PASS = 'overfit9'
-DB_NAME = 'lang9_core_overfit'
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = int(os.getenv("DB_PORT"))
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
 
 engine = create_engine(
     f'mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4'
 )
 
 # OpenAI 클라이언트
-client = openai.OpenAI(api_key='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')
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 # ✅ 1번: 피부타입 직접 입력 추천 (구체적 경로 먼저)
@@ -121,7 +122,7 @@ def analyze_reviews(prod_idx: int):
             FROM t_review
             WHERE prod_idx = :prod_idx AND ad_flag = 'N'
             ORDER BY rating DESC
-            LIMIT 50
+            LIMIT 1000
         """), {"prod_idx": prod_idx}).fetchall()
 
         if not reviews:
@@ -140,10 +141,20 @@ def analyze_reviews(prod_idx: int):
 다음 순서로 분석해주세요:
 
 1. 뒷광고 의심 리뷰 필터링
-   - 과도한 칭찬, 자연스럽지 않은 표현, 협찬/제공 암시 리뷰 제거
+   - 아래 조건 중 1개라도 해당하면 무조건 광고 리뷰로 판단하고 제거할 것
+   - 판단이 애매한 경우에도 광고로 간주하고 제거할 것 (관대하게 필터링 금지)
+
+   조건:
+   - "쟁여", "쟁임", "세일 때 구매", "올영세일" 등 구매 유도 표현 포함
+   - "너무너무", "진짜진짜", "강추강추" 등 감탄사 2회 이상 반복
+   - 구체적인 사용 경험 없이 30자 미만의 짧은 긍정 리뷰
+   - "협찬", "체험단", "제공받아", "선물받아" 표현 포함
+   - 제품명이나 브랜드명을 2회 이상 반복 언급
 
 2. 필터링된 리뷰 기반으로 분석
    - 추천 여부: 추천 또는 비추천
+   * [추천]: 전체 리뷰 중 긍정적인 평가가 60% 이상이며, 심각한 부작용(트러블, 알러지 등) 언급이 3% 미만일 때.
+   * [비추천]: 부정적인 평가가 20% 이상이거나, 피부 뒤집어짐 등 심각한 부작용 언급이 10% 이상일 때.
    - 추천/비추천 이유: 3가지 핵심 이유
    - 주요 긍정 키워드: 3개
    - 주요 부정 키워드: 3개 (없으면 없음)
